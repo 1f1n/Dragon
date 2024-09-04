@@ -152,9 +152,10 @@ class BulkWalletChecker:
     
     def processWalletData(self, wallet, data, headers):
         direct_link = f"https://gmgn.ai/sol/address/{wallet}"
-        total_profit_percent = f"{data['total_profit_pnl'] * 100:.2f}%"
-        realized_profit_7d_usd = f"${data['realized_profit_7d']:,.2f}"
-        realized_profit_30d_usd = f"${data['realized_profit_30d']:,.2f}"
+        total_profit_percent = f"{data['total_profit_pnl'] * 100:.2f}%" if data['total_profit_pnl'] is not None else "error"
+        realized_profit_7d_usd = f"${data['realized_profit_7d']:,.2f}" if data['realized_profit_7d'] is not None else "error"
+
+        realized_profit_30d_usd = f"${data['realized_profit_30d']:,.2f}" if data['realized_profit_30d'] is not None else "error"
         winrate_7d = f"{data['winrate'] * 100:.2f}%" if data['winrate'] is not None else "?"
 
 
@@ -192,7 +193,6 @@ class BulkWalletChecker:
         }
     
     def fetchWalletData(self, wallets, threads, skipWallets):
-
         with ThreadPoolExecutor(max_workers=threads) as executor:
             futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets): wallet for wallet in wallets}
             for future in as_completed(futures):
@@ -208,9 +208,6 @@ class BulkWalletChecker:
             token_dist_keys = []
 
         identifier = self.shorten(list(result_dict)[0])
-        filename = f"{identifier}"
-
-        path = f"Dragon/data/Solana/BulkWallet/wallets_{filename}_{random.randint(1111, 9999)}.csv"
         filename = f"{identifier}_{random.randint(1111, 9999)}.csv"
 
         path = f"Dragon/data/Solana/BulkWallet/wallets_{filename}"
@@ -225,16 +222,13 @@ class BulkWalletChecker:
 
             writer.writerow(header)
             
-
             for key, value in result_dict.items():
                 row = [key]
                 for h in header[1:]: 
                     if h in value:
                         row.append(value[h])
-                    elif h in value['token_distribution']:
+                    elif h in value.get('token_distribution', {}):
                         row.append(value['token_distribution'][h])
                 writer.writerow(row)
 
-
-        writer.writerow([key] + list(value.values()))
         print(f"[🐲] Saved data for {len(result_dict.items())} wallets to {filename}")
