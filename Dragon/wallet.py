@@ -100,7 +100,7 @@ class BulkWalletChecker:
                     if data['msg'] == "success":
                         data = data['data']
                         try:
-                            if data['buy_30d'] is not None and data['buy_30d'] > 0:
+                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:
                                 return self.processWalletData(wallet, data, headers)
                             else:
                                 if skipWallets:
@@ -115,7 +115,7 @@ class BulkWalletChecker:
                                         "tags": ["Skipped"]
                                     }
                         except Exception as e:
-                            print(f"{e} - {wallet}")
+                            print(f"[🐲] Missed some data for {wallet}")
             except Exception as e:
                 print(f"[🐲] Error fetching data, trying backup...")
             finally:
@@ -126,7 +126,7 @@ class BulkWalletChecker:
                         if data['msg'] == "success":
                             data = data['data']
                             try:
-                                if data['buy_30d'] is not None and data['buy_30d'] > 0:
+                                if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:
                                     return self.processWalletData(wallet, data, headers)
                                 else:
                                     if skipWallets:
@@ -141,7 +141,7 @@ class BulkWalletChecker:
                                             "tags": ["Skipped"]
                                         }
                             except Exception as e:
-                                print(f"{e} - {wallet}")
+                                print(f"[🐲] Missed some data for {wallet}")
                 except Exception:
                     print(f"[🐲] Backup scraper failed, retrying...")
             
@@ -154,10 +154,10 @@ class BulkWalletChecker:
         direct_link = f"https://gmgn.ai/sol/address/{wallet}"
         total_profit_percent = f"{data['total_profit_pnl'] * 100:.2f}%" if data['total_profit_pnl'] is not None else "error"
         realized_profit_7d_usd = f"${data['realized_profit_7d']:,.2f}" if data['realized_profit_7d'] is not None else "error"
-
         realized_profit_30d_usd = f"${data['realized_profit_30d']:,.2f}" if data['realized_profit_30d'] is not None else "error"
         winrate_7d = f"{data['winrate'] * 100:.2f}%" if data['winrate'] is not None else "?"
-
+        sol_balance = f"{float(data['sol_balance']):.2f}" if data['sol_balance'] is not None else "?"
+        trading_platform = f"{data['maker_token_tags']}" if 'maker_token_tags' in data and data['maker_token_tags'] else "?"
 
         try:
             winrate_30data = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=30d", headers=headers).json()['data']
@@ -188,6 +188,8 @@ class BulkWalletChecker:
             "winrate_7d": winrate_7d,
             "winrate_30d": winrate_30d,
             "tags": tags,
+            "trading_platform": trading_platform,
+            "sol_balance": sol_balance,
             "token_distribution": tokenDistro if tokenDistro else {},
             "directLink": direct_link
         }
