@@ -121,7 +121,7 @@ Donations
 Donations are appreciated! (Solana)
 
 ```
-x7ypWUSiFcdUuE6JCPYCHXgo6q9zhdxGm3Pn9UrL1dK
+FF3gkF88aJ6DayFHVmUw7TvNYJnXzmGBu6P5RrEcoins
 ```
 
 <h1 align="left">
