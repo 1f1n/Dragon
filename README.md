@@ -3,7 +3,7 @@
     Dragon
 </h1>
 <p align="center">
-	The all-in-one tool to help you find profitable wallets on Solana & Tron.
+	The all-in-one tool to help you find profitable wallets on Solana, Tron and Ethereum.
 </p><br>
 <h1 align="left">
 Note
