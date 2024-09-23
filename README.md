@@ -111,6 +111,10 @@ Updates
 - Added SOL Balance & Trading Platform data to Bulk Wallet Checker.<br>
 - Slowing down on the updates due to market conditions & the tool is stacked.
 </p>
+<p><br>
+23/09/2024<br>
+- Added Ethereum support.<br>
+</p>
 <h1 align="left">
 Donations
 </h1>
