@@ -99,56 +99,45 @@ class EthBulkWalletChecker:
                     data = response.json()
                     if data['msg'] == "success":
                         data = data['data']
-                        try:
+                        
+                        if skipWallets:
                             if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0 and float(data['sol_balance']) >= 1.0:
                                 return self.processWalletData(wallet, data, headers)
                             else:
-                                if skipWallets:
-                                    self.skippedWallets += 1
-                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
-                                    return None
-                                else:
-                                    direct_link = f"https://gmgn.ai/eth/address/{wallet}"
-                                    return {
-                                        "wallet": wallet,
-                                        "directLink": direct_link,
-                                        "tags": ["Skipped"]
-                                    }
-                        except Exception as e:
-                            print(f"[🐲] Missed some data for {wallet}")
+                                self.skippedWallets += 1
+                                print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                return None
+                        else:
+                            return self.processWalletData(wallet, data, headers)
+            
             except Exception as e:
                 print(f"[🐲] Error fetching data, trying backup...")
-            finally:
-                try:
-                    response = self.cloudScraper.get(url, headers=headers)
-                    if response.status_code == 200:
-                        data = response.json()
-                        if data['msg'] == "success":
-                            data = data['data']
-                            try:
-                                if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 7 and float(data['sol_balance']) >= 1.0:
-                                    return self.processWalletData(wallet, data, headers)
-                                else:
-                                    if skipWallets:
-                                        self.skippedWallets += 1
-                                        print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
-                                        return None
-                                    else:
-                                        direct_link = f"https://gmgn.ai/eth/address/{wallet}"
-                                        return {
-                                            "wallet": wallet,
-                                            "directLink": direct_link,
-                                            "tags": ["Skipped"]
-                                        }
-                            except Exception as e:
-                                print(f"[🐲] Missed some data for {wallet}")
-                except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
+            
+            try:
+                response = self.cloudScraper.get(url, headers=headers)
+                if response.status_code == 200:
+                    data = response.json()
+                    if data['msg'] == "success":
+                        data = data['data']
+                        
+                        if skipWallets:
+                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0 and float(data['sol_balance']) >= 1.0:
+                                return self.processWalletData(wallet, data, headers)
+                            else:
+                                self.skippedWallets += 1
+                                print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                return None
+                        else:
+                            return self.processWalletData(wallet, data, headers)
+            
+            except Exception:
+                print(f"[🐲] Backup scraper failed, retrying...")
             
             time.sleep(1)
-
+        
         print(f"[🐲] Failed to fetch data for wallet {wallet} after {retries} attempts.")
         return None
+
     
     def processWalletData(self, wallet, data, headers):
         direct_link = f"https://gmgn.ai/eth/address/{wallet}"
@@ -199,20 +188,20 @@ class EthBulkWalletChecker:
                 result = future.result()
                 if result is not None:
                     self.results.append(result)
-        
+
         result_dict = {}
         for result in self.results:
             wallet = result.get('wallet')
             if wallet:
                 result_dict[wallet] = result
-                result.pop('wallet', None)  # Optionally remove 'wallet' key if it exists
+                result.pop('wallet', None)  
             else:
                 print(f"[🐲] Missing 'wallet' key in result: {result}")
 
-        if self.results:
+        if self.results and 'token_distribution' in self.results[0]:
             token_dist_keys = self.results[0]['token_distribution'].keys()
         else:
-            token_dist_keys = []
+            token_dist_keys = []  
 
         identifier = self.shorten(list(result_dict)[0])
         filename = f"{identifier}_{random.randint(1111, 9999)}.csv"
@@ -221,21 +210,25 @@ class EthBulkWalletChecker:
 
         with open(path, 'w', newline='') as outfile:
             writer = csv.writer(outfile)
-            
+
             header = ['Identifier'] + list(next(iter(result_dict.values())).keys())
-            
-            header.remove('token_distribution')
+
+            if 'token_distribution' in header:
+                header.remove('token_distribution')
+
             header.extend(token_dist_keys)
 
             writer.writerow(header)
-            
+
             for key, value in result_dict.items():
                 row = [key]
-                for h in header[1:]: 
+                for h in header[1:]:
                     if h in value:
                         row.append(value[h])
-                    elif h in value.get('token_distribution', {}):
+                    elif 'token_distribution' in value and h in value['token_distribution']:
                         row.append(value['token_distribution'][h])
+                    else:
+                        row.append(None)
                 writer.writerow(row)
 
         print(f"[🐲] Saved data for {len(result_dict.items())} wallets to {filename}")
