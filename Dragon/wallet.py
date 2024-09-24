@@ -100,14 +100,17 @@ class BulkWalletChecker:
                     if data['msg'] == "success":
                         data = data['data']
                         try:
-                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:
+                            # Here we handle the skip logic:
+                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0 and float(data['sol_balance']) >= 1.0:
                                 return self.processWalletData(wallet, data, headers)
                             else:
+                                # Handle skipWallets flag
                                 if skipWallets:
                                     self.skippedWallets += 1
                                     print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
                                 else:
+                                    # Even if the wallet doesn't meet the criteria, process it with a "Skipped" tag
                                     direct_link = f"https://gmgn.ai/sol/address/{wallet}"
                                     return {
                                         "wallet": wallet,
@@ -126,7 +129,7 @@ class BulkWalletChecker:
                         if data['msg'] == "success":
                             data = data['data']
                             try:
-                                if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:
+                                if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 7 and float(data['sol_balance']) >= 1.0:
                                     return self.processWalletData(wallet, data, headers)
                                 else:
                                     if skipWallets:
@@ -144,7 +147,7 @@ class BulkWalletChecker:
                                 print(f"[🐲] Missed some data for {wallet}")
                 except Exception:
                     print(f"[🐲] Backup scraper failed, retrying...")
-            
+
             time.sleep(1)
 
         print(f"[🐲] Failed to fetch data for wallet {wallet} after {retries} attempts.")
@@ -157,7 +160,6 @@ class BulkWalletChecker:
         realized_profit_30d_usd = f"${data['realized_profit_30d']:,.2f}" if data['realized_profit_30d'] is not None else "error"
         winrate_7d = f"{data['winrate'] * 100:.2f}%" if data['winrate'] is not None else "?"
         sol_balance = f"{float(data['sol_balance']):.2f}" if data['sol_balance'] is not None else "?"
-        trading_platform = f"{data['maker_token_tags']}" if 'maker_token_tags' in data and data['maker_token_tags'] else "?"
 
         try:
             winrate_30data = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=30d", headers=headers).json()['data']
@@ -167,19 +169,13 @@ class BulkWalletChecker:
             winrate_30data = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=30d", headers=headers).json()['data']
             winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
 
-        if "Skipped" in data.get("tags", []):
-            return {
-                "wallet": wallet,
-                "tags": ["Skipped"],
-                "directLink": direct_link
-            }
         tokenDistro = self.getTokenDistro(wallet)
 
         try:
             tags = data['tags'] 
         except Exception:
             tags = "?"
-        
+
         return {
             "wallet": wallet,
             "totalProfitPercent": total_profit_percent,
@@ -188,7 +184,6 @@ class BulkWalletChecker:
             "winrate_7d": winrate_7d,
             "winrate_30d": winrate_30d,
             "tags": tags,
-            "trading_platform": trading_platform,
             "sol_balance": sol_balance,
             "token_distribution": tokenDistro if tokenDistro else {},
             "directLink": direct_link
@@ -202,7 +197,14 @@ class BulkWalletChecker:
                 if result is not None:
                     self.results.append(result)
         
-        result_dict = {result.pop('wallet'): result for result in self.results}
+        result_dict = {}
+        for result in self.results:
+            wallet = result.get('wallet')
+            if wallet:
+                result_dict[wallet] = result
+                result.pop('wallet', None)
+            else:
+                print(f"[🐲] Missing 'wallet' key in result: {result}")
 
         if self.results:
             token_dist_keys = self.results[0]['token_distribution'].keys()
