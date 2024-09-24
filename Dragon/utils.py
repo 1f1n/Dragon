@@ -27,21 +27,24 @@ WELCOME TO..
     return banner
 
 def chains():
-    options: list = ["Solana", "Tron"]
+    options: list = ["Solana", "Tron", "Ethereum"]
     optionsChoice = "[🐲] Please select a chain:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     
     return options, optionsChoice
 
 def choices(chain: str):
     if chain.lower() == "solana":
-        options: list = ["Bundle Checker", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Purge All Files", "Quit"]
+        options: list = ["Bundle Checker", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Copy Wallet Finder", "Purge All Files", "Quit"]
         optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     elif chain.lower() == "tron":
         options: list = ["Placeholder", "Bulk Wallet Checker", "Top Traders Scraper", "Placeholder", "Get Transaction By Timestamp", "Purge All Files", "Quit"]
         optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
+    elif chain.lower() == "ethereum":
+        options: list = ["Placeholder", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Purge All Files", "Quit"]
+        optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     else:
         return f"[🐲] Error, Dragon does not support the chain '{chain}'"
-
+    
     return options, optionsChoice
 
 def clear():
@@ -52,6 +55,8 @@ def searchForTxt(chain: str):
         chain = "Solana"
     elif chain.lower() == "tron":
         chain = "Tron"
+    elif chain.lower() == "ethereum":
+        chain = "Ethereum"
     else:
         return f"[🐲] Error, Dragon does not support the chain '{chain}'"
     search_directory = os.path.normpath(os.path.join(os.getcwd(), f'Dragon/data/{chain}'))
@@ -72,6 +77,8 @@ def purgeFiles(chain: str):
         chain = "Solana"
     elif chain.lower() == "tron":
         chain = "Tron"
+    elif chain.lower() == "ethereum":
+        chain = "Ethereum"
     else:
         return f"[🐲] Error, Dragon does not support the chain '{chain}'"
     
