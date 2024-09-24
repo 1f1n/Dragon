@@ -400,7 +400,6 @@ def solana():
     scan = ScanAllTx()
     walletCheck = BulkWalletChecker()
     topTraders = TopTraders()
-    copytrade = CopyTradeWalletFinder()
 
     options, optionsChoice = utils.choices(chain="Solana")
     print(f"{optionsChoice}\n")
@@ -597,41 +596,11 @@ def solana():
                 timestampTxns = timestamp.getTxByTimestamp(contractAddress, threads, start, end)
                 break
             elif optionsInput == 6:
-                while True:
-                    contractAddress = input("[❓] Contract Address > ")
-
-                    if len(contractAddress) not in [43, 44]:
-                        print(f"[🐲] Invalid length.")
-                    else:
-                        break
-                while True:
-                    walletAddress = input("[❓] Wallet Address > ")
-
-                    if len(walletAddress) not in [43, 44]:
-                        print(f"[🐲] Invalid length.")
-                    else:
-                        break
-                while True:
-                    threads = input("[❓] Threads > ")
-                    try:
-                        threads = int(threads)
-                        if threads > 10000:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
-                            threads = 40
-                    except ValueError:
-                        threads = 40 
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
-                        break
-                    break
-                findWallets = copytrade.findWallets(contractAddress, walletAddress, threads)
-
-
-            elif optionsInput == 7:
                 purgeFiles(chain="Solana")
                 print(f"[🐲] Successfully purged files.")   
                 print(f"\n{optionsChoice}\n")
 
-            elif optionsInput == 8:
+            elif optionsInput == 7:
                 print(f"[🐲] Thank you for using Dragon.")
                 break
 
