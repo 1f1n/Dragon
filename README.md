@@ -6,13 +6,6 @@
 	The all-in-one tool to help you find profitable wallets on Solana, Tron and Ethereum.
 </p><br>
 <h1 align="left">
-Note
-</h1>
-<p align="center">
-	<b>Permanent gmgn.ai API backdoor/bypass available (no 403/cloudflare), DM me on Discord for more info: @f.in</b>
-</p>
-
-<h1 align="left">
 Setup
 </h1>
 
