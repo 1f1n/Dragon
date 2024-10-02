@@ -42,7 +42,7 @@ Top Traders Scraper
 </h1>
 <p>Scrape the top 100 traders of Solana tokens to receive their PnL, winrate and more data.</p>
 <p>
-1. Load <code>data/Solana/TopTraders/tokens.txt`</code> with contract addresses.<br>
+1. Load <code>data/Solana/TopTraders/tokens.txt</code> with contract addresses.<br>
 2. Enter the amount of threads you'd like to use.<br>
 3. Receive your top traders data.
 </p>
