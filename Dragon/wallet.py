@@ -101,7 +101,7 @@ class BulkWalletChecker:
                         data = data['data']
                         
                         if skipWallets:
-                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0 and float(data['sol_balance']) >= 1.0:
+                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0: # and float(data['sol_balance']) >= 1.0: // uncomment this to help filter out wallets that cashed out to CEX, same on line 124
                                 return self.processWalletData(wallet, data, headers)
                             else:
                                 self.skippedWallets += 1
@@ -121,7 +121,7 @@ class BulkWalletChecker:
                         data = data['data']
                         
                         if skipWallets:
-                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0 and float(data['sol_balance']) >= 1.0:
+                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0: # and float(data['sol_balance']) >= 1.0:
                                 return self.processWalletData(wallet, data, headers)
                             else:
                                 self.skippedWallets += 1
