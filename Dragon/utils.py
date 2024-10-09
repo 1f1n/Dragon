@@ -26,6 +26,10 @@ WELCOME TO..
 {Fore.WHITE}"""
     return banner
 
+def checkProxyFile():
+    with open('Dragon/data/Proxies/proxies.txt', 'r') as f:
+        return bool(f.readlines())
+
 def chains():
     options: list = ["Solana", "Tron", "Ethereum"]
     optionsChoice = "[🐲] Please select a chain:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
@@ -34,7 +38,7 @@ def chains():
 
 def choices(chain: str):
     if chain.lower() == "solana":
-        options: list = ["Bundle Checker", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Purge All Files", "Quit"]
+        options: list = ["Bundle Checker", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Copy Wallet Finder", "Top Holders Scraper", "Purge All Files", "Quit"]
         optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     elif chain.lower() == "tron":
         options: list = ["Placeholder", "Bulk Wallet Checker", "Top Traders Scraper", "Placeholder", "Get Transaction By Timestamp", "Purge All Files", "Quit"]
