@@ -80,6 +80,16 @@ Copy Wallet Finder
 </p>
 
 <h1 align="left">
+Top Holders Scraper
+</h1>
+<p>Scrape the top 100 holders of Solana tokens to receive their PnL, winrate and more data.</p>
+<p>
+1. Load <code>data/Solana/TopHolders/tokens.txt</code> with contract addresses.<br>
+2. Enter the amount of threads you'd like to use.<br>
+3. Receive your top traders data.
+</p>
+
+<h1 align="left">
 Updates
 </h1>
 <p>
