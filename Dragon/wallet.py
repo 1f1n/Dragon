@@ -15,9 +15,50 @@ class BulkWalletChecker:
         self.cloudScraper = cloudscraper.create_scraper()
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
         self.skippedWallets = 0
+        self.proxyPosition = 0
         self.results = []
 
-    def getTokenDistro(self, wallet: str):
+    def loadProxies(self):
+        with open("Dragon/data/Proxies/proxies.txt", 'r') as file:
+            proxies = file.read().splitlines()
+
+        formatted_proxies = []
+        for proxy in proxies:
+            if ':' in proxy:  
+                parts = proxy.split(':')
+                if len(parts) == 4:
+                    ip, port, username, password = parts
+                    formatted_proxies.append({
+                        'http': f"http://{username}:{password}@{ip}:{port}",
+                        'https': f"http://{username}:{password}@{ip}:{port}"
+                    })
+                else:
+                    formatted_proxies.append({
+                        'http': f"http://{proxy}",
+                        'https': f"http://{proxy}"
+                    })
+            else:
+                formatted_proxies.append(f"http://{proxy}")        
+        return formatted_proxies
+    
+    def configureProxy(self, proxy):
+        if isinstance(proxy, dict): 
+            self.sendRequest.proxies = proxy
+        elif proxy:
+            self.sendRequest.proxies = {
+                'http': proxy,
+                'https': proxy
+            }
+        return proxy
+    
+    def getNextProxy(self):
+        proxies = self.loadProxies()
+        proxy = proxies[self.proxyPosition % len(proxies)]
+        self.proxyPosition += 1
+        return proxy
+
+    
+    def getTokenDistro(self, wallet: str, useProxies):
         url = f"https://gmgn.ai/defi/quotation/v1/rank/sol/wallets/{wallet}/unique_token_7d?interval=30d"
         headers = {
             "User-Agent": ua.random
@@ -27,6 +68,8 @@ class BulkWalletChecker:
 
         for attempt in range(retries):
             try:
+                proxy = self.getNextProxy() if useProxies else None
+                self.configureProxy(proxy)
                 response = self.sendRequest.get(url, headers=headers).json()
                 tokenDistro = response['data']['tokens']
                 if tokenDistro:  
@@ -35,7 +78,9 @@ class BulkWalletChecker:
                 time.sleep(1)
             
             try:
-                response = self.cloudScraper.get(url, headers=headers).json()
+                proxy = self.getNextProxy() if useProxies else None
+                proxies = {'http': proxy, 'https': proxy} if proxy else None
+                response = self.cloudScraper.get(url, headers=headers, proxies=proxies).json()
                 tokenDistro = response['data']['tokens']
                 if tokenDistro:
                     break
@@ -85,7 +130,7 @@ class BulkWalletChecker:
             "600% +": SixPlus
         }
 
-    def getWalletData(self, wallet: str, skipWallets: bool):
+    def getWalletData(self, wallet: str, skipWallets: bool, useProxies: bool = None):
         url = f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=7d"
         headers = {
             "User-Agent": ua.random
@@ -94,6 +139,8 @@ class BulkWalletChecker:
         
         for attempt in range(retries):
             try:
+                proxy = self.getNextProxy() if useProxies else None
+                self.configureProxy(proxy)
                 response = self.sendRequest.get(url, headers=headers)
                 if response.status_code == 200:
                     data = response.json()
@@ -101,7 +148,29 @@ class BulkWalletChecker:
                         data = data['data']
                         
                         if skipWallets:
-                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0: # and float(data['sol_balance']) >= 1.0: // uncomment this to help filter out wallets that cashed out to CEX, same on line 124
+                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
+                                return self.processWalletData(wallet, data, headers, useProxies)
+                            else:
+                                self.skippedWallets += 1
+                                print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                return None
+                        else:
+                            return self.processWalletData(wallet, data, headers, useProxies)
+            
+            except Exception as e:
+                print(f"[🐲] Error fetching data, trying backup...  {e}")
+            
+            try:
+                proxy = self.getNextProxy() if useProxies else None
+                proxies = {'http': proxy, 'https': proxy} if proxy else None
+                response = self.cloudScraper.get(url, headers=headers, proxies=proxies).json()
+                if response.status_code == 200:
+                    data = response.json()
+                    if data['msg'] == "success":
+                        data = data['data']
+                        
+                        if skipWallets:
+                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
                                 return self.processWalletData(wallet, data, headers)
                             else:
                                 self.skippedWallets += 1
@@ -111,27 +180,7 @@ class BulkWalletChecker:
                             return self.processWalletData(wallet, data, headers)
             
             except Exception as e:
-                print(f"[🐲] Error fetching data, trying backup...")
-            
-            try:
-                response = self.cloudScraper.get(url, headers=headers)
-                if response.status_code == 200:
-                    data = response.json()
-                    if data['msg'] == "success":
-                        data = data['data']
-                        
-                        if skipWallets:
-                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0: # and float(data['sol_balance']) >= 1.0:
-                                return self.processWalletData(wallet, data, headers)
-                            else:
-                                self.skippedWallets += 1
-                                print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
-                                return None
-                        else:
-                            return self.processWalletData(wallet, data, headers)
-            
-            except Exception:
-                print(f"[🐲] Backup scraper failed, retrying...")
+                print(f"[🐲] Backup scraper failed, retrying... {e}")
             
             time.sleep(1)
         
@@ -139,21 +188,36 @@ class BulkWalletChecker:
         return None
 
     
-    def processWalletData(self, wallet, data, headers):
+    def processWalletData(self, wallet, data, headers, useProxies):
         direct_link = f"https://gmgn.ai/sol/address/{wallet}"
         total_profit_percent = f"{data['total_profit_pnl'] * 100:.2f}%" if data['total_profit_pnl'] is not None else "error"
         realized_profit_7d_usd = f"${data['realized_profit_7d']:,.2f}" if data['realized_profit_7d'] is not None else "error"
         realized_profit_30d_usd = f"${data['realized_profit_30d']:,.2f}" if data['realized_profit_30d'] is not None else "error"
         winrate_7d = f"{data['winrate'] * 100:.2f}%" if data['winrate'] is not None else "?"
         sol_balance = f"{float(data['sol_balance']):.2f}" if data['sol_balance'] is not None else "?"
+        buy_7d = f"{data['buy_7d']}" if data['buy_7d'] is not None else "?"
 
         try:
-            winrate_30data = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=30d", headers=headers).json()['data']
+            winrate_30data = self.sendRequest.get(
+                f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=30d", 
+                headers=headers
+            ).json()['data']
             winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
         except Exception as e:
             print(f"[🐲] Error fetching winrate 30d data, trying backup..")
-            winrate_30data = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=30d", headers=headers).json()['data']
+            winrate_30data = self.cloudScraper.get(
+                f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=30d", 
+                headers=headers
+            ).json()['data']
             winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
+
+        #try:
+        #    total_profit_percent_value = float(data['total_profit_pnl']) * 100 if data['total_profit_pnl'] is not None else 0
+        #except Exception:
+        #    total_profit_percent_value = 0
+
+        #if total_profit_percent_value <= 75:
+        #    return None
 
         if "Skipped" in data.get("tags", []):
             return {
@@ -161,13 +225,14 @@ class BulkWalletChecker:
                 "tags": ["Skipped"],
                 "directLink": direct_link
             }
-        tokenDistro = self.getTokenDistro(wallet)
+
+        tokenDistro = self.getTokenDistro(wallet, useProxies)
 
         try:
-            tags = data['tags'] 
+            tags = data['tags']
         except Exception:
             tags = "?"
-        
+
         return {
             "wallet": wallet,
             "totalProfitPercent": total_profit_percent,
@@ -178,12 +243,13 @@ class BulkWalletChecker:
             "tags": tags,
             "sol_balance": sol_balance,
             "token_distribution": tokenDistro if tokenDistro else {},
-            "directLink": direct_link
+            "directLink": direct_link,
+            "buy_7d": buy_7d
         }
     
-    def fetchWalletData(self, wallets, threads, skipWallets):
+    def fetchWalletData(self, wallets, threads, skipWallets, useProxies):
         with ThreadPoolExecutor(max_workers=threads) as executor:
-            futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets): wallet for wallet in wallets}
+            futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets, useProxies): wallet for wallet in wallets}
             for future in as_completed(futures):
                 result = future.result()
                 if result is not None:
