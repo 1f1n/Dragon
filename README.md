@@ -134,7 +134,7 @@ Updates
 09/10/2024<br>
 - Added <a href="https://github.com/1f1n/Dragon/blob/main/Dragon/data/Proxies/proxies.txt">proxy support</a> to Solana modules.<br>
 - Added Top Holders scraper to Solana modules.<br>
-- Added copy wallet finder  to Solana modules.<br>
+- Added Copy Wallet Finder to Solana modules.<br>
 </p>
 
 <h1 align="left">
