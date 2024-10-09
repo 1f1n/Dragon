@@ -1,4 +1,4 @@
-from Dragon import utils, BundleFinder, ScanAllTx, BulkWalletChecker, TopTraders, TimestampTransactions, purgeFiles
+from Dragon import utils, BundleFinder, ScanAllTx, BulkWalletChecker, TopTraders, TimestampTransactions, purgeFiles, CopyTradeWalletFinder, TopHolders, checkProxyFile
 from Dragon import TronTopTraders, TronBulkWalletChecker, TronTimestampTransactions
 from Dragon import EthBulkWalletChecker, EthTopTraders, EthTimestampTransactions, EthScanAllTx
 
@@ -400,6 +400,8 @@ def solana():
     scan = ScanAllTx()
     walletCheck = BulkWalletChecker()
     topTraders = TopTraders()
+    copytrade = CopyTradeWalletFinder()
+    topHolders = TopHolders()
 
     options, optionsChoice = utils.choices(chain="Solana")
     print(f"{optionsChoice}\n")
@@ -407,7 +409,7 @@ def solana():
         try:
             while True:
                 optionsInput = int(input("[❓] Choice > "))
-                if optionsInput in [1, 2, 3, 4, 5, 6, 7]:
+                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8]:
                     print(f"[🐲] Selected {options[optionsInput - 1]}")
                     break 
                 else:
@@ -482,6 +484,29 @@ def solana():
                             print(f"[🐲] Invalid input. Defaulting to 40 threads.")
                             break
                         break
+                    
+                    while True:
+                        proxies = input("[❓] Use Proxies? (Y/N) > ")
+                    
+                        try:
+                            useProxies = None
+
+                            checkProxies = checkProxyFile()
+
+                            if not checkProxies:
+                                print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                                useProxies = False
+                                break
+
+                            if proxies.lower() == "y":
+                                useProxies = True
+                                print(f"[🐲] Using proxies.")
+                            else:
+                                useProxies = False
+                        except Exception:
+                            print(f"[🐲] Invalid input")
+                            break
+                        break
 
                     while True:
                         skipWallets = False
@@ -494,7 +519,7 @@ def solana():
                             skipWallets = False
                         else:
                             skipWallets = True
-                        walletData = walletCheck.fetchWalletData(wallets, threads=threads, skipWallets=skipWallets)
+                        walletData = walletCheck.fetchWalletData(wallets, threads=threads, skipWallets=skipWallets, useProxies=useProxies)
                         print(f"\n{optionsChoice}\n")
                         break  
 
@@ -517,6 +542,30 @@ def solana():
                         threads = 40
                         print(f"[🐲] Invalid input. Defaulting to 40 threads.")
                     break
+                
+                while True:
+                    proxies = input("[❓] Use Proxies? (Y/N) > ")
+                
+                    try:
+                        useProxies = None
+
+                        checkProxies = checkProxyFile()
+
+                        if not checkProxies:
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                            break
+
+                        if proxies.lower() == "y":
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        else:
+                            useProxies = False
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
+
                 with open('Dragon/data/Solana/TopTraders/tokens.txt', 'r') as fp:
                     contractAddresses = fp.read().splitlines()
                     if contractAddresses and contractAddresses != []:
@@ -526,7 +575,7 @@ def solana():
                         print(f"\n{optionsChoice}\n")
                         continue
                         
-                    data = topTraders.topTraderData(contractAddresses, threads)
+                    data = topTraders.topTraderData(contractAddresses, threads, useProxies)
 
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 4:
@@ -552,7 +601,30 @@ def solana():
                         break
                     break
 
-                go = scan.getAllTxMakers(contractAddress, threads)
+                while True:
+                    proxies = input("[❓] Use Proxies? (Y/N) > ")
+                
+                    try:
+                        useProxies = None
+
+                        checkProxies = checkProxyFile()
+
+                        if not checkProxies:
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                            break
+
+                        if proxies.lower() == "y":
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        else:
+                            useProxies = False
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
+
+                go = scan.getAllTxMakers(contractAddress, threads, useProxies)
                 print(f"\n{optionsChoice}\n")
 
             elif optionsInput == 5:
@@ -575,8 +647,30 @@ def solana():
                         print(f"[🐲] Invalid input. Defaulting to 40 threads.")
                         break
                     break
+                while True:
+                    proxies = input("[❓] Use Proxies? (Y/N) > ")
+                
+                    try:
+                        useProxies = None
+
+                        checkProxies = checkProxyFile()
+
+                        if not checkProxies:
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                            break
+
+                        if proxies.lower() == "y":
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        else:
+                            useProxies = False
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
                 print(f"[🐲] Get UNIX Timetstamps Here > https://www.unixtimestamp.com")
-                print(f"[🐲] This token was minted at {timestamp.getMintTimestamp(contractAddress)}")
+                print(f"[🐲] This token was minted at {timestamp.getMintTimestamp(contractAddress, useProxies)}")
                 while True:
                     start = input("[❓] Start UNIX Timestamp > ")
                     try:
@@ -593,14 +687,114 @@ def solana():
                         print(f"[🐲] Invalid input.")
                         break
                     break
-                timestampTxns = timestamp.getTxByTimestamp(contractAddress, threads, start, end)
+                timestampTxns = timestamp.getTxByTimestamp(contractAddress, threads, start, end, useProxies)
                 break
             elif optionsInput == 6:
+                while True:
+                    contractAddress = input("[❓] Contract Address > ")
+
+                    if len(contractAddress) not in [43, 44]:
+                        print(f"[🐲] Invalid length.")
+                    else:
+                        break
+                while True:
+                    walletAddress = input("[❓] Wallet Address > ")
+
+                    if len(walletAddress) not in [43, 44]:
+                        print(f"[🐲] Invalid length.")
+                    else:
+                        break
+                while True:
+                    threads = input("[❓] Threads > ")
+                    try:
+                        threads = int(threads)
+                        if threads > 10000:
+                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            threads = 40
+                    except ValueError:
+                        threads = 40 
+                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        break
+                    break
+                
+                while True:
+                    proxies = input("[❓] Use Proxies? (Y/N) > ")
+                
+                    try:
+                        useProxies = None
+
+                        checkProxies = checkProxyFile()
+
+                        if not checkProxies:
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                            break
+
+                        if proxies.lower() == "y":
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        else:
+                            useProxies = False
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
+
+                findWallets = copytrade.findWallets(contractAddress, walletAddress, threads, useProxies)
+
+            elif optionsInput == 7:
+                while True:
+                    threads = input("[❓] Threads > ")
+                    try:
+                        threads = int(threads)
+                        if threads > 100:
+                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            threads = 40
+                    except ValueError:
+                        threads = 40
+                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                    break
+                while True:
+                    proxies = input("[❓] Use Proxies? (Y/N) > ")
+                
+                    try:
+                        useProxies = None
+
+                        checkProxies = checkProxyFile()
+
+                        if not checkProxies:
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                            break
+
+                        if proxies.lower() == "y":
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        else:
+                            useProxies = False
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
+                with open('Dragon/data/Solana/TopHolders/tokens.txt', 'r') as fp:
+                    contractAddresses = fp.read().splitlines()
+                    if contractAddresses and contractAddresses != []:
+                        print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
+                    else:
+                        print(f"[🐲] Error occurred, file may be empty. Go to the file here: Draon/data/TopTraders/tokens.txt")
+                        print(f"\n{optionsChoice}\n")
+                        continue
+                        
+                    data = topHolders.topHolderData(contractAddresses, threads, useProxies)
+
+                print(f"\n{optionsChoice}\n")
+
+            elif optionsInput == 8:
                 purgeFiles(chain="Solana")
                 print(f"[🐲] Successfully purged files.")   
                 print(f"\n{optionsChoice}\n")
 
-            elif optionsInput == 7:
+            elif optionsInput == 9:
                 print(f"[🐲] Thank you for using Dragon.")
                 break
 
