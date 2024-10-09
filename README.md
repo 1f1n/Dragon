@@ -69,6 +69,17 @@ Get Transaction By Timestamp
 </p>
 
 <h1 align="left">
+Copy Wallet Finder
+</h1>
+<p>Grab the 10 transaction makers ahead of a wallet on a contract address to see if they have copytraders.</p>
+<p>
+1. Enter a contract address. <br>
+2. Enter the wallet address you'd like to check.<br>
+3. Enter the amount of threads you'd like to use.
+4. Wait and receive your wallet addresses.
+</p>
+
+<h1 align="left">
 Updates
 </h1>
 <p>
