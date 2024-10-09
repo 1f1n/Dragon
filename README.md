@@ -121,7 +121,7 @@ Updates
 - Added chain selection.<br>
 - Added Tron Bulk Wallet Checker. (Inaccurate at the moment, thanks GMGN.)<br>
 - Added Tron Top Trader Scraper.
-<p>
+<p><br>
 08/09/2024<br>
 - Added SOL Balance & Trading Platform data to Bulk Wallet Checker.<br>
 - Slowing down on the updates due to market conditions & the tool is stacked.
