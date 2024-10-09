@@ -109,6 +109,12 @@ Updates
 23/09/2024<br>
 - Added Ethereum support.<br>
 </p>
+<p><br>
+09/10/2024<br>
+- Added <a href="https://github.com/1f1n/Dragon/blob/main/Dragon/data/Proxies/proxies.txt">proxy support to Solana modules.</a>
+- Added Top Holders scraper to Solana modules.
+- Added copy wallet finder  to Solana modules.
+</p>
 <h1 align="left">
 Donations
 </h1>
