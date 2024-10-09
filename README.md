@@ -115,18 +115,18 @@ Updates
 - Added option to purge all files.<br>
 - Added token distribution data to the Bulk Wallet Checker.<br>
 - Added request retries, will attempt 3 times until data is found, boosting request success rate by 80% roughly.
-</p><br>
+</p>
 02/09/2024<br>
 - General logic fixes.<br>
 - Added chain selection.<br>
 - Added Tron Bulk Wallet Checker. (Inaccurate at the moment, thanks GMGN.)<br>
 - Added Tron Top Trader Scraper.
-<p><br>
+<p>
 08/09/2024<br>
 - Added SOL Balance & Trading Platform data to Bulk Wallet Checker.<br>
 - Slowing down on the updates due to market conditions & the tool is stacked.
 </p>
-<p><br>
+<p>
 23/09/2024<br>
 - Added Ethereum support.<br>
 </p>
