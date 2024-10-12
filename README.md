@@ -75,7 +75,7 @@ Copy Wallet Finder
 <p>
 1. Enter a contract address. <br>
 2. Enter the wallet address you'd like to check.<br>
-3. Enter the amount of threads you'd like to use.
+3. Enter the amount of threads you'd like to use.<br>
 4. Wait and receive your wallet addresses.
 </p>
 
