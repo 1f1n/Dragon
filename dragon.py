@@ -432,10 +432,10 @@ def solana():
             elif optionsInput == 2:
                 if len(files) < 2:
                     print("[🐲] No files available.")
-                    continue 
-
+                    continue
+            
                 print(f"\n{filesChoice}\n")
-
+            
                 try:
                     while True:
                         fileSelectionOption = int(input("[❓] File Choice > "))
@@ -448,88 +448,119 @@ def solana():
                                 try:
                                     with open(fileDirectory, 'r') as f:
                                         wallets = f.read().splitlines()
-                                    if wallets and wallets != []:
-                                        print(f"[🐲] Loaded {len(wallets)} wallets") 
+                                    if wallets:
+                                        print(f"[🐲] Loaded {len(wallets)} wallets")
                                         break
                                     else:
-                                        print(f"[🐲] Error occurred, file may be empty. Go to the ")
-                                        continue
-                                except Exception as e:
-                                    print(f"[🐲] File directory not found.")
-                                    continue
+                                        print(f"[🐲] Error: file may be empty. Please try again.")
+                                except FileNotFoundError:
+                                    print(f"[🐲] File not found. Please check the path.")
                             break
-                                    
                         else:
                             print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
                             fileDirectory = f"Dragon/data/Solana/{files[fileSelectionOption - 1]}"
-
+            
                             with open(fileDirectory, 'r') as f:
                                 wallets = f.read().splitlines()
-                            if wallets and wallets != []:
+                            if wallets:
                                 print(f"[🐲] Loaded {len(wallets)} wallets")
-                                break 
+                                break
                             else:
-                                print(f"[🐲] Error occurred, file may be empty.")
-                                continue 
-
+                                print(f"[🐲] Error: file may be empty.")
+                                continue
+            
+                    # Handle threads input
                     while True:
-                        threads = input("[❓] Threads > ")
                         try:
-                            threads = int(threads)
+                            threads = int(input("[❓] Threads > "))
                             if threads > 100:
                                 print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
                                 threads = 40
                         except ValueError:
-                            threads = 40
                             print(f"[🐲] Invalid input. Defaulting to 40 threads.")
-                            break
+                            threads = 40
                         break
-                    
+            
+                    # Handle proxy input
                     while True:
-                        proxies = input("[❓] Use Proxies? (Y/N) > ")
-                    
-                        try:
-                            useProxies = None
-
-                            checkProxies = checkProxyFile()
-
-                            if not checkProxies:
-                                print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
-                                useProxies = False
-                                break
-
-                            if proxies.lower() == "y":
-                                useProxies = True
-                                print(f"[🐲] Using proxies.")
-                            else:
-                                useProxies = False
-                        except Exception:
-                            print(f"[🐲] Invalid input")
-                            break
-                        break
-
-                    while True:
-                        skipWallets = False
-                        skipWalletsInput = input("[❓] Skip wallets with no buys in 30d (Y/N) > ")
-
-                        if skipWalletsInput.upper() not in ["Y", "N"]:
-                            print("[🐲] Invalid input.")
-                            continue 
-                        if skipWalletsInput.upper() == "N":
-                            skipWallets = False
+                        proxies = input("[❓] Use Proxies? (Y/N) > ").lower()
+                        checkProxies = checkProxyFile()
+            
+                        if proxies == "y" and checkProxies:
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        elif proxies == "y" and not checkProxies:
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                        elif proxies == "n":
+                            useProxies = False
                         else:
-                            skipWallets = True
-                        walletData = walletCheck.fetchWalletData(wallets, threads=threads, skipWallets=skipWallets, useProxies=useProxies)
-                        print(f"\n{optionsChoice}\n")
-                        break  
-
-                except IndexError as e:
+                            print(f"[🐲] Invalid input.")
+                            continue
+                        break
+            
+                    # Handle skip wallets input
+                    while True:
+                        skipWalletsInput = input("[❓] Skip wallets with no buys in 30d (Y/N) > ").upper()
+                        if skipWalletsInput in ["Y", "N"]:
+                            skipWallets = skipWalletsInput == "Y"
+                            break
+                        else:
+                            print("[🐲] Invalid input.")
+            
+                    while True:
+                        try:
+                            minWinRate = float(input("[❓] Minimum Win Rate (%) > "))
+                            print(f"[🐲] Minimum Win Rate set to {minWinRate}%")
+                            break
+                        except ValueError:
+                            print("[🐲] Invalid input. Please enter a valid percentage.")
+            
+                    while True:
+                        try:
+                            minPNL = float(input("[❓] Minimum PNL (USD) > "))
+                            print(f"[🐲] Minimum PNL set to ${minPNL}")
+                            break
+                        except ValueError:
+                            print("[🐲] Invalid input. Please enter a valid amount.")
+            
+                    while True:
+                        try:
+                            minTokensTraded = int(input("[❓] Minimum Tokens Traded > "))
+                            print(f"[🐲] Minimum Tokens Traded set to {minTokensTraded}")
+                            break
+                        except ValueError:
+                            print("[🐲] Invalid input. Please enter a valid number.")
+            
+                    while True:
+                        try:
+                            maxTokensTraded = int(input("[❓] Maximum Tokens Traded > "))
+                            print(f"[🐲] Maximum Tokens Traded set to {maxTokensTraded}")
+                            break
+                        except ValueError:
+                            print("[🐲] Invalid input. Please enter a valid number.")
+            
+                    # Fetch wallet data with the newly added filters
+                    walletData = walletCheck.fetchWalletData(
+                        wallets,
+                        threads=threads,
+                        skipWallets=skipWallets,
+                        useProxies=useProxies,
+                        minWinRate=minWinRate,
+                        minPNL=minPNL,
+                        minTokensTraded=minTokensTraded,
+                        maxTokensTraded=maxTokensTraded
+                    )
+                    print(f"\n{optionsChoice}\n")
+            
+                except IndexError:
                     print("[🐲] File choice out of range.")
                     print(f"\n{optionsChoice}\n")
                 except ValueError as e:
                     print(f"[🐲] Invalid input. - {e}")
                     print(f"\n{optionsChoice}\n")
-                continue 
+                continue
+
             elif optionsInput == 3:
                 while True:
                     threads = input("[❓] Threads > ")

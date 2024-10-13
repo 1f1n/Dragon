@@ -130,7 +130,7 @@ class BulkWalletChecker:
             "600% +": SixPlus
         }
 
-    def getWalletData(self, wallet: str, skipWallets: bool, useProxies: bool = None):
+    def getWalletData(self, wallet: str, skipWallets: bool, useProxies: bool = None, minWinRate=None, minPNL=None, minTokensTraded=None, maxTokensTraded=None):
         url = f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=7d"
         headers = {
             "User-Agent": ua.random
@@ -149,6 +149,27 @@ class BulkWalletChecker:
                         
                         if skipWallets:
                             if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
+
+                                if minWinRate and data['winrate']*100 < minWinRate:
+                                    self.skippedWallets += 1
+                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    return None
+                                
+                                if minPNL and data['pnl_7d'] < minPNL:
+                                    self.skippedWallets += 1
+                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    return None
+                                
+                                if minTokensTraded and data['buy_7d'] < minTokensTraded:
+                                    self.skippedWallets += 1
+                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    return None
+                                
+                                if maxTokensTraded and data['buy_7d'] > maxTokensTraded:
+                                    self.skippedWallets += 1
+                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    return None
+
                                 return self.processWalletData(wallet, data, headers, useProxies)
                             else:
                                 self.skippedWallets += 1
@@ -247,9 +268,12 @@ class BulkWalletChecker:
             "buy_7d": buy_7d
         }
     
-    def fetchWalletData(self, wallets, threads, skipWallets, useProxies):
+    def fetchWalletData(self, wallets, threads, 
+                        skipWallets,useProxies,
+                        minWinRate=None,minPNL=None,
+                        minTokensTraded=None,maxTokensTraded=None):
         with ThreadPoolExecutor(max_workers=threads) as executor:
-            futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets, useProxies): wallet for wallet in wallets}
+            futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets, useProxies,minWinRate,minPNL,minTokensTraded,maxTokensTraded): wallet for wallet in wallets}
             for future in as_completed(futures):
                 result = future.result()
                 if result is not None:
