@@ -150,22 +150,22 @@ class BulkWalletChecker:
                         if skipWallets:
                             if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
 
-                                if minWinRate and data['winrate']*100 < minWinRate:
+                                if minWinRate and (data['winrate'] is None or data['winrate'] * 100 < minWinRate):
                                     self.skippedWallets += 1
                                     print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
                                 
-                                if minPNL and data['pnl_7d'] < minPNL:
+                                if minPNL and (data['pnl_7d'] is None or data['pnl_7d'] < minPNL):
                                     self.skippedWallets += 1
                                     print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
                                 
-                                if minTokensTraded and data['buy_7d'] < minTokensTraded:
+                                if minTokensTraded and (data['buy_7d'] is None or data['buy_7d'] < minTokensTraded):
                                     self.skippedWallets += 1
                                     print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
                                 
-                                if maxTokensTraded and data['buy_7d'] > maxTokensTraded:
+                                if maxTokensTraded and (data['buy_7d'] is None or data['buy_7d'] > maxTokensTraded):
                                     self.skippedWallets += 1
                                     print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
@@ -298,27 +298,31 @@ class BulkWalletChecker:
 
         path = f"Dragon/data/Solana/BulkWallet/wallets_{filename}"
 
-        with open(path, 'w', newline='') as outfile:
-            writer = csv.writer(outfile)
+        try:
+            with open(path, 'w', newline='') as outfile:
+                writer = csv.writer(outfile)
 
-            header = ['Identifier'] + list(next(iter(result_dict.values())).keys())
+                header = ['Identifier'] + list(next(iter(result_dict.values())).keys())
 
-            if 'token_distribution' in header:
-                header.remove('token_distribution')
+                if 'token_distribution' in header:
+                    header.remove('token_distribution')
 
-            header.extend(token_dist_keys)
+                header.extend(token_dist_keys)
 
-            writer.writerow(header)
+                writer.writerow(header)
 
-            for key, value in result_dict.items():
-                row = [key]
-                for h in header[1:]:
-                    if h in value:
-                        row.append(value[h])
-                    elif 'token_distribution' in value and h in value['token_distribution']:
-                        row.append(value['token_distribution'][h])
-                    else:
-                        row.append(None)
-                writer.writerow(row)
+                for key, value in result_dict.items():
+                    row = [key]
+                    for h in header[1:]:
+                        if h in value:
+                            row.append(value[h])
+                        elif 'token_distribution' in value and h in value['token_distribution']:
+                            row.append(value['token_distribution'][h])
+                        else:
+                            row.append(None)
+                    writer.writerow(row)
+        except Exception as e:
+            print(f"[🐲] Error saving data: {e}")
+            return
 
         print(f"[🐲] Saved data for {len(result_dict.items())} wallets to {filename}")
