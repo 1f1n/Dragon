@@ -148,15 +148,15 @@ class CopyTradeWalletFinder:
 
         if found_target:
             print(f"[🐲] Found target maker: {targetMaker}")
-            print(f"[🐲] The first 10 makers after target maker:")
+            print(f"[🐲] The first 10 makers before target maker:")
             for idx, maker in enumerate(makers, 1):
                 print(f"{idx}. {maker}")
         else:
             print(f"[🐲] Target maker {targetMaker} not found.")
 
-        filename = f"wallets_before_{self.shorten(targetMaker)}__{random.randint(1111, 9999)}.txt"
+        filename = f"wallets_before_{self.shorten(targetMaker)}_{random.randint(1111, 9999)}.txt"
         with open(f"Dragon/data/Solana/CopyWallets/{filename}", "w") as file:
-            for maker in makers_before_target:
+            for maker in makers:
                 file.write(f"{maker}\n")
 
         print(f"[🐲] Saved the 10 makers before {targetMaker} to {filename}")
