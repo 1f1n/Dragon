@@ -140,7 +140,8 @@ Updates
 </p>
 <p>
 16/10/2024<br>
-- Fixed Copytrade Wallet Finder showing previous 10 instead of after 10.
+- Fixed Copytrade Wallet Finder showing previous 10 instead of after 10.<br>
+- Added attempts to filter out volume & MEV bots from the 10 traders.
 </p>
 
 <h1 align="left">
