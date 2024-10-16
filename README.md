@@ -138,6 +138,10 @@ Updates
 - Added Top Holders scraper to Solana modules.<br>
 - Added Copy Wallet Finder to Solana modules.<br>
 </p>
+<p>
+16/10/2024<br>
+- Fixed Copytrade Wallet Finder showing previous 10 instead of after 10.
+</p>
 
 <h1 align="left">
 Donations
