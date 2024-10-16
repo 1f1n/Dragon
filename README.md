@@ -6,9 +6,7 @@
 	The all-in-one tool to help you find profitable wallets on Solana, Tron and Ethereum.
 </p><br>
 <h1 align="left">Tutorial</h1>
-<video width="400" controls>
-  <source src="https://cdn.discordapp.com/attachments/1269464988674949213/1295138748585086986/Dragon_Install_1.mp4?ex=670d8f74&is=670c3df4&hm=adb74b4afdbd7e6ccb4d5567eb00841679b9ba97ba6c6abd02980f4d13a95308" type="video/mp4">
-</video>
+<a href="https://youtu.be/ab17qHh2P-o?si=vIKSK2lbY-UdaqGP">YouTube Video </a>
 <h1 align="left">
 Setup
 </h1>
