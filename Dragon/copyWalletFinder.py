@@ -113,6 +113,7 @@ class CopyTradeWalletFinder:
                 proxy = self.getNextProxy() if useProxies else None
                 proxies = {'http': proxy, 'https': proxy} if proxy else None
                 response = self.cloudScraper.get(url, headers=headers, proxies=proxies)
+            print(response.json())
             paginator = response.json()['data'].get('next')
 
             if paginator:
@@ -134,7 +135,8 @@ class CopyTradeWalletFinder:
                 with self.lock:
                     for maker in history:
                         event = maker['event']
-                        if event == "buy":                            
+                        txns = maker.get('total_trade', 0)
+                        if event == "buy" and txns < 200:                            
                             if maker['maker'] == targetMaker:
                                 found_target = True
                                 break
@@ -144,7 +146,8 @@ class CopyTradeWalletFinder:
 
                 if found_target:
                     break
-        makers = temp_makers[:10]  
+
+        makers = temp_makers[-10:]  
 
         if found_target:
             print(f"[🐲] Found target maker: {targetMaker}")
@@ -158,5 +161,4 @@ class CopyTradeWalletFinder:
         with open(f"Dragon/data/Solana/CopyWallets/{filename}", "w") as file:
             for maker in makers:
                 file.write(f"{maker}\n")
-
         print(f"[🐲] Saved the 10 makers before {targetMaker} to {filename}")
