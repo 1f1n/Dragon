@@ -113,7 +113,6 @@ class CopyTradeWalletFinder:
                 proxy = self.getNextProxy() if useProxies else None
                 proxies = {'http': proxy, 'https': proxy} if proxy else None
                 response = self.cloudScraper.get(url, headers=headers, proxies=proxies)
-            print(response.json())
             paginator = response.json()['data'].get('next')
 
             if paginator:
@@ -123,7 +122,6 @@ class CopyTradeWalletFinder:
                 break
 
         found_target = False
-        makers_before_target = []
         temp_makers = []  
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
