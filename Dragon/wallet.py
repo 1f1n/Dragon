@@ -130,7 +130,7 @@ class BulkWalletChecker:
             "600% +": SixPlus
         }
 
-    def getWalletData(self, wallet: str, skipWallets: bool, useProxies: bool = None):
+    def getWalletData(self, wallet: str, skipWallets: bool, useProxies: bool = None, minWinRate=None, minPNL=None, minTokensTraded=None, maxTokensTraded=None):
         url = f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=7d"
         headers = {
             "User-Agent": ua.random
@@ -149,6 +149,27 @@ class BulkWalletChecker:
                         
                         if skipWallets:
                             if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
+
+                                if minWinRate and (data['winrate'] is None or data['winrate'] * 100 < minWinRate):
+                                    self.skippedWallets += 1
+                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    return None
+                                
+                                if minPNL and (data['pnl_7d'] is None or data['pnl_7d'] < minPNL):
+                                    self.skippedWallets += 1
+                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    return None
+                                
+                                if minTokensTraded and (data['buy_7d'] is None or data['buy_7d'] < minTokensTraded):
+                                    self.skippedWallets += 1
+                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    return None
+                                
+                                if maxTokensTraded and (data['buy_7d'] is None or data['buy_7d'] > maxTokensTraded):
+                                    self.skippedWallets += 1
+                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    return None
+
                                 return self.processWalletData(wallet, data, headers, useProxies)
                             else:
                                 self.skippedWallets += 1
@@ -247,9 +268,12 @@ class BulkWalletChecker:
             "buy_7d": buy_7d
         }
     
-    def fetchWalletData(self, wallets, threads, skipWallets, useProxies):
+    def fetchWalletData(self, wallets, threads, 
+                        skipWallets,useProxies,
+                        minWinRate=None,minPNL=None,
+                        minTokensTraded=None,maxTokensTraded=None):
         with ThreadPoolExecutor(max_workers=threads) as executor:
-            futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets, useProxies): wallet for wallet in wallets}
+            futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets, useProxies,minWinRate,minPNL,minTokensTraded,maxTokensTraded): wallet for wallet in wallets}
             for future in as_completed(futures):
                 result = future.result()
                 if result is not None:
@@ -274,27 +298,31 @@ class BulkWalletChecker:
 
         path = f"Dragon/data/Solana/BulkWallet/wallets_{filename}"
 
-        with open(path, 'w', newline='') as outfile:
-            writer = csv.writer(outfile)
+        try:
+            with open(path, 'w', newline='') as outfile:
+                writer = csv.writer(outfile)
 
-            header = ['Identifier'] + list(next(iter(result_dict.values())).keys())
+                header = ['Identifier'] + list(next(iter(result_dict.values())).keys())
 
-            if 'token_distribution' in header:
-                header.remove('token_distribution')
+                if 'token_distribution' in header:
+                    header.remove('token_distribution')
 
-            header.extend(token_dist_keys)
+                header.extend(token_dist_keys)
 
-            writer.writerow(header)
+                writer.writerow(header)
 
-            for key, value in result_dict.items():
-                row = [key]
-                for h in header[1:]:
-                    if h in value:
-                        row.append(value[h])
-                    elif 'token_distribution' in value and h in value['token_distribution']:
-                        row.append(value['token_distribution'][h])
-                    else:
-                        row.append(None)
-                writer.writerow(row)
+                for key, value in result_dict.items():
+                    row = [key]
+                    for h in header[1:]:
+                        if h in value:
+                            row.append(value[h])
+                        elif 'token_distribution' in value and h in value['token_distribution']:
+                            row.append(value['token_distribution'][h])
+                        else:
+                            row.append(None)
+                    writer.writerow(row)
+        except Exception as e:
+            print(f"[🐲] Error saving data: {e}")
+            return
 
         print(f"[🐲] Saved data for {len(result_dict.items())} wallets to {filename}")
