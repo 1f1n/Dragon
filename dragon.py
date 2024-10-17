@@ -20,7 +20,7 @@ def eth():
         try:
             while True:
                 optionsInput = int(input("[❓] Choice > "))
-                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8]:
+                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
                     print(f"[🐲] Selected {options[optionsInput - 1]}")
                     break 
                 else:
@@ -223,7 +223,7 @@ def tron():
         try:
             while True:
                 optionsInput = int(input("[❓] Choice > "))
-                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8]:
+                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
                     print(f"[🐲] Selected {options[optionsInput - 1]}")
                     break 
                 else:
@@ -409,7 +409,7 @@ def solana():
         try:
             while True:
                 optionsInput = int(input("[❓] Choice > "))
-                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8]:
+                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
                     print(f"[🐲] Selected {options[optionsInput - 1]}")
                     break 
                 else:
