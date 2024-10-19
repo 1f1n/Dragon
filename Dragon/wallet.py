@@ -163,7 +163,7 @@ class BulkWalletChecker:
             try:
                 proxy = self.getNextProxy() if useProxies else None
                 proxies = {'http': proxy, 'https': proxy} if proxy else None
-                response = self.cloudScraper.get(url, headers=headers, proxies=proxies).json()
+                response = self.cloudScraper.get(url, headers=headers, proxies=proxies)
                 if response.status_code == 200:
                     data = response.json()
                     if data['msg'] == "success":
