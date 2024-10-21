@@ -149,7 +149,7 @@ class CopyTradeWalletFinder:
 
         if found_target:
             print(f"[🐲] Found target maker: {targetMaker}")
-            print(f"[🐲] The first 10 makers before target maker:")
+            print(f"[🐲] The first 10 makers ahead of target maker:")
             for idx, maker in enumerate(makers, 1):
                 print(f"{idx}. {maker}")
         else:
