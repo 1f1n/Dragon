@@ -501,6 +501,7 @@ def solana():
                         else:
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input.")
                             continue
+                            
                         break
             
                     # Handle skip wallets input
@@ -536,7 +537,7 @@ def solana():
                         except ValueError:
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid amount.")
                     
-                    
+                    while True:
                         try:
                             maxPNL = float(input("[❓] Maximum PNL [7 Days] (USD) > "))
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Maximum PNL set to ${maxPNL}")
