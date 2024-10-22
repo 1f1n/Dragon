@@ -607,6 +607,7 @@ def solana():
                         "minAmount1000": minAmount1000
                     }
                     # Fetch wallet data with the newly added filters
+                    print("\n\n\n\n")
                     walletCheck.fetchWalletData(
                         wallets,
                         threads=threads,
@@ -619,9 +620,9 @@ def solana():
                 except IndexError:
                     print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] File choice out of range.")
                     print(f"\n{optionsChoice}\n")
-                # except ValueError as e:
-                #     print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. - {e}")
-                #     print(f"\n{optionsChoice}\n")
+                except ValueError as e:
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. - {e}")
+                    print(f"\n{optionsChoice}\n")
                 continue
 
             elif optionsInput == 3:

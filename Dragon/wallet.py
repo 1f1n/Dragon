@@ -4,8 +4,11 @@ import random
 import tls_client
 import cloudscraper
 from fake_useragent import UserAgent
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import concurrent.futures
+
+
 import time
+
 
 ua = UserAgent(os='linux', browsers=['firefox'])
 
@@ -304,15 +307,23 @@ class BulkWalletChecker:
 
         tokenDistro = self.getTokenDistro(wallet, useProxies)
         if filters["minAmount100"] and filters["minAmount100"] != 0 and tokenDistro.get("100%+") is not None and tokenDistro["100%+"] < filters["minAmount100"]:
+            self.skippedWallets += 1
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
             return None
         
         if filters["minAmount200"] and filters["minAmount200"] != 0 and tokenDistro.get("200%+") is not None and tokenDistro["200%+"] < filters["minAmount200"]:
+            self.skippedWallets += 1
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
             return None
         
         if filters["minAmount500"] and filters["minAmount500"] != 0 and tokenDistro.get("500%+") is not None and tokenDistro["500%+"] < filters["minAmount500"]:
+            self.skippedWallets += 1
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
             return None
         
         if filters["minAmount1000"] and filters["minAmount1000"] != 0 and tokenDistro.get("1000%+") is not None and tokenDistro["1000%+"] < filters["minAmount1000"]:
+            self.skippedWallets += 1
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
             return None
 
         try:
@@ -333,17 +344,19 @@ class BulkWalletChecker:
             "directLink": direct_link,
             "buy_7d": buy_7d
         }
-    
-    def fetchWalletData(self, wallets, threads, 
-                        skipWallets,useProxies,
-                        filters=None):
-        with ThreadPoolExecutor(max_workers=threads) as executor:
-            futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets, useProxies,filters): wallet for wallet in wallets}
-            for future in as_completed(futures):
-                result = future.result()
-                if result is not None:
-                    self.results.append(result)
 
+    def fetchWalletData(self, wallets, threads, skipWallets, useProxies, filters=None):
+        with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
+            futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets, useProxies, filters): wallet for wallet in wallets}
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    result = future.result()
+                    if result is not None:
+                        self.results.append(result)
+                except Exception as e:
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Error processing wallet: {e}")
+        
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Skipped {self.skippedWallets} wallets")
         result_dict = {}
         for result in self.results:
             wallet = result.get('wallet')
@@ -351,35 +364,35 @@ class BulkWalletChecker:
                 result_dict[wallet] = result
                 result.pop('wallet', None)
             else:
-                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Missing 'wallet' key in result: {result}")
-
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Missing 'wallet' key in result: {result}")
+    
         if self.results and 'token_distribution' in self.results[0]:
             token_dist_keys = self.results[0]['token_distribution'].keys()
         else:
-            token_dist_keys = []  
-        
+            token_dist_keys = []
+    
         if not result_dict:
             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] No data fetched, exiting...")
             return
-        
+    
         identifier = self.shorten(list(result_dict)[0])
         filename = f"{identifier}_{random.randint(1111, 9999)}.csv"
-
+    
         path = f"Dragon/data/Solana/BulkWallet/wallets_{filename}"
-
+    
         try:
             with open(path, 'w', newline='') as outfile:
                 writer = csv.writer(outfile)
-
+    
                 header = ['Identifier'] + list(next(iter(result_dict.values())).keys())
-
+    
                 if 'token_distribution' in header:
                     header.remove('token_distribution')
-
+    
                 header.extend(token_dist_keys)
-
+    
                 writer.writerow(header)
-
+    
                 for key, value in result_dict.items():
                     row = [key]
                     for h in header[1:]:
@@ -391,7 +404,7 @@ class BulkWalletChecker:
                             row.append(None)
                     writer.writerow(row)
         except Exception as e:
-            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error saving data: {e}")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Error saving data: {e}")
             return
-
-        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Saved data for {len(result_dict.items())} wallets to {filename}")
+    
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Saved data for {len(result_dict.items())} wallets to {filename}")
