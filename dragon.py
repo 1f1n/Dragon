@@ -555,9 +555,9 @@ def solana():
                     )
                     print(f"\n{optionsChoice}\n")
             
-                except IndexError:
-                    print("[🐲] File choice out of range.")
-                    print(f"\n{optionsChoice}\n")
+                # except IndexError:
+                #     print("[🐲] File choice out of range.")
+                #     print(f"\n{optionsChoice}\n")
                 except ValueError as e:
                     print(f"[🐲] Invalid input. - {e}")
                     print(f"\n{optionsChoice}\n")

@@ -312,7 +312,11 @@ class BulkWalletChecker:
             token_dist_keys = self.results[0]['token_distribution'].keys()
         else:
             token_dist_keys = []  
-
+        
+        if not result_dict:
+            print("[🐲] No data fetched, exiting...")
+            return
+        
         identifier = self.shorten(list(result_dict)[0])
         filename = f"{identifier}_{random.randint(1111, 9999)}.csv"
 
