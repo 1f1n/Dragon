@@ -519,7 +519,8 @@ def solana():
                             break
                         except ValueError:
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid percentage.")
-
+                    
+                    while True:
                         try:
                             maxWinRate = float(input("[❓] Maximum Win Rate [7 days] (%) > "))
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Maximum Win Rate set to {maxWinRate}%")
@@ -534,7 +535,8 @@ def solana():
                             break
                         except ValueError:
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid amount.")
-
+                    
+                    
                         try:
                             maxPNL = float(input("[❓] Maximum PNL [7 Days] (USD) > "))
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Maximum PNL set to ${maxPNL}")
@@ -590,7 +592,7 @@ def solana():
                         except ValueError:
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid number.")
                     
-                    
+
                     filters = {
                         "minWinRate": minWinRate,
                         "maxWinRate": maxWinRate,
@@ -604,7 +606,7 @@ def solana():
                         "minAmount1000": minAmount1000
                     }
                     # Fetch wallet data with the newly added filters
-                    walletData = walletCheck.fetchWalletData(
+                    walletCheck.fetchWalletData(
                         wallets,
                         threads=threads,
                         skipWallets=skipWallets,
