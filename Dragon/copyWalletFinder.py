@@ -1,3 +1,4 @@
+import datetime
 import random
 import tls_client
 import cloudscraper
@@ -73,7 +74,7 @@ class CopyTradeWalletFinder:
                     paginator = response.json()['data'].get('next')
                     return data, paginator
             except Exception:
-                print(f"[🐲] Error fetching data, trying backup...")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup...")
             finally:
                 try:
                     proxy = self.getNextProxy() if useProxies else None
@@ -84,11 +85,11 @@ class CopyTradeWalletFinder:
                         paginator = response.json()['data'].get('next')
                         return data, paginator
                 except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying...")
 
             time.sleep(1)
 
-        print(f"[🐲] Failed to fetch data after {retries} attempts for URL: {url}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Failed to fetch data after {retries} attempts for URL: {url}")
         return [], None
 
     def findWallets(self, contractAddress: str, targetMaker: str, threads: int, useProxies):
@@ -109,14 +110,14 @@ class CopyTradeWalletFinder:
                 if response.status_code != 200:
                     raise Exception("Error in initial request")
             except Exception:
-                print(f"[🐲] Error fetching data, trying backup..")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup..")
                 proxy = self.getNextProxy() if useProxies else None
                 proxies = {'http': proxy, 'https': proxy} if proxy else None
                 response = self.cloudScraper.get(url, headers=headers, proxies=proxies)
             paginator = response.json()['data'].get('next')
 
             if paginator:
-                print(f"[🐲] Page: {base64.b64decode(paginator).decode('utf-8')}", end="\r")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Page: {base64.b64decode(paginator).decode('utf-8')}", end="\r")
 
             if not paginator:
                 break
@@ -147,16 +148,16 @@ class CopyTradeWalletFinder:
         makers = temp_makers[:10]  
 
         if found_target:
-            print(f"[🐲] Found target maker: {targetMaker}")
-            print(f"[🐲] The first 10 makers after target maker:")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Found target maker: {targetMaker}")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  The first 10 makers after target maker:")
             for idx, maker in enumerate(makers, 1):
                 print(f"{idx}. {maker}")
         else:
-            print(f"[🐲] Target maker {targetMaker} not found.")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Target maker {targetMaker} not found.")
 
         filename = f"wallets_before_{self.shorten(targetMaker)}__{random.randint(1111, 9999)}.txt"
         with open(f"Dragon/data/Solana/CopyWallets/{filename}", "w") as file:
             for maker in makers_before_target:
                 file.write(f"{maker}\n")
 
-        print(f"[🐲] Saved the 10 makers before {targetMaker} to {filename}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Saved the 10 makers before {targetMaker} to {filename}")

@@ -1,3 +1,4 @@
+import datetime
 import random
 import tls_client
 import cloudscraper
@@ -30,7 +31,7 @@ class EthScanAllTx:
                     paginator = response.json()['data'].get('next')
                     return data, paginator
             except Exception:
-                print(f"[🐲] Error fetching data, trying backup...")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup...")
             finally:
                 try:
                     response = self.cloudScraper.get(url, headers=headers)
@@ -39,11 +40,11 @@ class EthScanAllTx:
                         paginator = response.json()['data'].get('next')
                         return data, paginator
                 except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying...")
             
             time.sleep(1)
 
-        print(f"[🐲] Failed to fetch data after {retries} attempts for URL: {url}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Failed to fetch data after {retries} attempts for URL: {url}")
         return [], None
 
     def getAllTxMakers(self, contractAddress: str, threads: int):
@@ -55,7 +56,7 @@ class EthScanAllTx:
             "User-Agent": ua.random
         }
         
-        print(f"[🐲] Starting... please wait.\n")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Starting... please wait.\n")
 
         while True:
             url = f"{base_url}&cursor={paginator}" if paginator else base_url
@@ -66,7 +67,7 @@ class EthScanAllTx:
                 if response.status_code != 200:
                     raise Exception("Error in initial request")
             except Exception:
-                print(f"[🐲] Error fetching data, trying backup..")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup..")
                 response = self.cloudScraper.get(url, headers=headers)
             paginator = response.json()['data'].get('next')
 
@@ -83,7 +84,7 @@ class EthScanAllTx:
                     for maker in history:
                         event = maker['event']
                         if event == "buy":
-                            print(f"[🐲] Wallet: {maker['maker']} | Hash: {maker['tx_hash']} | Type: {event}")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Wallet: {maker['maker']} | Hash: {maker['tx_hash']} | Type: {event}")
                             all_makers.add(maker['maker'])
         
         filename = f"wallets_{self.shorten(contractAddress)}__{random.randint(1111, 9999)}.txt"
@@ -91,4 +92,4 @@ class EthScanAllTx:
         with open(f"Dragon/data/Ethereum/ScanAllTx/{filename}", "w") as file:
             for maker in sorted(all_makers):  
                 file.write(f"{maker}\n")
-        print(f"[🐲] Found and wrote {len(all_makers)} wallets from {contractAddress} to {filename}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Found and wrote {len(all_makers)} wallets from {contractAddress} to {filename}")

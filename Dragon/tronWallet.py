@@ -1,4 +1,5 @@
 import csv
+import datetime
 import random
 import tls_client
 import cloudscraper
@@ -105,7 +106,7 @@ class TronBulkWalletChecker:
                             else:
                                 if skipWallets:
                                     self.skippedWallets += 1
-                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
                                 else:
                                     direct_link = f"https://gmgn.ai/tron/address/{wallet}"
@@ -117,7 +118,7 @@ class TronBulkWalletChecker:
                         except Exception as e:
                             print(f"{e} - {wallet}")
             except Exception as e:
-                print(f"[🐲] Error fetching data, trying backup...")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup...")
             finally:
                 try:
                     response = self.cloudScraper.get(url, headers=headers)
@@ -131,7 +132,7 @@ class TronBulkWalletChecker:
                                 else:
                                     if skipWallets:
                                         self.skippedWallets += 1
-                                        print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                         return None
                                     else:
                                         direct_link = f"https://gmgn.ai/tron/address/{wallet}"
@@ -143,11 +144,11 @@ class TronBulkWalletChecker:
                             except Exception as e:
                                 print(f"{e} - {wallet}")
                 except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying...")
             
             time.sleep(1)
 
-        print(f"[🐲] Failed to fetch data for wallet {wallet} after {retries} attempts.")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Failed to fetch data for wallet {wallet} after {retries} attempts.")
         return None
     
     def processWalletData(self, wallet, data, headers):
@@ -162,7 +163,7 @@ class TronBulkWalletChecker:
             winrate_30data = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/smartmoney/tron/walletNew/{wallet}?period=30d", headers=headers).json()['data']
             winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
         except Exception as e:
-            print(f"[🐲] Error fetching winrate 30d data, trying backup..")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching winrate 30d data, trying backup..")
             winrate_30data = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/smartmoney/tron/walletNew/{wallet}?period=30d", headers=headers).json()['data']
             winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
 
@@ -226,6 +227,6 @@ class TronBulkWalletChecker:
                         row.append(value['token_distribution'][h])
                 writer.writerow(row)
 
-        print(f"[🐲] Saved data for {len(result_dict.items())} wallets to {filename}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Saved data for {len(result_dict.items())} wallets to {filename}")
 
 

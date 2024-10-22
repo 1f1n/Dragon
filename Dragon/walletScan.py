@@ -1,3 +1,5 @@
+import datetime
+
 import tls_client
 from fake_useragent import UserAgent
 from threading import Lock
@@ -77,7 +79,7 @@ class WalletScan:
                     paginator = response.json()['data'].get('next')
                     return data, paginator
             except Exception:
-                print(f"[🐲] Error fetching data, trying backup...")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup...")
             finally:
                 try:
                     proxy = self.getNextProxy() if useProxies else None
@@ -88,11 +90,11 @@ class WalletScan:
                         paginator = response.json()['data'].get('next')
                         return data, paginator
                 except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying...")
 
             time.sleep(1)
 
-        print(f"[🐲] Failed to fetch data after {retries} attempts for URL: {url}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Failed to fetch data after {retries} attempts for URL: {url}")
         return [], None
 
     def decode_base58_address(self, address: str) -> bytes:
@@ -106,7 +108,7 @@ class WalletScan:
         return decoded
 
     def getAllWallets(self, contractAddress: str, start_time: int, end_time: int, threads: int, rpc: str):
-        print(f"[🐲] Scanning all wallets for {contractAddress} between {start_time} and {end_time}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Scanning all wallets for {contractAddress} between {start_time} and {end_time}")
 
         client = Client(
             rpc
@@ -212,7 +214,7 @@ class WalletScan:
             k, m = divmod(len(lst), n)
             return [lst[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n)]
         
-        print("[🐲] Got all signatures in the time frame. Processing...")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Got all signatures in the time frame. Processing...")
 
         signature_chunks = split_list(signatures, threads)
 
@@ -224,5 +226,5 @@ class WalletScan:
         with open(f"Dragon/data/Solana/ScanWallet/{filename}", "w") as file:
             for sender in sorted(senders):
                 file.write(f"{sender}\n")
-        print(f"[🐲] Found and wrote {len(senders)} wallets from {contractAddress} to {filename}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Found and wrote {len(senders)} wallets from {contractAddress} to {filename}")
 

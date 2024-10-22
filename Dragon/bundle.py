@@ -51,13 +51,13 @@ class BundleFinder:
                 info = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=headers).json()['data']['token']
                 break
             except Exception:
-                print(f"[🐲] Error fetching data on attempt, trying backup..")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data on attempt, trying backup..")
             finally:
                 try:
                     info = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=headers).json()['data']['token']
                     break
                 except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying...")
             
             time.sleep(1)  
 
@@ -99,7 +99,7 @@ class BundleFinder:
                     if response:
                         break
                 except Exception as e:
-                    print(f"[🐲] Error fetching transaction data for {txHash} on attempt {attempt + 1}.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching transaction data for {txHash} on attempt {attempt + 1}.")
                 time.sleep(1)
 
             if isinstance(response, list):

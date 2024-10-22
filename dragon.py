@@ -1,3 +1,5 @@
+import datetime
+
 from Dragon import (utils, BundleFinder, ScanAllTx, BulkWalletChecker, TopTraders, TimestampTransactions,
                     purgeFiles, CopyTradeWalletFinder, TopHolders, checkProxyFile, WalletScan)
 from Dragon import TronTopTraders, TronBulkWalletChecker, TronTimestampTransactions
@@ -22,16 +24,16 @@ def eth():
             while True:
                 optionsInput = int(input("[❓] Choice > "))
                 if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8]:
-                    print(f"[🐲] Selected {options[optionsInput - 1]}")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Selected {options[optionsInput - 1]}")
                     break 
                 else:
-                    print("[🐲] Invalid choice.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid choice.")
             if optionsInput == 1:
-                print(f"[🐲] This is a placeholder.")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  This is a placeholder.")
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 2:
                 if len(files) < 2:
-                    print("[🐲] No files available.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] No files available.")
                     print(f"\n{optionsChoice}\n")
                     continue
                 print(f"\n{filesChoice}\n")
@@ -40,46 +42,46 @@ def eth():
                     while True:
                         fileSelectionOption = int(input("[❓] File Choice > "))
                         if fileSelectionOption > len(files):
-                            print("[🐲] Invalid input.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
                         elif files[fileSelectionOption - 1] == "Select Own File":
-                            print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Selected {files[fileSelectionOption - 1]}")
                             while True:
                                 fileDirectory = input("[🐲] Enter filename/path > ")
                                 try:
                                     with open(fileDirectory, 'r') as f:
                                         wallets = f.read().splitlines()
                                     if wallets and wallets != []:
-                                        print(f"[🐲] Loaded {len(wallets)} wallets") 
+                                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Loaded {len(wallets)} wallets") 
                                         break
                                     else:
-                                        print(f"[🐲] Error occurred, file may be empty. Go to the ")
+                                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error occurred, file may be empty. Go to the ")
                                         continue
                                 except Exception as e:
-                                    print(f"[🐲] File directory not found.")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  File directory not found.")
                                     continue
                             break
                         else:
-                            print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Selected {files[fileSelectionOption - 1]}")
                             fileDirectory = f"Dragon/data/Ethereum/{files[fileSelectionOption - 1]}"
 
                             with open(fileDirectory, 'r') as f:
                                 wallets = f.read().splitlines()
                             if wallets and wallets != []:
-                                print(f"[🐲] Loaded {len(wallets)} wallets")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Loaded {len(wallets)} wallets")
                                 break 
                             else:
-                                print(f"[🐲] Error occurred, file may be empty.")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error occurred, file may be empty.")
                                 continue 
                     while True:
                         threads = input("[❓] Threads > ")
                         try:
                             threads = int(threads)
                             if threads > 100:
-                                print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                                 threads = 40
                         except ValueError:
                             threads = 40
-                            print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                             break
                         break
                     while True:
@@ -87,7 +89,7 @@ def eth():
                         skipWalletsInput = input("[❓] Skip wallets with no buys in 30d (Y/N)> ")
 
                         if skipWalletsInput.upper() not in ["Y", "N"]:
-                            print("[🐲] Invalid input.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
                             continue 
                         if skipWalletsInput.upper() == "N":
                             skipWallets = False
@@ -97,10 +99,10 @@ def eth():
                         print(f"\n{optionsChoice}\n")
                         break  
                 except IndexError as e:
-                    print("[🐲] File choice out of range.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] File choice out of range.")
                     print(f"\n{optionsChoice}\n")
                 except ValueError:
-                    print("[🐲] Invalid input.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
                     print(f"\n{optionsChoice}\n")
                 continue
             elif optionsInput == 3:
@@ -109,18 +111,18 @@ def eth():
                     try:
                         threads = int(threads)
                         if threads > 100:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                     break
                 with open('Dragon/data/Ethereum/TopTraders/tokens.txt', 'r') as fp:
                     contractAddresses = fp.read().splitlines()
                     if contractAddresses and contractAddresses != []:
-                        print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Loaded {len(contractAddresses)} contract addresses")
                     else:
-                        print(f"[🐲] Error occurred, file may be empty. Go to the file here: Draon/data/Ethereum/tokens.txt")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error occurred, file may be empty. Go to the file here: Draon/data/Ethereum/tokens.txt")
                         print(f"\n{optionsChoice}\n")
                         continue
                     data = topTraders.topTraderData(contractAddresses, threads)
@@ -131,7 +133,7 @@ def eth():
                     contractAddress = input("[❓] Contract Address > ")
 
                     if len(contractAddress) not in [40, 41, 42]:
-                        print(f"[🐲] Invalid length.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid length.")
                     else:
                         break
 
@@ -141,11 +143,11 @@ def eth():
                     try:
                         threads = int(threads)
                         if threads > 100:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40 
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                         break
                     break
 
@@ -156,7 +158,7 @@ def eth():
                     contractAddress = input("[❓] Contract Address > ")
 
                     if len(contractAddress) not in [40, 41, 42]:
-                        print(f"[🐲] Invalid length.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid length.")
                     else:
                         break
                 while True:
@@ -164,21 +166,21 @@ def eth():
                     try:
                         threads = int(threads)
                         if threads > 100:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40 
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                         break
                     break
-                print(f"[🐲] Get UNIX Timetstamps Here > https://www.unixtimestamp.com")
-                print(f"[🐲] This token was minted at {timestamp.getMintTimestamp(contractAddress)}")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Get UNIX Timetstamps Here > https://www.unixtimestamp.com")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  This token was minted at {timestamp.getMintTimestamp(contractAddress)}")
                 while True:
                     start = input("[❓] Start UNIX Timestamp > ")
                     try:
                         start = int(start)
                     except ValueError:
-                        print(f"[🐲] Invalid input.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input.")
                         break
                     break
                 while True:
@@ -186,29 +188,29 @@ def eth():
                     try:
                         start = int(start)
                     except ValueError:
-                        print(f"[🐲] Invalid input.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input.")
                         break
                     break
                 timestampTxns = timestamp.getTxByTimestamp(contractAddress, threads, start, end)
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 6:
                 purgeFiles(chain="Ethereum")
-                print(f"[🐲] Successfully purged files.")   
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Successfully purged files.")   
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 7:
-                print(f"[🐲] Thank you for using Dragon.")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Thank you for using Dragon.")
                 break
         except ValueError as e:
             clear()
             print(banner)
             print(f"\n{optionsChoice}\n")
-            print("[🐲] Invalid input.")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
         except ValueError as e:
             utils.clear()
             print(banner)
-            print(f"[🐲] Error occured. Please retry or use a VPN/Proxy. {e}")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error occured. Please retry or use a VPN/Proxy. {e}")
             print(f"\n{optionsChoice}\n")
-            print("[🐲] Invalid input.")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
     
 
 
@@ -225,16 +227,16 @@ def tron():
             while True:
                 optionsInput = int(input("[❓] Choice > "))
                 if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8]:
-                    print(f"[🐲] Selected {options[optionsInput - 1]}")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Selected {options[optionsInput - 1]}")
                     break 
                 else:
-                    print("[🐲] Invalid choice.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid choice.")
             if optionsInput == 1:
-                print(f"[🐲] This is a placeholder.")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  This is a placeholder.")
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 2:
                 if len(files) < 2:
-                    print("[🐲] No files available.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] No files available.")
                     print(f"\n{optionsChoice}\n")
                     continue 
 
@@ -244,36 +246,36 @@ def tron():
                     while True:
                         fileSelectionOption = int(input("[❓] File Choice > "))
                         if fileSelectionOption > len(files):
-                            print("[🐲] Invalid input.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
                         elif files[fileSelectionOption - 1] == "Select Own File":
-                            print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Selected {files[fileSelectionOption - 1]}")
                             while True:
                                 fileDirectory = input("[🐲] Enter filename/path > ")
                                 try:
                                     with open(fileDirectory, 'r') as f:
                                         wallets = f.read().splitlines()
                                     if wallets and wallets != []:
-                                        print(f"[🐲] Loaded {len(wallets)} wallets") 
+                                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Loaded {len(wallets)} wallets") 
                                         break
                                     else:
-                                        print(f"[🐲] Error occurred, file may be empty. Go to the ")
+                                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error occurred, file may be empty. Go to the ")
                                         continue
                                 except Exception as e:
-                                    print(f"[🐲] File directory not found.")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  File directory not found.")
                                     continue
                             break
                                     
                         else:
-                            print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Selected {files[fileSelectionOption - 1]}")
                             fileDirectory = f"Dragon/data/Tron/{files[fileSelectionOption - 1]}"
 
                             with open(fileDirectory, 'r') as f:
                                 wallets = f.read().splitlines()
                             if wallets and wallets != []:
-                                print(f"[🐲] Loaded {len(wallets)} wallets")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Loaded {len(wallets)} wallets")
                                 break 
                             else:
-                                print(f"[🐲] Error occurred, file may be empty.")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error occurred, file may be empty.")
                                 continue 
 
                     while True:
@@ -281,11 +283,11 @@ def tron():
                         try:
                             threads = int(threads)
                             if threads > 100:
-                                print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                                 threads = 40
                         except ValueError:
                             threads = 40
-                            print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                             break
                         break
 
@@ -294,7 +296,7 @@ def tron():
                         skipWalletsInput = input("[❓] Skip wallets with no buys in 30d (Y/N)> ")
 
                         if skipWalletsInput.upper() not in ["Y", "N"]:
-                            print("[🐲] Invalid input.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
                             continue 
                         if skipWalletsInput.upper() == "N":
                             skipWallets = False
@@ -305,10 +307,10 @@ def tron():
                         break  
 
                 except IndexError as e:
-                    print("[🐲] File choice out of range.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] File choice out of range.")
                     print(f"\n{optionsChoice}\n")
                 except ValueError:
-                    print("[🐲] Invalid input.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
                     print(f"\n{optionsChoice}\n")
                 continue 
             elif optionsInput == 3:
@@ -317,35 +319,35 @@ def tron():
                     try:
                         threads = int(threads)
                         if threads > 100:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                     break
                 with open('Dragon/data/Tron/TopTraders/tokens.txt', 'r') as fp:
                     contractAddresses = fp.read().splitlines()
                     if contractAddresses and contractAddresses != []:
-                        print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Loaded {len(contractAddresses)} contract addresses")
                     else:
-                        print(f"[🐲] Error occurred, file may be empty. Go to the file here: Draon/data/TopTraders/tokens.txt")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error occurred, file may be empty. Go to the file here: Draon/data/TopTraders/tokens.txt")
                         print(f"\n{optionsChoice}\n")
                         continue
                     data = topTraders.topTraderData(contractAddresses, threads)
 
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 3:
-                print(f"[🐲] This is a placeholder.")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  This is a placeholder.")
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 4:
-                print(f"[🐲] This is a placeholder.")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  This is a placeholder.")
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 5:
                 while True:
                     contractAddress = input("[❓] Contract Address > ")
 
                     if len(contractAddress) not in [33, 34]:
-                        print(f"[🐲] Invalid length.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid length.")
                     else:
                         break
                 while True:
@@ -353,21 +355,21 @@ def tron():
                     try:
                         threads = int(threads)
                         if threads > 100:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40 
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                         break
                     break
-                print(f"[🐲] Get UNIX Timetstamps Here > https://www.unixtimestamp.com")
-                print(f"[🐲] This token was minted at {timestamp.getMintTimestamp(contractAddress)}")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Get UNIX Timetstamps Here > https://www.unixtimestamp.com")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  This token was minted at {timestamp.getMintTimestamp(contractAddress)}")
                 while True:
                     start = input("[❓] Start UNIX Timestamp > ")
                     try:
                         start = int(start)
                     except ValueError:
-                        print(f"[🐲] Invalid input.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input.")
                         break
                     break
                 while True:
@@ -375,23 +377,23 @@ def tron():
                     try:
                         start = int(start)
                     except ValueError:
-                        print(f"[🐲] Invalid input.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input.")
                         break
                     break
                 timestampTxns = timestamp.getTxByTimestamp(contractAddress, threads, start, end)
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 6:
                 purgeFiles(chain="Tron")
-                print(f"[🐲] Successfully purged files.")   
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Successfully purged files.")   
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 7:
-                print(f"[🐲] Thank you for using Dragon.")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Thank you for using Dragon.")
                 break
         except ValueError as e:
             clear()
             print(banner)
             print(f"\n{optionsChoice}\n")
-            print("[🐲] Invalid input.")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
 
 
 def solana():
@@ -412,10 +414,10 @@ def solana():
             while True:
                 optionsInput = int(input("[❓] Choice > "))
                 if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8,9,10]:
-                    print(f"[🐲] Selected {options[optionsInput - 1]}")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Selected {options[optionsInput - 1]}")
                     break 
                 else:
-                    print("[🐲] Invalid choice.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid choice.")
         
         
             if optionsInput == 1:
@@ -423,7 +425,7 @@ def solana():
                     contractAddress = input("[❓] Contract Address > ")
                     
                     if len(contractAddress) not in [43, 44]:
-                        print(f"[🐲] Invalid length.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid length.")
                     else:
                         transactionHashes = bundle.teamTrades(contractAddress)
                         bundleData = bundle.checkBundle(transactionHashes[0], transactionHashes[1])
@@ -433,7 +435,7 @@ def solana():
                         break
             elif optionsInput == 2:
                 if len(files) < 2:
-                    print("[🐲] No files available.")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] No files available.")
                     continue
             
                 print(f"\n{filesChoice}\n")
@@ -442,33 +444,33 @@ def solana():
                     while True:
                         fileSelectionOption = int(input("[❓] File Choice > "))
                         if fileSelectionOption > len(files):
-                            print("[🐲] Invalid input.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
                         elif files[fileSelectionOption - 1] == "Select Own File":
-                            print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Selected {files[fileSelectionOption - 1]}")
                             while True:
                                 fileDirectory = input("[🐲] Enter filename/path > ")
                                 try:
                                     with open(fileDirectory, 'r') as f:
                                         wallets = f.read().splitlines()
                                     if wallets:
-                                        print(f"[🐲] Loaded {len(wallets)} wallets")
+                                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Loaded {len(wallets)} wallets")
                                         break
                                     else:
-                                        print(f"[🐲] Error: file may be empty. Please try again.")
+                                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error: file may be empty. Please try again.")
                                 except FileNotFoundError:
-                                    print(f"[🐲] File not found. Please check the path.")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  File not found. Please check the path.")
                             break
                         else:
-                            print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Selected {files[fileSelectionOption - 1]}")
                             fileDirectory = f"Dragon/data/Solana/{files[fileSelectionOption - 1]}"
             
                             with open(fileDirectory, 'r') as f:
                                 wallets = f.read().splitlines()
                             if wallets:
-                                print(f"[🐲] Loaded {len(wallets)} wallets")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Loaded {len(wallets)} wallets")
                                 break
                             else:
-                                print(f"[🐲] Error: file may be empty.")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error: file may be empty.")
                                 continue
             
                     # Handle threads input
@@ -476,10 +478,10 @@ def solana():
                         try:
                             threads = int(input("[❓] Threads > "))
                             if threads > 100:
-                                print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                                 threads = 40
                         except ValueError:
-                            print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                             threads = 40
                         break
             
@@ -490,14 +492,14 @@ def solana():
             
                         if proxies == "y" and checkProxies:
                             useProxies = True
-                            print(f"[🐲] Using proxies.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Using proxies.")
                         elif proxies == "y" and not checkProxies:
-                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                         elif proxies == "n":
                             useProxies = False
                         else:
-                            print(f"[🐲] Invalid input.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input.")
                             continue
                         break
             
@@ -508,39 +510,39 @@ def solana():
                             skipWallets = skipWalletsInput == "Y"
                             break
                         else:
-                            print("[🐲] Invalid input.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
             
                     while True:
                         try:
                             minWinRate = float(input("[❓] Minimum Win Rate (%) > "))
-                            print(f"[🐲] Minimum Win Rate set to {minWinRate}%")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Minimum Win Rate set to {minWinRate}%")
                             break
                         except ValueError:
-                            print("[🐲] Invalid input. Please enter a valid percentage.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid percentage.")
             
                     while True:
                         try:
                             minPNL = float(input("[❓] Minimum PNL (USD) > "))
-                            print(f"[🐲] Minimum PNL set to ${minPNL}")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Minimum PNL set to ${minPNL}")
                             break
                         except ValueError:
-                            print("[🐲] Invalid input. Please enter a valid amount.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid amount.")
             
                     while True:
                         try:
                             minTokensTraded = int(input("[❓] Minimum Tokens Traded > "))
-                            print(f"[🐲] Minimum Tokens Traded set to {minTokensTraded}")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Minimum Tokens Traded set to {minTokensTraded}")
                             break
                         except ValueError:
-                            print("[🐲] Invalid input. Please enter a valid number.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid number.")
             
                     while True:
                         try:
                             maxTokensTraded = int(input("[❓] Maximum Tokens Traded > "))
-                            print(f"[🐲] Maximum Tokens Traded set to {maxTokensTraded}")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Maximum Tokens Traded set to {maxTokensTraded}")
                             break
                         except ValueError:
-                            print("[🐲] Invalid input. Please enter a valid number.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid number.")
             
                     # Fetch wallet data with the newly added filters
                     walletData = walletCheck.fetchWalletData(
@@ -556,10 +558,10 @@ def solana():
                     print(f"\n{optionsChoice}\n")
             
                 # except IndexError:
-                #     print("[🐲] File choice out of range.")
+                #     print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] File choice out of range.")
                 #     print(f"\n{optionsChoice}\n")
                 except ValueError as e:
-                    print(f"[🐲] Invalid input. - {e}")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. - {e}")
                     print(f"\n{optionsChoice}\n")
                 continue
 
@@ -569,11 +571,11 @@ def solana():
                     try:
                         threads = int(threads)
                         if threads > 100:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                     break
                 
                 while True:
@@ -585,26 +587,26 @@ def solana():
                         checkProxies = checkProxyFile()
 
                         if not checkProxies:
-                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                             break
 
                         if proxies.lower() == "y":
                             useProxies = True
-                            print(f"[🐲] Using proxies.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Using proxies.")
                         else:
                             useProxies = False
                     except Exception:
-                        print(f"[🐲] Invalid input")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input")
                         break
                     break
 
                 with open('Dragon/data/Solana/TopTraders/tokens.txt', 'r') as fp:
                     contractAddresses = fp.read().splitlines()
                     if contractAddresses and contractAddresses != []:
-                        print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Loaded {len(contractAddresses)} contract addresses")
                     else:
-                        print(f"[🐲] Error occurred, file may be empty. Go to the file here: Draon/data/TopTraders/tokens.txt")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error occurred, file may be empty. Go to the file here: Draon/data/TopTraders/tokens.txt")
                         print(f"\n{optionsChoice}\n")
                         continue
                         
@@ -616,7 +618,7 @@ def solana():
                     contractAddress = input("[❓] Contract Address > ")
 
                     if len(contractAddress) not in [43, 44]:
-                        print(f"[🐲] Invalid length.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid length.")
                     else:
                         break
 
@@ -626,11 +628,11 @@ def solana():
                     try:
                         threads = int(threads)
                         if threads > 100:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40 
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                         break
                     break
 
@@ -643,17 +645,17 @@ def solana():
                         checkProxies = checkProxyFile()
 
                         if not checkProxies:
-                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                             break
 
                         if proxies.lower() == "y":
                             useProxies = True
-                            print(f"[🐲] Using proxies.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Using proxies.")
                         else:
                             useProxies = False
                     except Exception:
-                        print(f"[🐲] Invalid input")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input")
                         break
                     break
 
@@ -665,7 +667,7 @@ def solana():
                     contractAddress = input("[❓] Contract Address > ")
 
                     if len(contractAddress) not in [43, 44]:
-                        print(f"[🐲] Invalid length.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid length.")
                     else:
                         break
                 while True:
@@ -673,11 +675,11 @@ def solana():
                     try:
                         threads = int(threads)
                         if threads > 100:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40 
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                         break
                     break
                 while True:
@@ -689,27 +691,27 @@ def solana():
                         checkProxies = checkProxyFile()
 
                         if not checkProxies:
-                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                             break
 
                         if proxies.lower() == "y":
                             useProxies = True
-                            print(f"[🐲] Using proxies.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Using proxies.")
                         else:
                             useProxies = False
                     except Exception:
-                        print(f"[🐲] Invalid input")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input")
                         break
                     break
-                print(f"[🐲] Get UNIX Timetstamps Here > https://www.unixtimestamp.com")
-                print(f"[🐲] This token was minted at {timestamp.getMintTimestamp(contractAddress, useProxies)}")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Get UNIX Timetstamps Here > https://www.unixtimestamp.com")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  This token was minted at {timestamp.getMintTimestamp(contractAddress, useProxies)}")
                 while True:
                     start = input("[❓] Start UNIX Timestamp > ")
                     try:
                         start = int(start)
                     except ValueError:
-                        print(f"[🐲] Invalid input.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input.")
                         break
                     break
                 while True:
@@ -717,7 +719,7 @@ def solana():
                     try:
                         start = int(start)
                     except ValueError:
-                        print(f"[🐲] Invalid input.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input.")
                         break
                     break
                 timestampTxns = timestamp.getTxByTimestamp(contractAddress, threads, start, end, useProxies)
@@ -727,14 +729,14 @@ def solana():
                     contractAddress = input("[❓] Contract Address > ")
 
                     if len(contractAddress) not in [43, 44]:
-                        print(f"[🐲] Invalid length.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid length.")
                     else:
                         break
                 while True:
                     walletAddress = input("[❓] Wallet Address > ")
 
                     if len(walletAddress) not in [43, 44]:
-                        print(f"[🐲] Invalid length.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid length.")
                     else:
                         break
                 while True:
@@ -742,11 +744,11 @@ def solana():
                     try:
                         threads = int(threads)
                         if threads > 10000:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40 
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                         break
                     break
                 
@@ -759,17 +761,17 @@ def solana():
                         checkProxies = checkProxyFile()
 
                         if not checkProxies:
-                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                             break
 
                         if proxies.lower() == "y":
                             useProxies = True
-                            print(f"[🐲] Using proxies.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Using proxies.")
                         else:
                             useProxies = False
                     except Exception:
-                        print(f"[🐲] Invalid input")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input")
                         break
                     break
 
@@ -781,11 +783,11 @@ def solana():
                     try:
                         threads = int(threads)
                         if threads > 100:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                     break
                 while True:
                     proxies = input("[❓] Use Proxies? (Y/N) > ")
@@ -796,25 +798,25 @@ def solana():
                         checkProxies = checkProxyFile()
 
                         if not checkProxies:
-                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                             break
 
                         if proxies.lower() == "y":
                             useProxies = True
-                            print(f"[🐲] Using proxies.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Using proxies.")
                         else:
                             useProxies = False
                     except Exception:
-                        print(f"[🐲] Invalid input")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input")
                         break
                     break
                 with open('Dragon/data/Solana/TopHolders/tokens.txt', 'r') as fp:
                     contractAddresses = fp.read().splitlines()
                     if contractAddresses and contractAddresses != []:
-                        print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Loaded {len(contractAddresses)} contract addresses")
                     else:
-                        print(f"[🐲] Error occurred, file may be empty. Go to the file here: Draon/data/TopTraders/tokens.txt")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error occurred, file may be empty. Go to the file here: Draon/data/TopTraders/tokens.txt")
                         print(f"\n{optionsChoice}\n")
                         continue
                         
@@ -827,7 +829,7 @@ def solana():
                     walletAddress = input("[❓] Wallet Address > ")
 
                     if len(walletAddress) not in [43, 44]:
-                        print(f"[🐲] Invalid length.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid length.")
                     else:
                         break
 
@@ -851,11 +853,11 @@ def solana():
                     try:
                         threads = int(threads)
                         if threads > 10000:
-                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Do not use more than 100 threads. Automatically set threads to 40.")
                             threads = 40
                     except ValueError:
                         threads = 40
-                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. Defaulting to 40 threads.")
                         break
                     break
 
@@ -864,13 +866,13 @@ def solana():
 
                     try:
                         if type(rpcUrl) != str:
-                            print(f"[🐲] Invalid input")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input")
                             break
                         if "https://" not in rpcUrl:
-                            print(f"[🐲] Invalid input")
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input")
                             break
                     except Exception:
-                        print(f"[🐲] Invalid input")
+                        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input")
                         break
                     break
 
@@ -878,19 +880,19 @@ def solana():
                 break
             elif optionsInput == 9:
                 purgeFiles(chain="Solana")
-                print(f"[🐲] Successfully purged files.")   
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Successfully purged files.")   
                 print(f"\n{optionsChoice}\n")
 
             elif optionsInput == 10:
-                print(f"[🐲] Thank you for using Dragon.")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Thank you for using Dragon.")
                 break
 
         except ValueError as e:
             utils.clear()
             print(banner)
-            print(f"[🐲] Error occured. Please retry or use a VPN/Proxy. {e}")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error occured. Please retry or use a VPN/Proxy. {e}")
             print(f"\n{optionsChoice}\n")
-            print("[🐲] Invalid input.")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input.")
 
 banner = utils.banner()
 print(banner)
@@ -904,10 +906,10 @@ while True:
         while True:
             chainsInput = int(input("[❓] Choice > "))
             if chainsInput in [1, 2, 3]:
-                print(f"[🐲] Selected {chains[chainsInput - 1]}")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Selected {chains[chainsInput - 1]}")
                 break
             else:
-                print("[🐲] Invalid choice.")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid choice.")
         if chainsInput == 1:
             solana()
         elif chainsInput == 2:
@@ -915,7 +917,7 @@ while True:
         elif chainsInput == 3:
             eth()
         else:
-            print(f"[🐲] Invalid choice.")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid choice.")
         break
     except ValueError as e:
         utils.clear()

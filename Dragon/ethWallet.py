@@ -105,13 +105,13 @@ class EthBulkWalletChecker:
                                 return self.processWalletData(wallet, data, headers)
                             else:
                                 self.skippedWallets += 1
-                                print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                 return None
                         else:
                             return self.processWalletData(wallet, data, headers)
             
             except Exception as e:
-                print(f"[🐲] Error fetching data, trying backup...")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup...")
             
             try:
                 response = self.cloudScraper.get(url, headers=headers)
@@ -125,17 +125,17 @@ class EthBulkWalletChecker:
                                 return self.processWalletData(wallet, data, headers)
                             else:
                                 self.skippedWallets += 1
-                                print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                 return None
                         else:
                             return self.processWalletData(wallet, data, headers)
             
             except Exception:
-                print(f"[🐲] Backup scraper failed, retrying...")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying...")
             
             time.sleep(1)
         
-        print(f"[🐲] Failed to fetch data for wallet {wallet} after {retries} attempts.")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Failed to fetch data for wallet {wallet} after {retries} attempts.")
         return None
 
     
@@ -151,7 +151,7 @@ class EthBulkWalletChecker:
             winrate_30data = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/smartmoney/eth/walletNew/{wallet}?period=30d", headers=headers).json()['data']
             winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
         except Exception as e:
-            print(f"[🐲] Error fetching winrate 30d data, trying backup..")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching winrate 30d data, trying backup..")
             winrate_30data = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/smartmoney/eth/walletNew/{wallet}?period=30d", headers=headers).json()['data']
             winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
 
@@ -196,7 +196,7 @@ class EthBulkWalletChecker:
                 result_dict[wallet] = result
                 result.pop('wallet', None)  
             else:
-                print(f"[🐲] Missing 'wallet' key in result: {result}")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Missing 'wallet' key in result: {result}")
 
         if self.results and 'token_distribution' in self.results[0]:
             token_dist_keys = self.results[0]['token_distribution'].keys()
@@ -231,4 +231,4 @@ class EthBulkWalletChecker:
                         row.append(None)
                 writer.writerow(row)
 
-        print(f"[🐲] Saved data for {len(result_dict.items())} wallets to {filename}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Saved data for {len(result_dict.items())} wallets to {filename}")

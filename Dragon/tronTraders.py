@@ -1,3 +1,4 @@
+import datetime
 import time
 import json
 import tls_client
@@ -35,7 +36,7 @@ class TronTopTraders:
                 if data:
                     return data
             except Exception as e:
-                print(f"[🐲] Error fetching data on attempt, trying backup...")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data on attempt, trying backup...")
             finally:
                 try:
                     response = self.cloudScraper.get(url, headers=headers)
@@ -43,11 +44,11 @@ class TronTopTraders:
                     if data:
                         return data
                 except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying...")
                     
             time.sleep(1)
         
-        print(f"[🐲] Failed to fetch data after {retries} attempts.")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Failed to fetch data after {retries} attempts.")
         return []
 
     def topTraderData(self, contractAddresses, threads):
@@ -95,12 +96,12 @@ class TronTopTraders:
             with open(f'Dragon/data/Tron/TopTraders/repeatedTopTraders_{identifier}_{randint}.txt', 'w') as ra:
                 for address in repeatedAddresses:
                     ra.write(f"{address}\n")
-            print(f"[🐲] Saved {len(repeatedAddresses)} repeated addresses to repeatedTopTraders_{identifier}_{randint}.txt")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Saved {len(repeatedAddresses)} repeated addresses to repeatedTopTraders_{identifier}_{randint}.txt")
 
         with open(f'Dragon/data/Tron/TopTraders/topTraders_{identifier}.json', 'w') as tt:
             json.dump(self.allData, tt, indent=4)
 
-        print(f"[🐲] Saved {self.totalTraders} top traders for {len(contractAddresses)} tokens")
-        print(f"[🐲] Saved {len(self.allAddresses)} top trader addresses to topTraders_{identifier}_{randint}.json")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Saved {self.totalTraders} top traders for {len(contractAddresses)} tokens")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Saved {len(self.allAddresses)} top trader addresses to topTraders_{identifier}_{randint}.json")
 
         return

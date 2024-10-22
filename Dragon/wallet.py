@@ -1,4 +1,5 @@
 import csv
+import datetime
 import random
 import tls_client
 import cloudscraper
@@ -152,34 +153,34 @@ class BulkWalletChecker:
 
                                 if minWinRate and (data['winrate'] is None or data['winrate'] * 100 < minWinRate):
                                     self.skippedWallets += 1
-                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
                                 
                                 if minPNL and (data['pnl_7d'] is None or data['pnl_7d'] < minPNL):
                                     self.skippedWallets += 1
-                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
                                 
                                 if minTokensTraded and (data['buy_7d'] is None or data['buy_7d'] < minTokensTraded):
                                     self.skippedWallets += 1
-                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
                                 
                                 if maxTokensTraded and (data['buy_7d'] is None or data['buy_7d'] > maxTokensTraded):
                                     self.skippedWallets += 1
-                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
 
                                 return self.processWalletData(wallet, data, headers, useProxies)
                             else:
                                 self.skippedWallets += 1
-                                print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                 return None
                         else:
                             return self.processWalletData(wallet, data, headers, useProxies)
             
             except Exception as e:
-                print(f"[🐲] Error fetching data, trying backup...  {e}")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup...  {e}")
             
             try:
                 proxy = self.getNextProxy() if useProxies else None
@@ -194,38 +195,38 @@ class BulkWalletChecker:
                             if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
                                 if minWinRate and (data['winrate'] is None or data['winrate'] * 100 < minWinRate):
                                     self.skippedWallets += 1
-                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
 
                                 if minPNL and (data['pnl_7d'] is None or data['pnl_7d'] < minPNL):
                                     self.skippedWallets += 1
-                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
 
                                 if minTokensTraded and (data['buy_7d'] is None or data['buy_7d'] < minTokensTraded):
                                     self.skippedWallets += 1
-                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
 
                                 if maxTokensTraded and (data['buy_7d'] is None or data['buy_7d'] > maxTokensTraded):
                                     self.skippedWallets += 1
-                                    print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                     return None
                                 
                                 return self.processWalletData(wallet, data, headers)
                             else:
                                 self.skippedWallets += 1
-                                print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
+                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
                                 return None
                         else:
                             return self.processWalletData(wallet, data, headers)
             
             except Exception as e:
-                print(f"[🐲] Backup scraper failed, retrying... {e}")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying... {e}")
             
             time.sleep(1)
         
-        print(f"[🐲] Failed to fetch data for wallet {wallet} after {retries} attempts.")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Failed to fetch data for wallet {wallet} after {retries} attempts.")
         return None
 
     
@@ -245,7 +246,7 @@ class BulkWalletChecker:
             ).json()['data']
             winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
         except Exception as e:
-            print(f"[🐲] Error fetching winrate 30d data, trying backup..")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching winrate 30d data, trying backup..")
             winrate_30data = self.cloudScraper.get(
                 f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=30d", 
                 headers=headers
@@ -306,7 +307,7 @@ class BulkWalletChecker:
                 result_dict[wallet] = result
                 result.pop('wallet', None)  
             else:
-                print(f"[🐲] Missing 'wallet' key in result: {result}")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Missing 'wallet' key in result: {result}")
 
         if self.results and 'token_distribution' in self.results[0]:
             token_dist_keys = self.results[0]['token_distribution'].keys()
@@ -314,7 +315,7 @@ class BulkWalletChecker:
             token_dist_keys = []  
         
         if not result_dict:
-            print("[🐲] No data fetched, exiting...")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] No data fetched, exiting...")
             return
         
         identifier = self.shorten(list(result_dict)[0])
@@ -346,7 +347,7 @@ class BulkWalletChecker:
                             row.append(None)
                     writer.writerow(row)
         except Exception as e:
-            print(f"[🐲] Error saving data: {e}")
+            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error saving data: {e}")
             return
 
-        print(f"[🐲] Saved data for {len(result_dict.items())} wallets to {filename}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Saved data for {len(result_dict.items())} wallets to {filename}")

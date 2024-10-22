@@ -1,3 +1,4 @@
+import datetime
 import random
 import tls_client
 import cloudscraper
@@ -63,7 +64,7 @@ class TimestampTransactions:
                 response = self.sendRequest.get(url, headers=headers).json()
                 return response
             except Exception:
-                print(f"[🐲] Error fetching data, trying backup...")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup...")
             finally:
                 try:
                     proxy = self.getNextProxy() if useProxies else None
@@ -71,11 +72,11 @@ class TimestampTransactions:
                     response = self.cloudScraper.get(url, headers=headers, proxies=proxies).json()
                     return response
                 except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying...")
             
             time.sleep(1)
         
-        print(f"[🐲] Failed to fetch data after {retries} attempts.")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Failed to fetch data after {retries} attempts.")
         return {}
 
     def getMintTimestamp(self, contractAddress, useProxies):
@@ -92,7 +93,7 @@ class TimestampTransactions:
                 response = self.sendRequest.get(url, headers=headers).json()['data']['token']['creation_timestamp']
                 return response
             except Exception:
-                print(f"[🐲] Error fetching data, trying backup...")
+                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup...")
             finally:
                 try:
                     proxy = self.getNextProxy() if useProxies else None
@@ -100,11 +101,11 @@ class TimestampTransactions:
                     response = self.cloudScraper.get(url, headers=headers).json()['data']['token']['creation_timestamp']
                     return response
                 except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying...")
             
             time.sleep(1)
         
-        print(f"[🐲] Failed to fetch data after {retries} attempts.")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Failed to fetch data after {retries} attempts.")
         return None
 
     def getTxByTimestamp(self, contractAddress, threads, start, end, useProxies):
@@ -117,7 +118,7 @@ class TimestampTransactions:
             "User-Agent": ua.random
         }
         
-        print(f"[🐲] Starting... please wait.")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Starting... please wait.")
 
         start = int(start)
         end = int(end)
@@ -154,4 +155,4 @@ class TimestampTransactions:
             for wallet in wallets:
                 f.write(f"{wallet}\n")
         
-        print(f"[🐲] {len(wallets)} trades successfully saved to {filename}")
+        print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  {len(wallets)} trades successfully saved to {filename}")
