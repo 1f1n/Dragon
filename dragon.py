@@ -514,23 +514,37 @@ def solana():
             
                     while True:
                         try:
-                            minWinRate = float(input("[❓] Minimum Win Rate (%) > "))
+                            minWinRate = float(input("[❓] Minimum Win Rate [7 days] (%) > "))
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Minimum Win Rate set to {minWinRate}%")
+                            break
+                        except ValueError:
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid percentage.")
+
+                        try:
+                            maxWinRate = float(input("[❓] Maximum Win Rate [7 days] (%) > "))
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Maximum Win Rate set to {maxWinRate}%")
                             break
                         except ValueError:
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid percentage.")
             
                     while True:
                         try:
-                            minPNL = float(input("[❓] Minimum PNL (USD) > "))
+                            minPNL = float(input("[❓] Minimum PNL [7 Days] (USD) > "))
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Minimum PNL set to ${minPNL}")
+                            break
+                        except ValueError:
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid amount.")
+
+                        try:
+                            maxPNL = float(input("[❓] Maximum PNL [7 Days] (USD) > "))
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Maximum PNL set to ${maxPNL}")
                             break
                         except ValueError:
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid amount.")
             
                     while True:
                         try:
-                            minTokensTraded = int(input("[❓] Minimum Tokens Traded > "))
+                            minTokensTraded = int(input("[❓] Minimum Tokens Traded [7 Days] > "))
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Minimum Tokens Traded set to {minTokensTraded}")
                             break
                         except ValueError:
@@ -538,31 +552,73 @@ def solana():
             
                     while True:
                         try:
-                            maxTokensTraded = int(input("[❓] Maximum Tokens Traded > "))
+                            maxTokensTraded = int(input("[❓] Maximum Tokens Traded [7 Days] > "))
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Maximum Tokens Traded set to {maxTokensTraded}")
                             break
                         except ValueError:
                             print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid number.")
-            
+
+                    while True:
+                        try:
+                            minAmount100 = int(input("[❓] Minimum amount of Coins the Wallet made 100%+ on [7 Days] > "))
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Minimum amount of Coins the Wallet made 100%+ set to {minAmount100}")
+                            break
+                        except ValueError:
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid number.")
+
+                    while True:
+                        try:
+                            minAmount200 = int(input("[❓] Minimum amount of Coins the Wallet made 200%+ on [7 Days] > "))
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Minimum amount of Coins the Wallet made 200%+ set to {minAmount200}")
+                            break
+                        except ValueError:
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid number.")
+
+                    while True:
+                        try:
+                            minAmount500 = int(input("[❓] Minimum amount of Coins the Wallet made 500%+ on [7 Days] > "))
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Minimum amount of Coins the Wallet made 500%+ set to {minAmount500}")
+                            break
+                        except ValueError:
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid number.")
+
+                    while True:
+                        try:
+                            minAmount1000 = int(input("[❓] Minimum amount of Coins the Wallet made 1000%+ on [7 Days] > "))
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Minimum amount of Coins the Wallet made 1000%+ set to {minAmount1000}")
+                            break
+                        except ValueError:
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Invalid input. Please enter a valid number.")
+                    
+                    
+                    filters = {
+                        "minWinRate": minWinRate,
+                        "maxWinRate": maxWinRate,
+                        "minPNL": minPNL,
+                        "maxPNL": maxPNL,
+                        "minTokensTraded": minTokensTraded,
+                        "maxTokensTraded": maxTokensTraded,
+                        "minAmount100": minAmount100,
+                        "minAmount200": minAmount200,
+                        "minAmount500": minAmount500,
+                        "minAmount1000": minAmount1000
+                    }
                     # Fetch wallet data with the newly added filters
                     walletData = walletCheck.fetchWalletData(
                         wallets,
                         threads=threads,
                         skipWallets=skipWallets,
                         useProxies=useProxies,
-                        minWinRate=minWinRate,
-                        minPNL=minPNL,
-                        minTokensTraded=minTokensTraded,
-                        maxTokensTraded=maxTokensTraded
+                        filters=filters
                     )
                     print(f"\n{optionsChoice}\n")
             
-                # except IndexError:
-                #     print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] File choice out of range.")
-                #     print(f"\n{optionsChoice}\n")
-                except ValueError as e:
-                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. - {e}")
+                except IndexError:
+                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] File choice out of range.")
                     print(f"\n{optionsChoice}\n")
+                # except ValueError as e:
+                #     print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Invalid input. - {e}")
+                #     print(f"\n{optionsChoice}\n")
                 continue
 
             elif optionsInput == 3:

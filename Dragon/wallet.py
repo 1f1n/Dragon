@@ -60,7 +60,7 @@ class BulkWalletChecker:
 
     
     def getTokenDistro(self, wallet: str, useProxies):
-        url = f"https://gmgn.ai/defi/quotation/v1/rank/sol/wallets/{wallet}/unique_token_7d?interval=30d"
+        url = f"https://gmgn.ai/defi/quotation/v1/rank/sol/wallets/{wallet}/unique_token_7d?interval=7d"
         headers = {
             "User-Agent": ua.random
         }
@@ -100,11 +100,26 @@ class BulkWalletChecker:
         FiveToSix = 0
         SixPlus = 0
         NegativeToFifty = 0 
+        
+        # filter checks
+        plus100 = 0
+        plus200 = 0
+        plus500 = 0
+        plus1000 = 0
 
         for profit in tokenDistro:
             total_profit_pnl = profit.get('total_profit_pnl')
             if total_profit_pnl is not None:
                 profitMultiplier = total_profit_pnl * 100
+
+                if profitMultiplier >= 1000:
+                    plus1000 += 1
+                elif profitMultiplier >= 500:
+                    plus500 += 1
+                elif profitMultiplier >= 200:
+                    plus200 += 1
+                elif profitMultiplier >= 100:
+                    plus100 += 1
 
                 if profitMultiplier <= -50:
                     FiftyPercentOrMore += 1
@@ -128,10 +143,16 @@ class BulkWalletChecker:
             "50% - 199%": FiftyTo100,
             "200% - 499%": TwoToFour,
             "500% - 600%": FiveToSix,
-            "600% +": SixPlus
+            "600% +": SixPlus,
+            
+            "100%+": plus100,
+            "200%+": plus200,
+            "500%+": plus500,
+            "1000%+": plus1000
         }
-
-    def getWalletData(self, wallet: str, skipWallets: bool, useProxies: bool = None, minWinRate=None, minPNL=None, minTokensTraded=None, maxTokensTraded=None):
+    
+    
+    def getWalletData(self, wallet: str, skipWallets: bool, useProxies: bool = None, filters: dict = None):
         url = f"https://gmgn.ai/defi/quotation/v1/smartmoney/sol/walletNew/{wallet}?period=7d"
         headers = {
             "User-Agent": ua.random
@@ -147,80 +168,93 @@ class BulkWalletChecker:
                     data = response.json()
                     if data['msg'] == "success":
                         data = data['data']
-                        
-                        if skipWallets:
-                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
 
-                                if minWinRate and (data['winrate'] is None or data['winrate'] * 100 < minWinRate):
-                                    self.skippedWallets += 1
-                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
-                                    return None
-                                
-                                if minPNL and (data['pnl_7d'] is None or data['pnl_7d'] < minPNL):
-                                    self.skippedWallets += 1
-                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
-                                    return None
-                                
-                                if minTokensTraded and (data['buy_7d'] is None or data['buy_7d'] < minTokensTraded):
-                                    self.skippedWallets += 1
-                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
-                                    return None
-                                
-                                if maxTokensTraded and (data['buy_7d'] is None or data['buy_7d'] > maxTokensTraded):
-                                    self.skippedWallets += 1
-                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
-                                    return None
+                        if skipWallets and 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] == 0:#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
 
-                                return self.processWalletData(wallet, data, headers, useProxies)
-                            else:
-                                self.skippedWallets += 1
-                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
-                                return None
-                        else:
-                            return self.processWalletData(wallet, data, headers, useProxies)
+                        if filters["minWinRate"] and (data['winrate'] is None or data['winrate'] * 100 < filters["minWinRate"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["maxWinRate"] and filters["maxWinRate"] != 0 and (data['winrate'] is None or data['winrate']*100 > filters["maxWinRate"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["minPNL"] and (data['pnl_7d'] is None or data['pnl_7d'] < filters["minPNL"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["maxPNL"] and filters["maxPNL"] != 0 and (data['pnl_7d'] is None or data['pnl_7d'] > filters["maxPNL"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["minTokensTraded"] and (data['buy_7d'] is None or data['buy_7d'] < filters["minTokensTraded"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["maxTokensTraded"] and filters["maxTokensTraded"] != 0 and (data['buy_7d'] is None or data['buy_7d'] > filters["maxTokensTraded"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        return self.processWalletData(wallet, data, headers, useProxies, filters)
             
             except Exception as e:
                 print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Error fetching data, trying backup...  {e}")
             
             try:
                 proxy = self.getNextProxy() if useProxies else None
-                proxies = {'http': proxy, 'https': proxy} if proxy else None
-                response = self.cloudScraper.get(url, headers=headers, proxies=proxies).json()
+                response = self.cloudScraper.get(url, headers=headers, proxies=proxy).json()
                 if response.status_code == 200:
                     data = response.json()
                     if data['msg'] == "success":
                         data = data['data']
+
+                        if skipWallets and 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] == 0:#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["minWinRate"] and (data['winrate'] is None or data['winrate'] * 100 < filters["minWinRate"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["maxWinRate"] and filters["maxWinRate"] != 0 and (data['winrate'] is None or data['winrate']*100 > filters["maxWinRate"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["minPNL"] and (data['pnl_7d'] is None or data['pnl_7d'] < filters["minPNL"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["maxPNL"] and filters["maxPNL"] != 0 and (data['pnl_7d'] is None or data['pnl_7d'] > filters["maxPNL"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["minTokensTraded"] and (data['buy_7d'] is None or data['buy_7d'] < filters["minTokensTraded"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
+
+                        if filters["maxTokensTraded"] and filters["maxTokensTraded"] != 0 and (data['buy_7d'] is None or data['buy_7d'] > filters["maxTokensTraded"]):
+                            self.skippedWallets += 1
+                            print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
+                            return None
                         
-                        if skipWallets:
-                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
-                                if minWinRate and (data['winrate'] is None or data['winrate'] * 100 < minWinRate):
-                                    self.skippedWallets += 1
-                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
-                                    return None
-
-                                if minPNL and (data['pnl_7d'] is None or data['pnl_7d'] < minPNL):
-                                    self.skippedWallets += 1
-                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
-                                    return None
-
-                                if minTokensTraded and (data['buy_7d'] is None or data['buy_7d'] < minTokensTraded):
-                                    self.skippedWallets += 1
-                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
-                                    return None
-
-                                if maxTokensTraded and (data['buy_7d'] is None or data['buy_7d'] > maxTokensTraded):
-                                    self.skippedWallets += 1
-                                    print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
-                                    return None
-                                
-                                return self.processWalletData(wallet, data, headers)
-                            else:
-                                self.skippedWallets += 1
-                                print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Skipped {self.skippedWallets} wallets", end="\r")
-                                return None
-                        else:
-                            return self.processWalletData(wallet, data, headers)
-            
+                        return self.processWalletData(wallet, data, headers, useProxies, filters)
+                    
+                
             except Exception as e:
                 print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Backup scraper failed, retrying... {e}")
             
@@ -230,7 +264,7 @@ class BulkWalletChecker:
         return None
 
     
-    def processWalletData(self, wallet, data, headers, useProxies):
+    def processWalletData(self, wallet, data, headers, useProxies, filters: dict = None):
         direct_link = f"https://gmgn.ai/sol/address/{wallet}"
         total_profit_percent = f"{data['total_profit_pnl'] * 100:.2f}%" if data['total_profit_pnl'] is not None else "error"
         realized_profit_7d_usd = f"${data['realized_profit_7d']:,.2f}" if data['realized_profit_7d'] is not None else "error"
@@ -269,6 +303,17 @@ class BulkWalletChecker:
             }
 
         tokenDistro = self.getTokenDistro(wallet, useProxies)
+        if filters["minAmount100"] and filters["minAmount100"] != 0 and tokenDistro.get("100%+") is not None and tokenDistro["100%+"] < filters["minAmount100"]:
+            return None
+        
+        if filters["minAmount200"] and filters["minAmount200"] != 0 and tokenDistro.get("200%+") is not None and tokenDistro["200%+"] < filters["minAmount200"]:
+            return None
+        
+        if filters["minAmount500"] and filters["minAmount500"] != 0 and tokenDistro.get("500%+") is not None and tokenDistro["500%+"] < filters["minAmount500"]:
+            return None
+        
+        if filters["minAmount1000"] and filters["minAmount1000"] != 0 and tokenDistro.get("1000%+") is not None and tokenDistro["1000%+"] < filters["minAmount1000"]:
+            return None
 
         try:
             tags = data['tags']
@@ -291,10 +336,9 @@ class BulkWalletChecker:
     
     def fetchWalletData(self, wallets, threads, 
                         skipWallets,useProxies,
-                        minWinRate=None,minPNL=None,
-                        minTokensTraded=None,maxTokensTraded=None):
+                        filters=None):
         with ThreadPoolExecutor(max_workers=threads) as executor:
-            futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets, useProxies,minWinRate,minPNL,minTokensTraded,maxTokensTraded): wallet for wallet in wallets}
+            futures = {executor.submit(self.getWalletData, wallet.strip(), skipWallets, useProxies,filters): wallet for wallet in wallets}
             for future in as_completed(futures):
                 result = future.result()
                 if result is not None:
@@ -305,7 +349,7 @@ class BulkWalletChecker:
             wallet = result.get('wallet')
             if wallet:
                 result_dict[wallet] = result
-                result.pop('wallet', None)  
+                result.pop('wallet', None)
             else:
                 print(f"[🐲] [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]  Missing 'wallet' key in result: {result}")
 
