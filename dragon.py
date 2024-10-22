@@ -1,7 +1,8 @@
-from Dragon import utils, BundleFinder, ScanAllTx, BulkWalletChecker, TopTraders, TimestampTransactions, purgeFiles, CopyTradeWalletFinder, TopHolders, checkProxyFile
+from Dragon import (utils, BundleFinder, ScanAllTx, BulkWalletChecker, TopTraders, TimestampTransactions,
+                    purgeFiles, CopyTradeWalletFinder, TopHolders, checkProxyFile, WalletScan)
 from Dragon import TronTopTraders, TronBulkWalletChecker, TronTimestampTransactions
 from Dragon import EthBulkWalletChecker, EthTopTraders, EthTimestampTransactions, EthScanAllTx
-
+import time
 purgeFiles = utils.purgeFiles
 clear = utils.clear
 
@@ -402,6 +403,7 @@ def solana():
     topTraders = TopTraders()
     copytrade = CopyTradeWalletFinder()
     topHolders = TopHolders()
+    walletScan = WalletScan()
 
     options, optionsChoice = utils.choices(chain="Solana")
     print(f"{optionsChoice}\n")
@@ -409,7 +411,7 @@ def solana():
         try:
             while True:
                 optionsInput = int(input("[❓] Choice > "))
-                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8]:
+                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8,9,10]:
                     print(f"[🐲] Selected {options[optionsInput - 1]}")
                     break 
                 else:
@@ -819,13 +821,67 @@ def solana():
                     data = topHolders.topHolderData(contractAddresses, threads, useProxies)
 
                 print(f"\n{optionsChoice}\n")
-
+                
             elif optionsInput == 8:
+                while True:
+                    walletAddress = input("[❓] Wallet Address > ")
+
+                    if len(walletAddress) not in [43, 44]:
+                        print(f"[🐲] Invalid length.")
+                    else:
+                        break
+
+                while True:
+                    startTime = input("[❓] Start Time (0 for now) > ")
+
+                    if startTime == "0":
+                        startTime = int(time.time())
+                    else:
+                        startTime = int(startTime)
+                        
+                    break
+
+                while True:
+                    endTime = input("[❓] End Time > ")
+                    endTime = int(endTime)
+                    break
+                        
+                while True:
+                    threads = input("[❓] Threads > ")
+                    try:
+                        threads = int(threads)
+                        if threads > 10000:
+                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            threads = 40
+                    except ValueError:
+                        threads = 40
+                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                        break
+                    break
+
+                while True:
+                    rpcUrl = input("[❓] RPC URL > ")
+
+                    try:
+                        if type(rpcUrl) != str:
+                            print(f"[🐲] Invalid input")
+                            break
+                        if "https://" not in rpcUrl:
+                            print(f"[🐲] Invalid input")
+                            break
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
+
+                walletScan.getAllWallets(contractAddress=walletAddress, start_time=startTime, end_time=endTime, threads=threads, rpc=rpcUrl)
+                break
+            elif optionsInput == 9:
                 purgeFiles(chain="Solana")
                 print(f"[🐲] Successfully purged files.")   
                 print(f"\n{optionsChoice}\n")
 
-            elif optionsInput == 9:
+            elif optionsInput == 10:
                 print(f"[🐲] Thank you for using Dragon.")
                 break
 
