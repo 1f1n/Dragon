@@ -16,6 +16,34 @@ class BundleFinder:
         self.cloudScraper = cloudscraper.create_scraper()
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else "?"
     
+    def randomise(self):
+        self.identifier = random.choice([browser for browser in tls_client.settings.ClientIdentifiers.__args__ if browser.startswith(('chrome', 'safari', 'firefox', 'opera'))])
+        self.sendRequest = tls_client.Session(random_tls_extension_order=True, client_identifier=self.identifier)
+
+        parts = self.identifier.split('_')
+        identifier, version, *rest = parts
+        other = rest[0] if rest else None
+        
+        os = 'windows'
+        if identifier == 'opera':
+            identifier = 'chrome'
+        elif version == 'ios':
+            os = 'ios'
+        else:
+            os = 'windows'
+
+        self.user_agent = UserAgent(browsers=[identifier], os=[os]).random
+
+        self.headers = {
+            'Host': 'gmgn.ai',
+            'accept': 'application/json, text/plain, */*',
+            'accept-language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+            'dnt': '1',
+            'priority': 'u=1, i',
+            'referer': 'https://gmgn.ai/?chain=sol',
+            'user-agent': self.user_agent
+        }
+    
     def prettyPrint(self, bundleData: dict, contractAddress: str):
         isBundled = bundleData['bundleDetected']
         developerInformation = bundleData['developerInfo']
@@ -41,20 +69,19 @@ class BundleFinder:
 
     def teamTrades(self, contractAddress):
         url = f"https://gmgn.ai/defi/quotation/v1/trades/sol/{contractAddress}?limit=100&maker=&tag%5B%5D=creator&tag%5B%5D=dev_team"
-        headers = {
-            "User-Agent": ua.random
-        }
         retries = 3
         
         for attempt in range(retries):
+            self.randomise()
             try:
-                info = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=headers).json()['data']['token']
+                info = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=self.headers, allow_redirects=True).json()['data']['token']
                 break
             except Exception:
                 print(f"[🐲] Error fetching data on attempt, trying backup..")
             finally:
+                self.randomise()
                 try:
-                    info = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=headers).json()['data']['token']
+                    info = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=self.headers, allow_redirects=True).json()['data']['token']
                     break
                 except Exception:
                     print(f"[🐲] Backup scraper failed, retrying...")
@@ -67,7 +94,7 @@ class BundleFinder:
             totalSupply = info['total_supply']
         
         try:
-            response = self.sendRequest.get(url, headers=headers).json()['data']['history']
+            response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True).json()['data']['history']
         except Exception as e:
             print(f"Error fetching trades: {e}")
             return self.txHashes
