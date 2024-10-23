@@ -143,6 +143,10 @@ Updates
 - Fixed Copytrade Wallet Finder showing previous 10 instead of after 10.<br>
 - Added attempts to filter out volume & MEV bots from the 10 traders.
 </p>
+<p>
+23/10/2024<br>
+- Added TLS session randomisation to support GMGN's recent API endpoint changes.
+</p>
 
 <h1 align="left">
 Donations
