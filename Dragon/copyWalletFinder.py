@@ -17,6 +17,34 @@ class CopyTradeWalletFinder:
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
         self.lock = Lock()
         self.proxyPosition = 0
+    
+    def randomise(self):
+        self.identifier = random.choice([browser for browser in tls_client.settings.ClientIdentifiers.__args__ if browser.startswith(('chrome', 'safari', 'firefox', 'opera'))])
+        self.sendRequest = tls_client.Session(random_tls_extension_order=True, client_identifier=self.identifier)
+
+        parts = self.identifier.split('_')
+        identifier, version, *rest = parts
+        other = rest[0] if rest else None
+        
+        os = 'windows'
+        if identifier == 'opera':
+            identifier = 'chrome'
+        elif version == 'ios':
+            os = 'ios'
+        else:
+            os = 'windows'
+
+        self.user_agent = UserAgent(browsers=[identifier], os=[os]).random
+
+        self.headers = {
+            'Host': 'gmgn.ai',
+            'accept': 'application/json, text/plain, */*',
+            'accept-language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+            'dnt': '1',
+            'priority': 'u=1, i',
+            'referer': 'https://gmgn.ai/?chain=sol',
+            'user-agent': self.user_agent
+        }
 
     def loadProxies(self):
         with open("Dragon/data/Proxies/proxies.txt", 'r') as file:
@@ -64,10 +92,11 @@ class CopyTradeWalletFinder:
         retries = 3
 
         for attempt in range(retries):
+            self.randomise()
             try:
                 proxy = self.getNextProxy() if useProxies else None
                 self.configureProxy(proxy)
-                response = self.sendRequest.get(url, headers=headers)
+                response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True)
                 if response.status_code == 200:
                     data = response.json()['data']['history']
                     paginator = response.json()['data'].get('next')
@@ -75,10 +104,11 @@ class CopyTradeWalletFinder:
             except Exception:
                 print(f"[🐲] Error fetching data, trying backup...")
             finally:
+                self.randomise()
                 try:
                     proxy = self.getNextProxy() if useProxies else None
                     proxies = {'http': proxy, 'https': proxy} if proxy else None
-                    response = self.cloudScraper.get(url, headers=headers, proxies=proxies)
+                    response = self.cloudScraper.get(url, headers=self.headers, allow_redirects=True, proxies=proxies)
                     if response.status_code == 200:
                         data = response.json()['data']['history']
                         paginator = response.json()['data'].get('next')
@@ -95,24 +125,25 @@ class CopyTradeWalletFinder:
         base_url = f"https://gmgn.ai/defi/quotation/v1/trades/sol/{contractAddress}?limit=100&event=buy"
         paginator = None
         urls = []
-        headers = {"User-Agent": ua.random}
 
         print(f"\n[🐲] Starting... please wait.\n")
 
         while True:
+            self.randomise()
             url = f"{base_url}&cursor={paginator}" if paginator else base_url
             urls.append(url)
             try:
                 proxy = self.getNextProxy() if useProxies else None
                 self.configureProxy(proxy)
-                response = self.sendRequest.get(url, headers=headers)
+                response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True)
                 if response.status_code != 200:
                     raise Exception("Error in initial request")
             except Exception:
+                self.randomise()
                 print(f"[🐲] Error fetching data, trying backup..")
                 proxy = self.getNextProxy() if useProxies else None
                 proxies = {'http': proxy, 'https': proxy} if proxy else None
-                response = self.cloudScraper.get(url, headers=headers, proxies=proxies)
+                response = self.cloudScraper.get(url, headers=self.headers, allow_redirects=True, proxies=proxies)
             paginator = response.json()['data'].get('next')
 
             if paginator:
