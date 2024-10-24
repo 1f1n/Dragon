@@ -151,7 +151,7 @@ class TimestampTransactions:
             urls.append(url)
             
             response = self.fetch_url(url, useProxies)
-            trades = response.get('data', {}, headers=self.headers, allow_redirects=True).get('history', [])
+            trades = response.get('data', {}).get('history', [])
             
             if not trades or trades[-1]['timestamp'] < start:
                 break
