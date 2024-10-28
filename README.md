@@ -6,7 +6,7 @@
 	The all-in-one tool to help you find profitable wallets on Solana, Tron and Ethereum.
 </p><br>
 <h1 align="left">Tutorial</h1>
-<a href="https://youtu.be/ab17qHh2P-o?si=vIKSK2lbY-UdaqGP">YouTube Video </a>
+<a target="_blank" href="https://youtu.be/ab17qHh2P-o?si=vIKSK2lbY-UdaqGP">YouTube Video </a>
 <h1 align="left">
 Setup
 </h1>
