@@ -69,12 +69,17 @@ class TimestampTransactions:
 
     def configureProxy(self, proxy):
         if isinstance(proxy, dict): 
-            self.sendRequest.proxies = proxy
-        elif proxy:
+            self.sendRequest.proxies = {
+                'http': proxy.get('http'),
+                'https': proxy.get('https')
+            }
+        elif isinstance(proxy, str):
             self.sendRequest.proxies = {
                 'http': proxy,
                 'https': proxy
             }
+        else:
+            self.sendRequest.proxies = None
         return proxy
     
     def getNextProxy(self):
@@ -113,6 +118,7 @@ class TimestampTransactions:
         retries = 3
 
         for attempt in range(retries):
+            self.randomise()
             try:
                 proxy = self.getNextProxy() if useProxies else None
                 self.configureProxy(proxy)
@@ -147,6 +153,7 @@ class TimestampTransactions:
         end = int(end)
 
         while True:
+            self.randomise()
             url = f"{base_url}&cursor={paginator}" if paginator else base_url
             urls.append(url)
             
