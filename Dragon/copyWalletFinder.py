@@ -186,8 +186,8 @@ class CopyTradeWalletFinder:
         else:
             print(f"[🐲] Target maker {targetMaker} not found.")
 
-        filename = f"wallets_before_{self.shorten(targetMaker)}_{random.randint(1111, 9999)}.txt"
+        filename = f"wallets_after_{self.shorten(targetMaker)}_{random.randint(1111, 9999)}.txt"
         with open(f"Dragon/data/Solana/CopyWallets/{filename}", "w") as file:
             for maker in makers:
                 file.write(f"{maker}\n")
-        print(f"[🐲] Saved the 10 makers before {targetMaker} to {filename}")
+        print(f"[🐲] Saved the 10 makers after {targetMaker} to {filename}")
