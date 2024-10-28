@@ -70,12 +70,17 @@ class ScanAllTx:
     
     def configureProxy(self, proxy):
         if isinstance(proxy, dict): 
-            self.sendRequest.proxies = proxy
-        elif proxy:
+            self.sendRequest.proxies = {
+                'http': proxy.get('http'),
+                'https': proxy.get('https')
+            }
+        elif isinstance(proxy, str):
             self.sendRequest.proxies = {
                 'http': proxy,
                 'https': proxy
             }
+        else:
+            self.sendRequest.proxies = None
         return proxy
     
     def getNextProxy(self):
