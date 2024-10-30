@@ -92,6 +92,26 @@ Top Holders Scraper
 </p>
 
 <h1 align="left">
+Proxy Support
+</h1>
+<p>Dragon supports HTTP proxies for Solana modules to help avoid rate limiting. To use proxies:</p>
+
+1. Create or edit `Dragon/data/Proxies/proxies.txt`
+2. Add one proxy per line using either format:
+```
+ip:port
+ip:port:username:password
+```
+
+Example proxies.txt:
+```
+1.2.3.4:8080
+5.6.7.8:3128:user123:pass456
+```
+
+<p>When using Solana modules, you'll be prompted whether to enable proxy usage. The system will automatically rotate through your proxy list to distribute requests.</p>
+
+<h1 align="left">
 Updates
 </h1>
 <p>
