@@ -147,6 +147,10 @@ Updates
 23/10/2024<br>
 - Added TLS session randomisation to support GMGN's recent API endpoint changes.
 </p>
+<p>
+04/11/2024<br>
+- Added Early Buyers scraper to Solana modules.
+</p>
 
 <h1 align="left">
 Donations
