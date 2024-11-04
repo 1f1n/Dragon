@@ -94,7 +94,7 @@ Top Holders Scraper
 <h1 align="left">
 Early Buyers Scraper
 </h1>
-<p>Scrape the top early buyers, excluding the dev, of Solana tokens to receive their PnL and more data.</p>
+<p>Scrape the early buyers, excluding the dev, of Solana tokens to receive their PnL and more data.</p>
 <p>
 1. Load <code>data/Solana/EarlyBuyers/tokens.txt</code> with contract addresses.<br>
 2. Enter the amount of early buyers you'd like to scrape per contract address.<br>
