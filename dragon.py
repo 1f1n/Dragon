@@ -1,4 +1,4 @@
-from Dragon import utils, BundleFinder, ScanAllTx, BulkWalletChecker, TopTraders, TimestampTransactions, purgeFiles, CopyTradeWalletFinder, TopHolders, checkProxyFile
+from Dragon import utils, BundleFinder, ScanAllTx, BulkWalletChecker, TopTraders, TimestampTransactions, purgeFiles, CopyTradeWalletFinder, TopHolders, EarlyBuyers, checkProxyFile
 from Dragon import TronTopTraders, TronBulkWalletChecker, TronTimestampTransactions
 from Dragon import EthBulkWalletChecker, EthTopTraders, EthTimestampTransactions, EthScanAllTx
 
@@ -402,6 +402,7 @@ def solana():
     topTraders = TopTraders()
     copytrade = CopyTradeWalletFinder()
     topHolders = TopHolders()
+    earlyBuyers = EarlyBuyers()
 
     options, optionsChoice = utils.choices(chain="Solana")
     print(f"{optionsChoice}\n")
@@ -790,16 +791,74 @@ def solana():
                 print(f"\n{optionsChoice}\n")
 
             elif optionsInput == 8:
+                while True:
+                    buyers = int(input("[❓] Amount of Early Buyers > "))
+                    try:
+                        buyers = int(buyers)
+                        if buyers > 100:
+                            print(f"[🐲] Cannot grab more than 100 early buyers. Automatically set buyers to 40.")
+                            buyers = 40
+                    except ValueError:
+                        buyers = 40
+                        print(f"[🐲] Invalid input. Defaulting to 40 buyers.")
+                    break
+                while True:
+                    threads = input("[❓] Threads > ")
+                    try:
+                        threads = int(threads)
+                        if threads > 100:
+                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            threads = 40
+                    except ValueError:
+                        threads = 40
+                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                    break
+                while True:
+                    proxies = input("[❓] Use Proxies? (Y/N) > ")
+                    try:
+                        useProxies = None
+
+                        checkProxies = checkProxyFile()
+
+                        if not checkProxies:
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                            break
+
+                        if proxies.lower() == "y":
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        else:
+                            useProxies = False
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
+                with open('Dragon/data/Solana/EarlyBuyers/tokens.txt', 'r') as fp:
+                    contractAddresses = fp.read().splitlines()
+                    if contractAddresses and contractAddresses != []:
+                        print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
+                    else:
+                        print(f"[🐲] Error occurred, file may be empty. Go to the file here: Draon/data/EarlyBuyers/tokens.txt")
+                        print(f"\n{optionsChoice}\n")
+                        continue
+                        
+                    data = earlyBuyers.earlyBuyersdata(contractAddresses, threads, useProxies, buyers)
+
+                print(f"\n{optionsChoice}\n")
+
+
+            elif optionsInput == 9:
                 purgeFiles(chain="Solana")
                 print(f"[🐲] Successfully purged files.")   
                 print(f"\n{optionsChoice}\n")
 
-            elif optionsInput == 9:
+            elif optionsInput == 10:
                 print(f"[🐲] Thank you for using Dragon.")
                 break
 
         except ValueError as e:
-            utils.clear()
+            #utils.clear()
             print(banner)
             print(f"[🐲] Error occured. Please retry or use a VPN/Proxy. {e}")
             print(f"\n{optionsChoice}\n")
