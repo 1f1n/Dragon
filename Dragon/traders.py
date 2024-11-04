@@ -114,7 +114,7 @@ class TopTraders:
                 try:
                     proxy = self.getNextProxy() if useProxies else None
                     proxies = {'http': proxy, 'https': proxy} if proxy else None
-                    response = self.cloudScraper.get(url, headers=self.headers, proxies=proxies)
+                    response = self.cloudScraper.get(url, headers=self.headers, proxies=proxies, allow_redirects=True)
                     data = response.json().get('data', None)
                     if data:
                         return data
