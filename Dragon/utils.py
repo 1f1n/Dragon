@@ -31,20 +31,34 @@ def checkProxyFile():
         return bool(f.readlines())
 
 def chains():
-    options: list = ["Solana", "Tron", "Ethereum"]
+    options: list = ["Solana", "Tron", "Ethereum", "GMGN Tools"]
     optionsChoice = "[🐲] Please select a chain:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     
     return options, optionsChoice
 
+def gmgnTools(site: str):
+    if site.lower() == "pump.fun":
+        options: list = ["Pump.Fun New Token Scraper", "Pump.Fun Completing Token Scraper", "Pump.Fun Soaring Token Scraper", "Pump.Fun Bonded Token Scraper"]
+        optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
+    elif site.lower() == "moonshot":
+        pass
+    else:
+        return f"[🐲] Error, Dragon does not support the site '{site}'"
+
+    return options, optionsChoice
+
 def choices(chain: str):
     if chain.lower() == "solana":
-        options: list = ["Bundle Checker", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Copy Wallet Finder", "Top Holders Scraper", "Purge All Files", "Quit"]
+        options: list = ["Bundle Checker", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Copy Wallet Finder", "Top Holders Scraper", "Early Buyers Scraper", "Purge All Files", "Quit"]
         optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     elif chain.lower() == "tron":
         options: list = ["Placeholder", "Bulk Wallet Checker", "Top Traders Scraper", "Placeholder", "Get Transaction By Timestamp", "Purge All Files", "Quit"]
         optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     elif chain.lower() == "ethereum":
         options: list = ["Placeholder", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Purge All Files", "Quit"]
+        optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
+    elif chain.lower() == "gmgn":
+        options: list = ["Pump.Fun", "Moonshot", "Purge All Files", "Quit"]
         optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     else:
         return f"[🐲] Error, Dragon does not support the chain '{chain}'"
@@ -61,10 +75,12 @@ def searchForTxt(chain: str):
         chain = "Tron"
     elif chain.lower() == "ethereum":
         chain = "Ethereum"
+    elif chain.lower() == "gmgn":
+        chain = "GMGN"
     else:
         return f"[🐲] Error, Dragon does not support the chain '{chain}'"
     search_directory = os.path.normpath(os.path.join(os.getcwd(), f'Dragon/data/{chain}'))
-    
+
     txtFiles = glob.glob(os.path.join(search_directory, '**', '*.txt'), recursive=True)
 
     excluded_files = [
@@ -83,16 +99,35 @@ def purgeFiles(chain: str):
         chain = "Tron"
     elif chain.lower() == "ethereum":
         chain = "Ethereum"
+    elif chain.lower() == "gmgn":
+        chain = "GMGN"
     else:
         return f"[🐲] Error, Dragon does not support the chain '{chain}'"
     
-    for dirpath, dirnames, filenames in os.walk(f"Dragon/data/{chain}"):
-        for file in filenames:
-            file_path = os.path.join(dirpath, file)
-            if file.endswith(('.txt', '.csv', '.json')):
-                if file in ['wallets.txt', 'tokens.txt']:
-                    with open(file_path, 'w') as f:
-                        pass 
-                else:
-                    os.remove(file_path)
+    base_directory = os.path.normpath(f"Dragon/data/{chain}")
+    
+    if chain == "GMGN":
+        folders_to_purge = ["BondedToken", "NewToken", "CompletingToken", "SoaringToken"]
+        for folder in folders_to_purge:
+            folder_path = os.path.join(base_directory, folder)
+            if os.path.exists(folder_path):
+                for dirpath, _, filenames in os.walk(folder_path):
+                    for file in filenames:
+                        file_path = os.path.join(dirpath, file)
+                        if file.endswith(('.txt', '.csv', '.json')):
+                            if file in ['wallets.txt', 'tokens.txt']:
+                                with open(file_path, 'w') as f:
+                                    pass 
+                            else:
+                                os.remove(file_path)  
+    else:
+        for dirpath, _, filenames in os.walk(base_directory):
+            for file in filenames:
+                file_path = os.path.join(dirpath, file)
+                if file.endswith(('.txt', '.csv', '.json')):
+                    if file in ['wallets.txt', 'tokens.txt']:
+                        with open(file_path, 'w') as f:
+                            pass 
+                    else:
+                        os.remove(file_path) 
 init(autoreset=True)
