@@ -103,6 +103,18 @@ Early Buyers Scraper
 </p>
 
 <h1 align="left">
+GMGN Modules
+</h1>
+<p>Scrape the contract addresses of new, soaring, completing and bonding tokens on Pump.Fun and Moonshot.</p>
+<p>
+1. Select the module you want to use from the four listed.
+2. Enter the amount of threads you'd like to use.
+3. Select whether you'd like to use proxies or not.
+4. Receive your contract addresses.<br><br>
+Note, here are the links to where the data is being grabbed from: <a href="https://gmgn.ai/meme?chain=sol&tab=new_creation">New Creation</a>
+</p>
+
+<h1 align="left">
 Updates
 </h1>
 <p>
