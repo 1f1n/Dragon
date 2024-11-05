@@ -5,6 +5,8 @@
 <p align="center">
 	The all-in-one tool to help you find profitable wallets on Solana, Tron and Ethereum.
 </p><br>
+<h1 align="left">Suggestions</h1>
+<a href="https://x.com/DragonWallets/status/1853618085149778392" target="_blank">Drop Suggestions!</a> (and a follow)
 <h1 align="left">Tutorial</h1>
 <a href="https://youtu.be/ab17qHh2P-o?si=vIKSK2lbY-UdaqGP" target="_blank">YouTube Video</a>
 <h1 align="left">
