@@ -162,6 +162,10 @@ Updates
 04/11/2024<br>
 - Added Early Buyers scraper to Solana modules.
 </p>
+<p>
+05/11/2024<br>
+- Added GMGN Contract Address scraping modules for Pump.Fun.
+</p>
 
 <h1 align="left">
 Donations
