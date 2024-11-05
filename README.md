@@ -35,8 +35,9 @@ Bulk Wallet Checker
 <p>
 1. Select your .txt file or enter your own directory.<br>
 2. Enter the amount of threads you'd like to use.<br>
-3. Enter whether you'd like to skip certain wallets.<br>
-4. Receive your wallet data.
+3. Select whether you'd like to use proxies or not.<br>
+4. Enter whether you'd like to skip certain wallets.<br>
+5. Receive your wallet data.
 </p>
 
 <h1 align="left">
@@ -46,7 +47,8 @@ Top Traders Scraper
 <p>
 1. Load <code>data/Solana/TopTraders/tokens.txt</code> with contract addresses.<br>
 2. Enter the amount of threads you'd like to use.<br>
-3. Receive your top traders data.
+3. Select whether you'd like to use proxies or not.<br>
+4. Receive your top traders data.
 </p>
 
 <h1 align="left">
@@ -56,7 +58,8 @@ All Transaction Scan
 <p>
 1. Enter a contract address. <br>
 2. Enter the amount of threads you'd like to use.<br>
-3. Wait and receive your wallet addresses.
+3. Select whether you'd like to use proxies or not.<br>
+4. Wait and receive your wallet addresses.
 </p>
 
 <h1 align="left">
@@ -66,8 +69,9 @@ Get Transaction By Timestamp
 <p>
 1. Enter a contract address. <br>
 2. Enter the amount of threads you'd like to use.<br>
-3. Enter first & second timestamps.
-4. Wait and receive your wallet addresses.
+3. Select whether you'd like to use proxies or not.<br>
+4. Enter first & second timestamps.
+5. Wait and receive your wallet addresses.
 </p>
 
 <h1 align="left">
@@ -78,7 +82,8 @@ Copy Wallet Finder
 1. Enter a contract address. <br>
 2. Enter the wallet address you'd like to check.<br>
 3. Enter the amount of threads you'd like to use.<br>
-4. Wait and receive your wallet addresses.
+4. Select whether you'd like to use proxies or not.<br>
+5. Wait and receive your wallet addresses.
 </p>
 
 <h1 align="left">
@@ -88,7 +93,8 @@ Top Holders Scraper
 <p>
 1. Load <code>data/Solana/TopHolders/tokens.txt</code> with contract addresses.<br>
 2. Enter the amount of threads you'd like to use.<br>
-3. Receive your top traders data.
+3. Select whether you'd like to use proxies or not.<br>
+4. Receive your top traders data.
 </p>
 
 <h1 align="left">
@@ -99,7 +105,8 @@ Early Buyers Scraper
 1. Load <code>data/Solana/EarlyBuyers/tokens.txt</code> with contract addresses.<br>
 2. Enter the amount of early buyers you'd like to scrape per contract address.<br>
 3. Enter the amount of threads you'd like to use.<br>
-4. Receive your top traders data.
+4. Select whether you'd like to use proxies or not.<br>
+5. Receive your top traders data.
 </p>
 
 <h1 align="left">
