@@ -68,6 +68,10 @@ def choices(chain: str):
 def clear():
     os.system("cls||clear")
 
+import os
+import glob
+from colorama import Fore
+
 def searchForTxt(chain: str):
     if chain.lower() == "solana":
         chain = "Solana"
@@ -75,21 +79,28 @@ def searchForTxt(chain: str):
         chain = "Tron"
     elif chain.lower() == "ethereum":
         chain = "Ethereum"
-    elif chain.lower() == "gmgn":
-        chain = "GMGN"
     else:
         return f"[🐲] Error, Dragon does not support the chain '{chain}'"
+    
     search_directory = os.path.normpath(os.path.join(os.getcwd(), f'Dragon/data/{chain}'))
-
-    txtFiles = glob.glob(os.path.join(search_directory, '**', '*.txt'), recursive=True)
-
+    additional_directory = os.path.normpath(os.path.join(os.getcwd(), 'Dragon/data/GMGN'))
+    txtFiles = []
+    
+    for directory in [search_directory, additional_directory]:
+        txtFiles.extend(glob.glob(os.path.join(directory, '**', '*.txt'), recursive=True))
+    
     excluded_files = [
         os.path.relpath(os.path.join(search_directory, 'TopTraders/tokens.txt'), search_directory)
     ]
-    files = [os.path.relpath(file, search_directory).replace("\\", "/") for file in txtFiles if os.path.relpath(file, search_directory) not in excluded_files]
+    
+    files = [
+        os.path.relpath(file, search_directory).replace("\\", "/") 
+        for file in txtFiles 
+        if os.path.relpath(file, search_directory) not in excluded_files
+    ]
     files.append("Select Own File")
     filesChoice = "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {file}" for index, file in enumerate(files)])
-
+    
     return filesChoice, files
 
 def purgeFiles(chain: str):
