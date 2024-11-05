@@ -112,9 +112,9 @@ GMGN Modules
 3. Select whether you'd like to use proxies or not.
 4. Receive your contract addresses.<br><br>
 Note, here are the links to where the data is being grabbed from:<br>
-<a href="https://gmgn.ai/meme?chain=sol&tab=new_creation">New Token</a>
-<a href="https://gmgn.ai/meme?chain=sol&tab=completing">Completing Token</a>
-<a href="https://gmgn.ai/meme?chain=sol&tab=soaring">Soaring Token</a>
+<a href="https://gmgn.ai/meme?chain=sol&tab=new_creation">New Token</a><br>
+<a href="https://gmgn.ai/meme?chain=sol&tab=completing">Completing Token</a><br>
+<a href="https://gmgn.ai/meme?chain=sol&tab=soaring">Soaring Token</a><br>
 <a href="https://gmgn.ai/meme?chain=sol&tab=complete">Bonded Token</a>
 </p>
 
