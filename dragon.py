@@ -16,8 +16,9 @@ def gmgn():
         try:
             while True:
                 optionsInput = int(input("[❓] Choice > "))
+                siteChoice = options[optionsInput - 1]
                 if optionsInput in [1, 2, 3, 4]:
-                    print(f"[🐲] Selected {options[optionsInput - 1]}")
+                    print(f"[🐲] Selected {siteChoice}")
                     break 
                 else:
                     print("[🐲] Invalid choice.")
@@ -28,8 +29,9 @@ def gmgn():
                 try:
                     while True:
                         gmgnoptionsInput = int(input("[❓] Choice > "))
+                        choice = gmgnOptions[gmgnoptionsInput - 1]
                         if gmgnoptionsInput in [1, 2, 3, 4]:
-                            print(f"[🐲] Selected {gmgnOptions[gmgnoptionsInput - 1]}")
+                            print(f"[🐲] Selected {choice}")
                             break
                     if gmgnoptionsInput == 1:
                         while True:
@@ -67,7 +69,7 @@ def gmgn():
                             break
 
                         urlIndicator = "NewToken"
-                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies)
+                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies, siteChoice)
 
                         print(f"{optionsChoice}\n")
                     if gmgnoptionsInput == 2:
@@ -106,7 +108,7 @@ def gmgn():
                             break
 
                         urlIndicator = "CompletingToken"
-                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies)
+                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies, siteChoice)
 
                         print(f"{optionsChoice}\n")
                     if gmgnoptionsInput == 3:
@@ -145,7 +147,7 @@ def gmgn():
                             break
 
                         urlIndicator = "SoaringToken"
-                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies)
+                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies, siteChoice)
 
                         print(f"{optionsChoice}\n")
                     if gmgnoptionsInput == 4:
@@ -184,7 +186,7 @@ def gmgn():
                             break
 
                         urlIndicator = "BondedToken"
-                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies)
+                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies, siteChoice)
 
                         print(f"{optionsChoice}\n")
         
@@ -195,7 +197,177 @@ def gmgn():
                     print("[🐲] Invalid input.")
 
             if optionsInput == 2:
-                print("[🐲] Moonshot coming soon.")
+                site = options[optionsInput - 1]
+                gmgnOptions, gmgnOptionsChoice = gmgnTools(site)
+                print(f"{gmgnOptionsChoice}\n")
+                try:
+                    while True:
+                        gmgnoptionsInput = int(input("[❓] Choice > "))
+                        choice = gmgnOptions[gmgnoptionsInput - 1]
+                        if gmgnoptionsInput in [1, 2, 3, 4]:
+                            print(f"[🐲] Selected {choice}")
+                            break
+                    if gmgnoptionsInput == 1:
+                        while True:
+                            threads = input("[❓] Threads > ")
+
+                            try:
+                                threads = int(threads)
+                                if threads > 100:
+                                    print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                                    threads = 40
+                            except ValueError:
+                                threads = 40 
+                                print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                                break
+                            break
+
+                        while True:
+                            proxies = input("[❓] Use Proxies? (Y/N) > ")
+                        
+                            try:
+                                useProxies = None
+                                checkProxies = checkProxyFile()
+                                if not checkProxies:
+                                    print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                                    useProxies = False
+                                    break
+                                if proxies.lower() == "y":
+                                    useProxies = True
+                                    print(f"[🐲] Using proxies.")
+                                else:
+                                    useProxies = False
+                            except Exception:
+                                print(f"[🐲] Invalid input")
+                                break
+                            break
+
+                        urlIndicator = "NewToken"
+                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies, siteChoice)
+
+                        print(f"{optionsChoice}\n")
+                    if gmgnoptionsInput == 2:
+                        while True:
+                            threads = input("[❓] Threads > ")
+
+                            try:
+                                threads = int(threads)
+                                if threads > 100:
+                                    print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                                    threads = 40
+                            except ValueError:
+                                threads = 40 
+                                print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                                break
+                            break
+
+                        while True:
+                            proxies = input("[❓] Use Proxies? (Y/N) > ")
+                        
+                            try:
+                                useProxies = None
+                                checkProxies = checkProxyFile()
+                                if not checkProxies:
+                                    print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                                    useProxies = False
+                                    break
+                                if proxies.lower() == "y":
+                                    useProxies = True
+                                    print(f"[🐲] Using proxies.")
+                                else:
+                                    useProxies = False
+                            except Exception:
+                                print(f"[🐲] Invalid input")
+                                break
+                            break
+
+                        urlIndicator = "CompletingToken"
+                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies, siteChoice)
+
+                        print(f"{optionsChoice}\n")
+                    if gmgnoptionsInput == 3:
+                        while True:
+                            threads = input("[❓] Threads > ")
+
+                            try:
+                                threads = int(threads)
+                                if threads > 100:
+                                    print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                                    threads = 40
+                            except ValueError:
+                                threads = 40 
+                                print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                                break
+                            break
+
+                        while True:
+                            proxies = input("[❓] Use Proxies? (Y/N) > ")
+                        
+                            try:
+                                useProxies = None
+                                checkProxies = checkProxyFile()
+                                if not checkProxies:
+                                    print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                                    useProxies = False
+                                    break
+                                if proxies.lower() == "y":
+                                    useProxies = True
+                                    print(f"[🐲] Using proxies.")
+                                else:
+                                    useProxies = False
+                            except Exception:
+                                print(f"[🐲] Invalid input")
+                                break
+                            break
+
+                        urlIndicator = "SoaringToken"
+                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies, siteChoice)
+
+                        print(f"{optionsChoice}\n")
+                    if gmgnoptionsInput == 4:
+                        while True:
+                            threads = input("[❓] Threads > ")
+
+                            try:
+                                threads = int(threads)
+                                if threads > 100:
+                                    print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                                    threads = 40
+                            except ValueError:
+                                threads = 40 
+                                print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                                break
+                            break
+
+                        while True:
+                            proxies = input("[❓] Use Proxies? (Y/N) > ")
+                        
+                            try:
+                                useProxies = None
+                                checkProxies = checkProxyFile()
+                                if not checkProxies:
+                                    print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                                    useProxies = False
+                                    break
+                                if proxies.lower() == "y":
+                                    useProxies = True
+                                    print(f"[🐲] Using proxies.")
+                                else:
+                                    useProxies = False
+                            except Exception:
+                                print(f"[🐲] Invalid input")
+                                break
+                            break
+
+                        urlIndicator = "BondedToken"
+                        contracts = gmgnai.contractsData(urlIndicator, threads, useProxies, siteChoice)
+
+                        print(f"{optionsChoice}\n")
+                except Exception as e:
+                    clear()
+                    print(banner)
+                    print(f"\n{optionsChoice}\n")
+                    print("[🐲] Invalid input.")
             if optionsInput == 3:
                 purgeFiles(chain="GMGN")
                 print(f"[🐲] Successfully purged files.")   

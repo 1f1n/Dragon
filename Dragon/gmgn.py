@@ -84,35 +84,47 @@ class GMGN:
         self.proxyPosition += 1
         return proxy
     
-    def newToken(self):
-        url = "https://gmgn.ai/defi/quotation/v1/rank/sol/pump/1h?limit=100&orderby=created_timestamp&direction=desc&new_creation=true"
+    def newToken(self, siteChoice):
+        if siteChoice == "Pump.Fun":
+            url = "https://gmgn.ai/defi/quotation/v1/rank/sol/pump/1h?limit=100&orderby=created_timestamp&direction=desc&new_creation=true"
+        else:
+            url = "https://gmgn.ai/defi/quotation/v1/rank/sol/moonshot/1h?limit=100&orderby=created_timestamp&direction=desc&new_creation=true"
         return url
     
-    def completingToken(self):
-        url = "https://gmgn.ai/defi/quotation/v1/rank/sol/pump/1h?limit=100&orderby=progress&direction=desc&pump=true"
+    def completingToken(self, siteChoice):
+        if siteChoice == "Pump.Fun":
+            url = "https://gmgn.ai/defi/quotation/v1/rank/sol/pump/1h?limit=100&orderby=progress&direction=desc&pump=true"
+        else:
+            url = "https://gmgn.ai/defi/quotation/v1/rank/sol/moonshot/1h?limit=100&orderby=progress&direction=desc&moonshot=true"
         return url
     
-    def soaringToken(self):
-        url = "https://gmgn.ai/defi/quotation/v1/rank/sol/pump/1h?limit=100&orderby=market_cap_5m&direction=desc&soaring=true"
+    def soaringToken(self, siteChoice):
+        if siteChoice == "Pump.Fun":
+            url = "https://gmgn.ai/defi/quotation/v1/rank/sol/pump/1h?limit=100&orderby=market_cap_5m&direction=desc&soaring=true"
+        else:
+            url = "https://gmgn.ai/defi/quotation/v1/rank/sol/moonshot/1h?limit=100&orderby=market_cap_5m&direction=desc&soaring=true"
         return url
 
-    def bondedToken(self):
-        url = "https://gmgn.ai/defi/quotation/v1/pairs/sol/new_pairs/1h?limit=100&orderby=market_cap&direction=desc&launchpad=pump&period=1h&filters[]=not_honeypot&filters[]=pump"
+    def bondedToken(self, siteChoice):
+        if siteChoice == "Pump.Fun":
+            url = "https://gmgn.ai/defi/quotation/v1/pairs/sol/new_pairs/1h?limit=100&orderby=market_cap&direction=desc&launchpad=pump&period=1h&filters[]=not_honeypot&filters[]=pump"
+        else:
+            url = "https://gmgn.ai/defi/quotation/v1/pairs/sol/new_pairs/1h?limit=100&orderby=open_timestamp&direction=desc&launchpad=moonshot&period=1h&filters[]=not_honeypot&filters[]=moonshot"
         return url
     
-    def fetchContracts(self, urlIndicator, useProxies):
+    def fetchContracts(self, urlIndicator, useProxies, siteChoice):
         retries = 3
 
         contracts = set()
 
         if urlIndicator == "NewToken":
-            url = self.newToken()
+            url = self.newToken(siteChoice)
         elif urlIndicator == "CompletingToken":
-            url = self.completingToken()
+            url = self.completingToken(siteChoice)
         elif urlIndicator == "SoaringToken":
-            url = self.soaringToken()
+            url = self.soaringToken(siteChoice)
         else:
-            url = self.bondedToken()
+            url = self.bondedToken(siteChoice)
 
         for attempt in range(retries):
             try:
@@ -155,17 +167,17 @@ class GMGN:
 
         return list(contracts)
 
-    def contractsData(self, urlIndicator, threads, useProxies):
+    def contractsData(self, urlIndicator, threads, useProxies, siteChoice):
         contract_addresses = set()
 
         with ThreadPoolExecutor(max_workers=threads) as executor:
-            futures = [executor.submit(self.fetchContracts, urlIndicator, useProxies) for _ in range(threads)]
+            futures = [executor.submit(self.fetchContracts, urlIndicator, useProxies, siteChoice) for _ in range(threads)]
             for future in as_completed(futures):
                 contract_addresses.update(future.result())
         
         identifier = self.shorten(list(contract_addresses)[0])
 
-        with open(f"Dragon/data/GMGN/{urlIndicator}/contracts_{identifier}.txt", "w") as file:
+        with open(f"Dragon/data/GMGN/{siteChoice}/{urlIndicator}/contracts_{identifier}.txt", "w") as file:
             for address in contract_addresses:
                 file.write(f"{address}\n")
         print(f"[🐲] {len(contract_addresses)} contract addresses have been written to Dragon/data/GMGN/{urlIndicator}/contracts_{identifier}.txt")

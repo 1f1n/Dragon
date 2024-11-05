@@ -41,7 +41,8 @@ def gmgnTools(site: str):
         options: list = ["Pump.Fun New Token Scraper", "Pump.Fun Completing Token Scraper", "Pump.Fun Soaring Token Scraper", "Pump.Fun Bonded Token Scraper"]
         optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     elif site.lower() == "moonshot":
-        pass
+        options: list = ["Moonshot New Token Scraper", "Moonshot Completing Token Scraper", "Moonshot Soaring Token Scraper", "Moonshot Bonded Token Scraper"]
+        optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     else:
         return f"[🐲] Error, Dragon does not support the site '{site}'"
 
@@ -118,19 +119,23 @@ def purgeFiles(chain: str):
     base_directory = os.path.normpath(f"Dragon/data/{chain}")
     
     if chain == "GMGN":
-        folders_to_purge = ["BondedToken", "NewToken", "CompletingToken", "SoaringToken"]
-        for folder in folders_to_purge:
-            folder_path = os.path.join(base_directory, folder)
-            if os.path.exists(folder_path):
-                for dirpath, _, filenames in os.walk(folder_path):
-                    for file in filenames:
-                        file_path = os.path.join(dirpath, file)
-                        if file.endswith(('.txt', '.csv', '.json')):
-                            if file in ['wallets.txt', 'tokens.txt']:
-                                with open(file_path, 'w') as f:
-                                    pass 
-                            else:
-                                os.remove(file_path)  
+        subfolders = ["BondedToken", "NewToken", "CompletingToken", "SoaringToken"]
+        for main_subdir in os.listdir(base_directory):
+            main_subdir_path = os.path.join(base_directory, main_subdir)
+            if os.path.isdir(main_subdir_path):
+                for folder in subfolders:
+                    folder_path = os.path.join(main_subdir_path, folder)
+
+                    if os.path.exists(folder_path):
+                        for dirpath, _, filenames in os.walk(folder_path):
+                            for file in filenames:
+                                file_path = os.path.join(dirpath, file)
+                                if file.endswith(('.txt', '.csv', '.json')):
+                                    if file in ['wallets.txt', 'tokens.txt']:
+                                        with open(file_path, 'w') as f:
+                                            pass  
+                                    else:
+                                        os.remove(file_path)  
     else:
         for dirpath, _, filenames in os.walk(base_directory):
             for file in filenames:
@@ -138,7 +143,7 @@ def purgeFiles(chain: str):
                 if file.endswith(('.txt', '.csv', '.json')):
                     if file in ['wallets.txt', 'tokens.txt']:
                         with open(file_path, 'w') as f:
-                            pass 
+                            pass
                     else:
-                        os.remove(file_path) 
+                        os.remove(file_path)
 init(autoreset=True)
