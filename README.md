@@ -191,6 +191,10 @@ Updates
 05/11/2024<br>
 - Added GMGN Contract Address scraping modules for Pump.Fun and Moonshot.
 </p>
+<p>
+06/11/2024<br>
+- Deprecated Tron modules.
+</p>
 
 <h1 align="left">
 Donations
