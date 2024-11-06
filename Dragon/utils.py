@@ -97,10 +97,12 @@ def searchForTxt(chain: str):
     files = [
         os.path.relpath(file, search_directory).replace("\\", "/") 
         for file in txtFiles 
-        if os.path.relpath(file, search_directory) not in excluded_files
+        if os.path.relpath(file, search_directory) not in excluded_files and 
+           os.path.basename(file) != "placeholder.txt"
     ]
     files.append("Select Own File")
     filesChoice = "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {file}" for index, file in enumerate(files)])
+    
     
     return filesChoice, files
 
