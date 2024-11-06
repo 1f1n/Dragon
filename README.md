@@ -189,7 +189,7 @@ Updates
 </p>
 <p>
 05/11/2024<br>
-- Added GMGN Contract Address scraping modules for Pump.Fun.
+- Added GMGN Contract Address scraping modules for Pump.Fun and Moonshot.
 </p>
 
 <h1 align="left">
