@@ -105,6 +105,7 @@ class TopTraders:
                 self.configureProxy(proxy)
                 response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True)
                 data = response.json().get('data', None)
+                
                 if data:
                     return data
             except Exception as e:

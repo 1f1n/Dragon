@@ -136,13 +136,18 @@ class GMGN:
 
                     if urlIndicator == "BondedToken":
                         data = response.json().get('data', {}).get('pairs', [])
+
+                        for item in data:
+                            if item.get('base_address') and item.get('base_address') != "":
+                                contract = item.get('base_address')
+                                contracts.add(contract)
                     else:
                         data = response.json().get('data', {}).get('rank', [])
                         
-                    for item in data:
-                        if item.get('address') and item.get('address') != "":
-                            contract = item.get('address')
-                            contracts.add(contract)
+                        for item in data:
+                            if item.get('address') and item.get('address') != "":
+                                contract = item.get('address')
+                                contracts.add(contract)
             except Exception as e:
                 print(f"[🐲] Error fetching data on attempt, trying backup... {e}")
             finally:
