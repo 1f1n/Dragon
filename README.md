@@ -2,6 +2,7 @@
 	<img src="https://i.imgur.com/Ok56fSu.png" width="150px"><br>
     Dragon
 </h1>
+<p align="center">Use code "DRAGON" at <a href="https://www.birdproxies.com">BirdProxies</a> for a 10% discount.</p>
 <p align="center">
 	The all-in-one tool to help you find profitable wallets on Solana and Ethereum.
 </p><br>
