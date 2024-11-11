@@ -31,7 +31,7 @@ def checkProxyFile():
         return bool(f.readlines())
 
 def chains():
-    options: list = ["Solana", "Tron", "Ethereum", "GMGN Tools"]
+    options: list = ["Solana", "Ethereum", "GMGN Tools"]
     optionsChoice = "[🐲] Please select a chain:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     
     return options, optionsChoice
@@ -51,9 +51,6 @@ def gmgnTools(site: str):
 def choices(chain: str):
     if chain.lower() == "solana":
         options: list = ["Bundle Checker", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Copy Wallet Finder", "Top Holders Scraper", "Early Buyers Scraper", "Purge All Files", "Quit"]
-        optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
-    elif chain.lower() == "tron":
-        options: list = ["Placeholder", "Bulk Wallet Checker", "Top Traders Scraper", "Placeholder", "Get Transaction By Timestamp", "Purge All Files", "Quit"]
         optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     elif chain.lower() == "ethereum":
         options: list = ["Placeholder", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Purge All Files", "Quit"]
@@ -76,10 +73,10 @@ from colorama import Fore
 def searchForTxt(chain: str):
     if chain.lower() == "solana":
         chain = "Solana"
-    elif chain.lower() == "tron":
-        chain = "Tron"
     elif chain.lower() == "ethereum":
         chain = "Ethereum"
+    elif chain.lower() == "gmgn":
+        chain = "GMGN"
     else:
         return f"[🐲] Error, Dragon does not support the chain '{chain}'"
     
@@ -91,7 +88,7 @@ def searchForTxt(chain: str):
         txtFiles.extend(glob.glob(os.path.join(directory, '**', '*.txt'), recursive=True))
     
     excluded_files = [
-        os.path.relpath(os.path.join(search_directory, 'TopTraders/tokens.txt'), search_directory)
+        #os.path.relpath(os.path.join(search_directory, 'TopTraders/tokens.txt'), search_directory)
     ]
     
     files = [
@@ -109,8 +106,6 @@ def searchForTxt(chain: str):
 def purgeFiles(chain: str):
     if chain.lower() == "solana":
         chain = "Solana"
-    elif chain.lower() == "tron":
-        chain = "Tron"
     elif chain.lower() == "ethereum":
         chain = "Ethereum"
     elif chain.lower() == "gmgn":
