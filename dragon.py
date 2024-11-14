@@ -771,7 +771,7 @@ def solana():
                             with open(fileDirectory, 'r') as f:
                                 contractAddresses = f.read().splitlines()
                             if contractAddresses and contractAddresses != []:
-                                print(f"[🐲] Loaded {len(wallets)} contract addresses")
+                                print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
                                 break 
                             else:
                                 print(f"[🐲] Error occurred, file may be empty.")
