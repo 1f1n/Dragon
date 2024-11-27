@@ -74,7 +74,7 @@ Get Transaction By Timestamp
 1. Enter a contract address. <br>
 2. Enter the amount of threads you'd like to use.<br>
 3. Select whether you'd like to use proxies or not.<br>
-4. Enter first & second timestamps.
+4. Enter first & second timestamps.<br>
 5. Wait and receive your wallet addresses.
 </p>
 
