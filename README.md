@@ -28,7 +28,8 @@ Bundle Checker
 <p>Check if a Solana contract has had multiple buys bundled into one transaction.</p>
 <p>
 1. Enter a contract address.<br>
-2. Receive the bundle data.
+2. Receive the bundle data.<br>
+Note: This will only recognise a bundle if the bundled wallets are shown under the "DEV" tab on GMGN.ai
 </p>
 
 <h1 align="left">
