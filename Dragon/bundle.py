@@ -75,6 +75,7 @@ class BundleFinder:
             self.randomise()
             try:
                 info = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=self.headers, allow_redirects=True).json()['data']['token']
+                response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True).json()['data']['history']
                 break
             except Exception:
                 print(f"[🐲] Error fetching data on attempt, trying backup..")
@@ -82,6 +83,7 @@ class BundleFinder:
                 self.randomise()
                 try:
                     info = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=self.headers, allow_redirects=True).json()['data']['token']
+                    response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True).json()['data']['history']
                     break
                 except Exception:
                     print(f"[🐲] Backup scraper failed, retrying...")
@@ -92,13 +94,7 @@ class BundleFinder:
             totalSupply = 1_000_000_000
         else:
             totalSupply = info['total_supply']
-        
-        try:
-            response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True).json()['data']['history']
-        except Exception as e:
-            print(f"Error fetching trades: {e}")
-            return self.txHashes
-
+    
         for buy in response:
             if buy['event'] == "buy":
                 self.txHashes.add(buy['tx_hash'])
@@ -178,5 +174,5 @@ class BundleFinder:
         }
 
         data['developerInfo'] = developerInfo
-
+        
         return data
