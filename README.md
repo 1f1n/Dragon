@@ -196,6 +196,10 @@ Updates
 06/11/2024<br>
 - Deprecated Tron modules.
 </p>
+<p>
+27/11/2024<br>
+- Fixed Bundle Checker for Solana module.
+</p>
 
 <h1 align="left">
 Donations
