@@ -231,6 +231,7 @@ class BulkWalletChecker:
         sol_balance = f"{float(data['sol_balance']):.2f}" if data['sol_balance'] is not None else "?"
         buy_7d = f"{data['buy_7d']}" if data['buy_7d'] is not None else "?"
 
+        winrate_30data = {}
         try:
             self.randomise()
             winrate_30data = self.sendRequest.get(
@@ -238,7 +239,6 @@ class BulkWalletChecker:
                 headers=self.headers,
                 allow_redirects=True
             ).json()['data']
-            winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
         except Exception as e:
             self.randomise()
             print(f"[🐲] Error fetching winrate 30d data, trying backup..")
@@ -247,9 +247,12 @@ class BulkWalletChecker:
                 headers=self.headers,
                 allow_redirects=True
             ).json()['data']
-            winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
-        finally:
-            winrate_30d = "?"
+
+        winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if 'winrate' in winrate_30data else "?"
+        fast_tx_percent = f"{winrate_30data['risk']['fast_tx_ratio'] * 100:.2f}%" if 'risk' in winrate_30data and 'fast_tx_ratio' in winrate_30data['risk'] else "?"
+        sell_pass_buy_percent = f"{winrate_30data['risk']['sell_pass_buy_ratio'] * 100:.2f}%" if 'risk' in winrate_30data and 'sell_pass_buy_ratio' in winrate_30data['risk']else "?"
+        no_buy_hold_percent = f"{winrate_30data['risk']['no_buy_hold_ratio'] * 100:.2f}%" if 'risk' in winrate_30data and 'no_buy_hold_ratio' in winrate_30data['risk'] else "?"
+        token_honeypot_percent = f"{winrate_30data['risk']['token_honeypot_ratio'] * 100:.2f}%" if 'risk' in winrate_30data and 'token_honeypot_ratio' in winrate_30data['risk'] else "?"
 
         #try:
         #    total_profit_percent_value = float(data['total_profit_pnl']) * 100 if data['total_profit_pnl'] is not None else 0
@@ -284,7 +287,11 @@ class BulkWalletChecker:
             "sol_balance": sol_balance,
             "token_distribution": tokenDistro if tokenDistro else {},
             "directLink": direct_link,
-            "buy_7d": buy_7d
+            "buy_7d": buy_7d,
+            "sell_in_10sec": fast_tx_percent,
+            "sell_pass_buy": sell_pass_buy_percent,
+            "no_buy_hold": no_buy_hold_percent,
+            "honeypot": token_honeypot_percent
         }
     
     def fetchWalletData(self, wallets, threads, skipWallets, useProxies):
