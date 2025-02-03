@@ -2,7 +2,7 @@ import json
 import time
 import random
 import tls_client
-import cloudscraper
+
 from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
@@ -10,7 +10,7 @@ from collections import defaultdict
 class EarlyBuyers:
 
     def __init__(self):
-        self.cloudScraper = cloudscraper.create_scraper()
+        
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
         self.allData = {}
         self.allAddresses = set()
@@ -107,19 +107,6 @@ class EarlyBuyers:
                             return data
             except Exception as e:
                 print(f"[🐲] Error fetching data on attempt, trying backup... {e}")
-            finally:
-                self.randomise()
-                try:
-                    proxy = self.getNextProxy() if useProxies else None
-                    proxies = {'http': proxy, 'https': proxy} if proxy else None
-                    response = self.cloudScraper.get(url, headers=self.headers, proxies=proxies, allow_redirects=True)
-                    data = response.json().get('data', {}).get('history', [])
-                    if isinstance(data, list):
-                        for item in data:
-                            if item.get('event') == "buy" and "creator" not in item.get('maker_token_tags'):
-                                return data
-                except Exception as e:
-                    print(f"[🐲] Backup scraper failed, retrying...")
         time.sleep(1)
 
         print(f"[🐲] Failed to fetch data after {retries} attempts.")

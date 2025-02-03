@@ -1,6 +1,6 @@
 import random
 import tls_client
-import cloudscraper
+
 from fake_useragent import UserAgent
 import concurrent.futures
 import time
@@ -12,7 +12,7 @@ class TimestampTransactions:
 
     def __init__(self):
         self.sendRequest = tls_client.Session(client_identifier='chrome_103')
-        self.cloudScraper = cloudscraper.create_scraper()
+        
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
         self.proxyPosition = 0
 
@@ -97,17 +97,7 @@ class TimestampTransactions:
                 response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True).json()
                 return response
             except Exception:
-                print(f"[🐲] Error fetching data, trying backup...")
-            finally:
-                self.randomise()
-                try:
-                    proxy = self.getNextProxy() if useProxies else None
-                    proxies = {'http': proxy, 'https': proxy} if proxy else None
-                    response = self.cloudScraper.get(url, headers=self.headers, allow_redirects=True, proxies=proxies).json()
-                    return response
-                except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
-            
+                print(f"[🐲] Error fetching data, trying backup...")         
             time.sleep(1)
         
         print(f"[🐲] Failed to fetch data after {retries} attempts.")
@@ -126,16 +116,6 @@ class TimestampTransactions:
                 return response
             except Exception:
                 print(f"[🐲] Error fetching data, trying backup...")
-            finally:
-                self.randomise()
-                try:
-                    proxy = self.getNextProxy() if useProxies else None
-                    proxies = {'http': proxy, 'https': proxy} if proxy else None
-                    response = self.cloudScraper.get(url, headers=self.headers, allow_redirects=True, proxies=proxies).json()['data']['token']['creation_timestamp']
-                    return response
-                except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
-            
             time.sleep(1)
         
         print(f"[🐲] Failed to fetch data after {retries} attempts.")

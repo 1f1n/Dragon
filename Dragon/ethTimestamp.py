@@ -1,6 +1,6 @@
 import random
 import tls_client
-import cloudscraper
+
 from fake_useragent import UserAgent
 import concurrent.futures
 import time
@@ -11,7 +11,7 @@ class EthTimestampTransactions:
 
     def __init__(self):
         self.sendRequest = tls_client.Session(client_identifier='chrome_103')
-        self.cloudScraper = cloudscraper.create_scraper()
+        
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
 
     def fetch_url(self, url, headers):
@@ -47,12 +47,6 @@ class EthTimestampTransactions:
                 return response
             except Exception:
                 print(f"[🐲] Error fetching data, trying backup...")
-            finally:
-                try:
-                    response = self.cloudScraper.get(url, headers=headers).json()['data']['token']['creation_timestamp']
-                    return response
-                except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
             
             time.sleep(1)
         

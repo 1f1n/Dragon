@@ -53,7 +53,7 @@ def gmgn():
                             try:
                                 useProxies = None
                                 checkProxies = checkProxyFile()
-                                if not checkProxies:
+                                if not checkProxies and proxies.lower() != "n":
                                     print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                                     useProxies = False
                                     break
@@ -92,7 +92,7 @@ def gmgn():
                             try:
                                 useProxies = None
                                 checkProxies = checkProxyFile()
-                                if not checkProxies:
+                                if not checkProxies and proxies.lower() != "n":
                                     print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                                     useProxies = False
                                     break
@@ -131,7 +131,7 @@ def gmgn():
                             try:
                                 useProxies = None
                                 checkProxies = checkProxyFile()
-                                if not checkProxies:
+                                if not checkProxies and proxies.lower() != "n":
                                     print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                                     useProxies = False
                                     break
@@ -170,7 +170,7 @@ def gmgn():
                             try:
                                 useProxies = None
                                 checkProxies = checkProxyFile()
-                                if not checkProxies:
+                                if not checkProxies and proxies.lower() != "n":
                                     print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                                     useProxies = False
                                     break
@@ -227,7 +227,7 @@ def gmgn():
                             try:
                                 useProxies = None
                                 checkProxies = checkProxyFile()
-                                if not checkProxies:
+                                if not checkProxies and proxies.lower() != "n":
                                     print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                                     useProxies = False
                                     break
@@ -266,7 +266,7 @@ def gmgn():
                             try:
                                 useProxies = None
                                 checkProxies = checkProxyFile()
-                                if not checkProxies:
+                                if not checkProxies and proxies.lower() != "n":
                                     print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                                     useProxies = False
                                     break
@@ -305,7 +305,7 @@ def gmgn():
                             try:
                                 useProxies = None
                                 checkProxies = checkProxyFile()
-                                if not checkProxies:
+                                if not checkProxies and proxies.lower() != "n":
                                     print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                                     useProxies = False
                                     break
@@ -344,7 +344,7 @@ def gmgn():
                             try:
                                 useProxies = None
                                 checkProxies = checkProxyFile()
-                                if not checkProxies:
+                                if not checkProxies and proxies.lower() != "n":
                                     print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                                     useProxies = False
                                     break
@@ -612,7 +612,7 @@ def solana():
         try:
             while True:
                 optionsInput = int(input("[❓] Choice > "))
-                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
                     print(f"[🐲] Selected {options[optionsInput - 1]}")
                     break 
                 else:
@@ -696,7 +696,7 @@ def solana():
 
                             checkProxies = checkProxyFile()
 
-                            if not checkProxies:
+                            if not checkProxies and proxies.lower() != "n":
                                 print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                                 useProxies = False
                                 break
@@ -798,7 +798,7 @@ def solana():
 
                             checkProxies = checkProxyFile()
 
-                            if not checkProxies:
+                            if not checkProxies and proxies.lower() != "n":
                                 print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                                 useProxies = False
                                 break
@@ -856,7 +856,7 @@ def solana():
 
                         checkProxies = checkProxyFile()
 
-                        if not checkProxies:
+                        if not checkProxies and proxies.lower() != "n":
                             print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                             break
@@ -902,7 +902,7 @@ def solana():
 
                         checkProxies = checkProxyFile()
 
-                        if not checkProxies:
+                        if not checkProxies and proxies.lower() != "n":
                             print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                             break
@@ -972,7 +972,7 @@ def solana():
 
                         checkProxies = checkProxyFile()
 
-                        if not checkProxies:
+                        if not checkProxies and proxies.lower() != "n":
                             print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                             break
@@ -1009,7 +1009,7 @@ def solana():
 
                         checkProxies = checkProxyFile()
 
-                        if not checkProxies:
+                        if not checkProxies and proxies.lower() != "n":
                             print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                             break
@@ -1066,7 +1066,7 @@ def solana():
 
                         checkProxies = checkProxyFile()
 
-                        if not checkProxies:
+                        if not checkProxies and proxies.lower() != "n":
                             print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
                             useProxies = False
                             break
@@ -1104,8 +1104,6 @@ def solana():
                 break
 
         except ValueError as e:
-            utils.clear()
-            print(banner)
             print(f"[🐲] Error occured. Please retry or use a VPN/Proxy. {e}")
             print(f"\n{optionsChoice}\n")
             print("[🐲] Invalid input.")

@@ -1,6 +1,5 @@
 import json
 import tls_client
-import cloudscraper
 from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
@@ -13,7 +12,6 @@ class TopHolders:
 
     def __init__(self):
         self.sendRequest = tls_client.Session(client_identifier='chrome_103')
-        self.cloudScraper = cloudscraper.create_scraper()
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
         self.allData = {}
         self.allAddresses = set()
@@ -112,21 +110,6 @@ class TopHolders:
                     return bondingCurve
             except Exception:
                 print(f"[🐲] Error fetching data on attempt, trying backup")
-            finally:
-                self.randomise()
-                try:
-                    proxy = self.getNextProxy() if useProxies else None
-                    proxies = {'http': proxy, 'https': proxy} if proxy else None
-                    response = self.cloudScraper.get(url, headers=self.headers, proxies=proxies, allow_redirects=True)
-                    data = response.json().get('data', None)
-                    if data:
-                        try:
-                            bondingCurve = data['token']['pool_info']['pool_address']
-                        except Exception:
-                            bondingCurve = ""
-                        return bondingCurve
-                except Exception as e:
-                    print(f"[🐲] Error fetching data on attempt, trying backup {e}")
             time.sleep(1)
         print(f"[🐲] Failed to fetch data after {retries} attempts.")
         return ""
@@ -217,15 +200,15 @@ class TopHolders:
                 av.write(f"{address}\n")
 
         if len(repeatedAddresses) != 0:
-            with open(f'Dragon/data/Solana/TopHolders/repeatedTopTraders_{identifier}.txt', 'w') as ra:
+            with open(f'Dragon/data/Solana/TopHolders/repeatedTopHolders_{identifier}.txt', 'w') as ra:
                 for address in repeatedAddresses:
                     ra.write(f"{address}\n")
-            print(f"[🐲] Saved {len(repeatedAddresses)} repeated addresses to repeatedTopTraders_{identifier}.txt")
+            print(f"[🐲] Saved {len(repeatedAddresses)} repeated addresses to repeatedTopHolders_{identifier}.txt")
 
-        with open(f'Dragon/data/Solana/TopHolders/topTraders_{identifier}.json', 'w') as tt:
+        with open(f'Dragon/data/Solana/TopHolders/TopHolders_{identifier}.json', 'w') as tt:
             json.dump(self.allData, tt, indent=4)
 
-        print(f"[🐲] Saved {self.totalTraders} top traders for {len(contractAddresses)} tokens to allTopAddresses_{identifier}.txt")
-        print(f"[🐲] Saved {len(self.allAddresses)} top trader addresses to topTraders_{identifier}.json")
+        print(f"[🐲] Saved {self.totalTraders} top traders for {len(contractAddresses)} tokens to allTopHolders_{identifier}.txt")
+        print(f"[🐲] Saved {len(self.allAddresses)} top trader addresses to TopHolders_{identifier}.json")
 
         return

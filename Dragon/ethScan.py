@@ -1,6 +1,6 @@
 import random
 import tls_client
-import cloudscraper
+
 import concurrent.futures
 from fake_useragent import UserAgent
 from threading import Lock
@@ -12,7 +12,7 @@ class EthScanAllTx:
 
     def __init__(self):
         self.sendRequest = tls_client.Session(client_identifier='chrome_103')
-        self.cloudScraper = cloudscraper.create_scraper()
+        
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
         self.lock = Lock()
 
@@ -67,7 +67,6 @@ class EthScanAllTx:
                     raise Exception("Error in initial request")
             except Exception:
                 print(f"[🐲] Error fetching data, trying backup..")
-                response = self.cloudScraper.get(url, headers=headers)
             paginator = response.json()['data'].get('next')
 
             if not paginator:

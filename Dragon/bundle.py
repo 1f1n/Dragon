@@ -1,7 +1,7 @@
 import json
 import random
 import tls_client
-import cloudscraper
+
 from fake_useragent import UserAgent
 import time
 
@@ -13,7 +13,7 @@ class BundleFinder:
         self.txHashes = set()
         self.formatTokens = lambda x: float(x) / 1_000_000
         self.sendRequest = tls_client.Session(client_identifier='chrome_103')
-        self.cloudScraper = cloudscraper.create_scraper()
+        
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else "?"
     
     def randomise(self):
@@ -74,7 +74,7 @@ class BundleFinder:
         for attempt in range(retries):
             self.randomise()
             try:
-                info = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=self.headers, allow_redirects=True).json()['data']['token']
+                info = self.sendRequest.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=self.headers, allow_redirects=True).json()
                 response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True).json()['data']['history']
                 break
             except Exception:
@@ -82,7 +82,7 @@ class BundleFinder:
             finally:
                 self.randomise()
                 try:
-                    info = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=self.headers, allow_redirects=True).json()['data']['token']
+                    info = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=self.headers, allow_redirects=True).json()
                     response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True).json()['data']['history']
                     break
                 except Exception:
@@ -90,10 +90,8 @@ class BundleFinder:
             
             time.sleep(1)  
 
-        if info['launchpad'].lower() == "pump.fun":
-            totalSupply = 1_000_000_000
-        else:
-            totalSupply = info['total_supply']
+
+        totalSupply = info['total_supply']
     
         for buy in response:
             if buy['event'] == "buy":

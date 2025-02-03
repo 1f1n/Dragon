@@ -1,6 +1,6 @@
 import random
 import tls_client
-import cloudscraper
+
 import concurrent.futures
 from fake_useragent import UserAgent
 from threading import Lock
@@ -13,7 +13,7 @@ class CopyTradeWalletFinder:
 
     def __init__(self):
         self.sendRequest = tls_client.Session(client_identifier='chrome_103')
-        self.cloudScraper = cloudscraper.create_scraper()
+        
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
         self.lock = Lock()
         self.proxyPosition = 0
@@ -52,43 +52,35 @@ class CopyTradeWalletFinder:
 
         formatted_proxies = []
         for proxy in proxies:
-            if ':' in proxy:  
+            if ':' in proxy:
                 parts = proxy.split(':')
                 if len(parts) == 4:
                     ip, port, username, password = parts
-                    formatted_proxies.append({
-                        'http': f"http://{username}:{password}@{ip}:{port}",
-                        'https': f"http://{username}:{password}@{ip}:{port}"
-                    })
-                else:
-                    formatted_proxies.append({
-                        'http': f"http://{proxy}",
-                        'https': f"http://{proxy}"
-                    })
-            else:
-                formatted_proxies.append(f"http://{proxy}")        
+                    formatted_proxies.append(f"http://{username}:{password}@{ip}:{port}")
+                elif len(parts) == 2:
+                    ip, port = parts
+                    formatted_proxies.append(f"http://{ip}:{port}")
         return formatted_proxies
     
     def configureProxy(self, proxy):
-        if isinstance(proxy, dict): 
-            self.sendRequest.proxies = proxy
-        elif proxy:
+        if isinstance(proxy, str):
             self.sendRequest.proxies = {
                 'http': proxy,
                 'https': proxy
             }
-        return proxy
+        elif isinstance(proxy, dict):
+            self.sendRequest.proxies = proxy
+
     
     def getNextProxy(self):
         proxies = self.loadProxies()
+        if not proxies: 
+            raise Exception("[🐲] Proxy list is empty. Please provide valid proxies in proxies.txt.")
         proxy = proxies[self.proxyPosition % len(proxies)]
         self.proxyPosition += 1
         return proxy
 
     def request(self, url: str, useProxies):
-        headers = {
-            "User-Agent": ua.random
-        }
         retries = 3
 
         for attempt in range(retries):
@@ -103,18 +95,6 @@ class CopyTradeWalletFinder:
                     return data, paginator
             except Exception:
                 print(f"[🐲] Error fetching data, trying backup...")
-            finally:
-                self.randomise()
-                try:
-                    proxy = self.getNextProxy() if useProxies else None
-                    proxies = {'http': proxy, 'https': proxy} if proxy else None
-                    response = self.cloudScraper.get(url, headers=self.headers, allow_redirects=True, proxies=proxies)
-                    if response.status_code == 200:
-                        data = response.json()['data']['history']
-                        paginator = response.json()['data'].get('next')
-                        return data, paginator
-                except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
 
             time.sleep(1)
 
@@ -139,17 +119,18 @@ class CopyTradeWalletFinder:
                 if response.status_code != 200:
                     raise Exception("Error in initial request")
             except Exception:
-                self.randomise()
                 print(f"[🐲] Error fetching data, trying backup..")
-                proxy = self.getNextProxy() if useProxies else None
-                proxies = {'http': proxy, 'https': proxy} if proxy else None
-                response = self.cloudScraper.get(url, headers=self.headers, allow_redirects=True, proxies=proxies)
+            time.sleep(1)
+            
             paginator = response.json()['data'].get('next')
+
+            print(paginator)
 
             if paginator:
                 print(f"[🐲] Page: {base64.b64decode(paginator).decode('utf-8')}", end="\r")
 
             if not paginator:
+                print("xxxxxxxxxxxxxxx")
                 break
 
         found_target = False

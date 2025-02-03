@@ -1,6 +1,6 @@
 import json
 import tls_client
-import cloudscraper
+
 from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
@@ -12,7 +12,7 @@ class EthTopTraders:
 
     def __init__(self):
         self.sendRequest = tls_client.Session(client_identifier='chrome_103')
-        self.cloudScraper = cloudscraper.create_scraper()
+        
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
         self.allData = {}
         self.allAddresses = set()
@@ -34,15 +34,6 @@ class EthTopTraders:
                     return data
             except Exception:
                 print(f"[🐲] Error fetching data on attempt, trying backup...")
-            finally:
-                try:
-                    response = self.cloudScraper.get(url, headers=headers)
-                    data = response.json().get('data', None)
-                    if data:
-                        return data
-                except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
-                    
             time.sleep(1)
         
         print(f"[🐲] Failed to fetch data after {retries} attempts.")

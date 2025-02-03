@@ -1,7 +1,7 @@
 import csv
 import random
 import tls_client
-import cloudscraper
+
 from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
@@ -12,7 +12,7 @@ class EthBulkWalletChecker:
 
     def __init__(self):
         self.sendRequest = tls_client.Session(client_identifier='chrome_103')
-        self.cloudScraper = cloudscraper.create_scraper()
+        
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
         self.skippedWallets = 0
         self.results = []
@@ -112,26 +112,6 @@ class EthBulkWalletChecker:
             
             except Exception as e:
                 print(f"[🐲] Error fetching data, trying backup...")
-            
-            try:
-                response = self.cloudScraper.get(url, headers=headers)
-                if response.status_code == 200:
-                    data = response.json()
-                    if data['msg'] == "success":
-                        data = data['data']
-                        
-                        if skipWallets:
-                            if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0 and float(data['sol_balance']) >= 1.0:
-                                return self.processWalletData(wallet, data, headers)
-                            else:
-                                self.skippedWallets += 1
-                                print(f"[🐲] Skipped {self.skippedWallets} wallets", end="\r")
-                                return None
-                        else:
-                            return self.processWalletData(wallet, data, headers)
-            
-            except Exception:
-                print(f"[🐲] Backup scraper failed, retrying...")
             
             time.sleep(1)
         

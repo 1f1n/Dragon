@@ -1,14 +1,12 @@
 import time
 import random
 import tls_client
-import cloudscraper
 from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class GMGN:
 
     def __init__(self):
-        self.cloudScraper = cloudscraper.create_scraper()
         self.shorten = lambda s: f"{s[:4]}...{s[-5:]}" if len(s) >= 9 else s
         self.proxyPosition = 0
 
@@ -150,24 +148,6 @@ class GMGN:
                                 contracts.add(contract)
             except Exception as e:
                 print(f"[🐲] Error fetching data on attempt, trying backup... {e}")
-            finally:
-                self.randomise()
-                try:
-                    proxy = self.getNextProxy() if useProxies else None
-                    proxies = {'http': proxy, 'https': proxy} if proxy else None
-                    response = self.cloudScraper.get(url, headers=self.headers, proxies=proxies, allow_redirects=True)
-
-                    if response.status_code == 200:                        
-                        if urlIndicator == "BondedToken":
-                            data = response.json().get('data', {}).get('pairs', [])
-                        else:
-                            data = response.json().get('data', {}).get('rank', [])
-                        for item in data:
-                            if item.get('address') and item.get('address') != "":
-                                contract = item.get('address')
-                                contracts.add(contract)
-                except Exception as e:
-                    print(f"[🐲] Backup scraper failed, retrying... {e}")
         time.sleep(1)
 
         return list(contracts)
