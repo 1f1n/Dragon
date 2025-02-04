@@ -201,6 +201,12 @@ Updates
 27/11/2024<br>
 - Fixed Bundle Checker for Solana module.
 </p>
+<p>
+03/02/2025<br>
+- Removed Cloudscraper (sucks).<br>
+- Fixed Bundle Checker.<br>
+- Various other small fixes.
+</p>
 
 <h1 align="left">
 Donations
