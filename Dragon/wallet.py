@@ -182,7 +182,7 @@ class BulkWalletChecker:
                         
                         if skipWallets:
                             if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:
-                                totalGrabbed += 1
+                                self.totalGrabbed += 1
                                 print(f"[🐲] Successfully grabbed data for {wallet} ({self.totalGrabbed})")#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
                                 return self.processWalletData(wallet, data, self.headers, useProxies)
                             else:
@@ -192,7 +192,7 @@ class BulkWalletChecker:
                         else:
                             return self.processWalletData(wallet, data, self.headers, useProxies)
             except Exception as e:
-                totalFailed += 1
+                self.totalFailed += 1
                 print(f"[🐲] Failed to grab data for {wallet} ({self.totalFailed})")
 
             time.sleep(1)
