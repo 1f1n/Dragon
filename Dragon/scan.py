@@ -129,11 +129,7 @@ class ScanAllTx:
                     raise Exception("Error in initial request")
             except Exception:
                 self.randomise()
-                print(f"[🐲] Error fetching data, trying backup..")
-                proxy = self.getNextProxy() if useProxies else None
-                proxies = {'http': proxy, 'https': proxy} if proxy else None
-                response = self.cloudScraper.get(url, headers=self.headers, proxies=proxies, allow_redirects=True)
-            
+
             paginator = response.json()['data'].get('next')
             print(paginator)
 

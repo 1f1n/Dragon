@@ -130,17 +130,6 @@ class TopHolders:
                     return data
             except Exception as e:
                 print(f"[🐲] Error fetching data on attempt, trying backup... {e}")
-            finally:
-                self.randomise()
-                try:
-                    proxy = self.getNextProxy() if useProxies else None
-                    proxies = {'http': proxy, 'https': proxy} if proxy else None
-                    response = self.cloudScraper.get(url, headers=self.headers, proxies=proxies, allow_redirects=True)
-                    data = response.json().get('data', None)
-                    if data:
-                        return data
-                except Exception as e:
-                    print(f"[🐲] Backup scraper failed, retrying... {e}")
                     
             time.sleep(1)
         

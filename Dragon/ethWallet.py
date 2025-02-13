@@ -33,14 +33,6 @@ class EthBulkWalletChecker:
                     break
             except Exception:
                 time.sleep(1)
-            
-            try:
-                response = self.cloudScraper.get(url, headers=headers).json()
-                tokenDistro = response['data']['tokens']
-                if tokenDistro:
-                    break
-            except Exception:
-                time.sleep(1)
         
         if not tokenDistro:
             return {
@@ -132,8 +124,6 @@ class EthBulkWalletChecker:
             winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
         except Exception as e:
             print(f"[🐲] Error fetching winrate 30d data, trying backup..")
-            winrate_30data = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/smartmoney/eth/walletNew/{wallet}?period=30d", headers=headers).json()['data']
-            winrate_30d = f"{winrate_30data['winrate'] * 100:.2f}%" if winrate_30data['winrate'] is not None else "?"
 
         if "Skipped" in data.get("tags", []):
             return {

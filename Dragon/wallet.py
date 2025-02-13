@@ -37,7 +37,8 @@ class BulkWalletChecker:
         else:
             os = 'windows'
 
-        self.user_agent = UserAgent(browsers=[identifier], os=[os]).random
+        self.user_agent = UserAgent(browsers=[identifier], os=[os], fallback='firefox').random
+    
 
         self.headers = {
             'Host': 'gmgn.ai',
@@ -109,17 +110,6 @@ class BulkWalletChecker:
                 if tokenDistro:  
                     break
             except Exception:
-                time.sleep(1)
-            
-            try:
-                proxy = self.getNextProxy() if useProxies else None
-                proxies = {'http': proxy, 'https': proxy} if proxy else None
-                response = self.cloudScraper.get(url, headers=self.headers, proxies=proxies, allow_redirects=True).json()
-                tokenDistro = response['data']['tokens']
-                if tokenDistro:
-                    break
-            except Exception:
-
                 time.sleep(1)
         
         if not tokenDistro:

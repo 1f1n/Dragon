@@ -22,12 +22,6 @@ class EthTimestampTransactions:
                 return response
             except Exception:
                 print(f"[🐲] Error fetching data, trying backup...")
-            finally:
-                try:
-                    response = self.cloudScraper.get(url, headers=headers).json()
-                    return response
-                except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
             
             time.sleep(1)
         

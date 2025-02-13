@@ -79,14 +79,6 @@ class BundleFinder:
                 break
             except Exception:
                 print(f"[🐲] Error fetching data on attempt, trying backup..")
-            finally:
-                self.randomise()
-                try:
-                    info = self.cloudScraper.get(f"https://gmgn.ai/defi/quotation/v1/tokens/sol/{contractAddress}", headers=self.headers, allow_redirects=True).json()
-                    response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True).json()['data']['history']
-                    break
-                except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
             
             time.sleep(1)  
 

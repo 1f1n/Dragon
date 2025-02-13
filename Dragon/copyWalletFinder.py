@@ -124,13 +124,10 @@ class CopyTradeWalletFinder:
             
             paginator = response.json()['data'].get('next')
 
-            print(paginator)
-
             if paginator:
-                print(f"[🐲] Page: {base64.b64decode(paginator).decode('utf-8')}", end="\r")
-
-            if not paginator:
-                print("xxxxxxxxxxxxxxx")
+                print(f"[🐲] Page: {base64.b64decode(paginator).decode('utf-8')}")
+            else:
+                print("[🐲] Could not find page.")
                 break
 
         found_target = False

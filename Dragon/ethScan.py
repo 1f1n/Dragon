@@ -31,15 +31,6 @@ class EthScanAllTx:
                     return data, paginator
             except Exception:
                 print(f"[🐲] Error fetching data, trying backup...")
-            finally:
-                try:
-                    response = self.cloudScraper.get(url, headers=headers)
-                    if response.status_code == 200:
-                        data = response.json()['data']['history']
-                        paginator = response.json()['data'].get('next')
-                        return data, paginator
-                except Exception:
-                    print(f"[🐲] Backup scraper failed, retrying...")
             
             time.sleep(1)
 
