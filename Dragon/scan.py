@@ -5,6 +5,7 @@ import concurrent.futures
 from fake_useragent import UserAgent
 from threading import Lock
 import time
+import base64
 
 ua = UserAgent(os='linux', browsers=['firefox'])
 
@@ -116,11 +117,11 @@ class ScanAllTx:
         urls = []
         
         print(f"[🐲] Starting... please wait.\n")
-
+            
         while True:
+            self.randomise()
             url = f"{base_url}&cursor={paginator}" if paginator else base_url
             urls.append(url)
-            
             try:
                 proxy = self.getNextProxy() if useProxies else None
                 self.configureProxy(proxy)
@@ -128,12 +129,15 @@ class ScanAllTx:
                 if response.status_code != 200:
                     raise Exception("Error in initial request")
             except Exception:
-                self.randomise()
-
+                print(f"[🐲] Error fetching data, trying backup..")
+            time.sleep(1)
+            
             paginator = response.json()['data'].get('next')
-            print(paginator)
 
-            if not paginator:
+            if paginator:
+                print(f"[🐲] Page: {base64.b64decode(paginator).decode('utf-8')}")
+            else:
+                print("[🐲] Could not find page.")
                 break
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
