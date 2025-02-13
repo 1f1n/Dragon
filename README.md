@@ -2,7 +2,6 @@
 	<img src="https://i.imgur.com/Ok56fSu.png" width="150px"><br>
     Dragon
 </h1>
-<p align="center">Use code "DRAGON" at <a href="https://www.birdproxies.com">BirdProxies</a> for a 10% discount.</p>
 <p align="center">
 	The all-in-one tool to help you find profitable wallets on Solana and Ethereum.
 </p><br>
@@ -29,7 +28,7 @@ Bundle Checker
 <p>
 1. Enter a contract address.<br>
 2. Receive the bundle data.<br><br>
-Note: This will only recognise a bundle if the bundled wallets are shown under the "DEV" tab on GMGN.ai - <a href="https://gmgn.ai/sol/token/4BRummYdfvoEGQwYzTSmn5F6RyAFdrHUTFkeagobpump?tag=creator">Example</a>
+Note: This will only recognise a bundle if the bundled wallets are shown under the "DEV" tab on GMGN.ai - <a href="https://gmgn.ai/sol/token/231Y5yfc5aeajFfqaM5P9WvwqSiMG5CyuwSib9Pbpump?tag=creator">Example</a>
 </p>
 
 <h1 align="left">
