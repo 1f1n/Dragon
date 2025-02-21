@@ -1,5 +1,4 @@
 colorama
 tls_client
-cloudscraper
 fake_useragent
 typing_extensions
