@@ -2,6 +2,7 @@
 	<img src="https://i.imgur.com/Ok56fSu.png" width="150px"><br>
     Dragon
 </h1>
+<p align="center"><b>Note, the GMGN.ai domain is cloudflare protected,<br> meaning some requests will fail to get access to an unprotected endpoint <br>DM me on Discord<br>@f.in</b></p>
 <p align="center">
 	The all-in-one tool to help you find profitable wallets on Solana and Ethereum.
 </p><br>
