@@ -5,7 +5,7 @@
 <p align="center">
 	The all-in-one tool to help you find profitable wallets on Solana and Ethereum.
 </p><br>
-<p align="center"><b>Note, the GMGN.ai domain is cloudflare protected,<br> meaning some requests will fail to get access to an unprotected endpoint <br>DM me on Discord<br>@f.in</b></p>
+<p align="center"><b>Note, the GMGN.ai domain is cloudflare protected,<br> meaning some requests will fail to get access to an unprotected endpoint <br>DM me on Discord<br>@fln</b></p>
 <h1 align="left">Suggestions</h1>
 <a href="https://x.com/DragonWallets/status/1853618085149778392" target="_blank">Drop Suggestions!</a> (and a follow)
 <h1 align="left">Tutorial</h1>
