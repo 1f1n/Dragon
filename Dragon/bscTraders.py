@@ -9,7 +9,7 @@ from collections import defaultdict
 
 ua = UserAgent(os='linux', browsers=['firefox'])
 
-class EthTopTraders:
+class BscTopTraders:
 
     def __init__(self):
         self.sendRequest = tls_client.Session(client_identifier='chrome_103')
@@ -45,7 +45,7 @@ class EthTopTraders:
             'accept-language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
             'dnt': '1',
             'priority': 'u=1, i',
-            'referer': 'https://gmgn.ai/?chain=etj',
+            'referer': 'https://gmgn.ai/?chain=sol',
             'user-agent': self.user_agent
         }
 
@@ -95,7 +95,7 @@ class EthTopTraders:
         return proxy
 
     def fetchTopTraders(self, contractAddress: str, useProxies):
-        url = f"https://gmgn.ai/defi/quotation/v1/tokens/top_traders/eth/{contractAddress}?orderby=profit&direction=desc"
+        url = f"https://gmgn.ai/defi/quotation/v1/tokens/top_traders/bsc/{contractAddress}?orderby=profit&direction=desc"
         retries = 3
 
         for attempt in range(retries):
@@ -154,17 +154,17 @@ class EthTopTraders:
         
         identifier = self.shorten(list(self.allAddresses)[0])
         
-        with open(f'Dragon/data/Ethereum/TopTraders/allTopAddresses_{identifier}.txt', 'w') as av:
+        with open(f'Dragon/data/BSC/TopTraders/allTopAddresses_{identifier}.txt', 'w') as av:
             for address in self.allAddresses:
                 av.write(f"{address}\n")
 
         if len(repeatedAddresses) != 0:
-            with open(f'Dragon/data/Ethereum/TopTraders/repeatedTopTraders_{identifier}.txt', 'w') as ra:
+            with open(f'Dragon/data/BSC/TopTraders/repeatedTopTraders_{identifier}.txt', 'w') as ra:
                 for address in repeatedAddresses:
                     ra.write(f"{address}\n")
             print(f"[🐲] Saved {len(repeatedAddresses)} repeated addresses to repeatedTopTraders_{identifier}.txt")
 
-        with open(f'Dragon/data/Ethereum/TopTraders/topTraders_{identifier}.json', 'w') as tt:
+        with open(f'Dragon/data/BSC/TopTraders/topTraders_{identifier}.json', 'w') as tt:
             json.dump(self.allData, tt, indent=4)
 
         print(f"[🐲] Saved {self.totalTraders} top traders for {len(contractAddresses)} tokens to allTopAddresses_{identifier}.txt")

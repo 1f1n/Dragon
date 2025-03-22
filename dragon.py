@@ -1,5 +1,6 @@
 from Dragon import utils, BundleFinder, ScanAllTx, BulkWalletChecker, TopTraders, TimestampTransactions, purgeFiles, CopyTradeWalletFinder, TopHolders, EarlyBuyers, checkProxyFile
 from Dragon import EthBulkWalletChecker, EthTopTraders, EthTimestampTransactions, EthScanAllTx
+from Dragon import BscBulkWalletChecker, BscTopTraders
 from Dragon import gmgnTools, GMGN
 
 purgeFiles = utils.purgeFiles
@@ -466,6 +467,27 @@ def eth():
                             print(f"[🐲] Invalid input. Defaulting to 40 threads.")
                             break
                         break
+                    
+                    while True:
+                        proxies = input("[❓] Use Proxies? (Y/N) > ")
+                    
+                        try:
+                            useProxies = None
+                            checkProxies = checkProxyFile()
+                            if not checkProxies and proxies.lower() != "n":
+                                print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                                useProxies = False
+                                break
+                            if proxies.lower() == "y":
+                                useProxies = True
+                                print(f"[🐲] Using proxies.")
+                            else:
+                                useProxies = False
+                        except Exception:
+                            print(f"[🐲] Invalid input")
+                            break
+                        break
+        
                     while True:
                         skipWallets = False
                         skipWalletsInput = input("[❓] Skip wallets with no buys in 30d (Y/N)> ")
@@ -477,7 +499,7 @@ def eth():
                             skipWallets = False
                         else:
                             skipWallets = True
-                        walletData = walletCheck.fetchWalletData(wallets, threads=threads, skipWallets=skipWallets)
+                        walletData = walletCheck.fetchWalletData(wallets, threads=threads, skipWallets=skipWallets, useProxies=useProxies)
                         print(f"\n{optionsChoice}\n")
                         break  
                 except IndexError as e:
@@ -499,6 +521,27 @@ def eth():
                         threads = 40
                         print(f"[🐲] Invalid input. Defaulting to 40 threads.")
                     break
+                
+                while True:
+                    proxies = input("[❓] Use Proxies? (Y/N) > ")
+                
+                    try:
+                        useProxies = None
+                        checkProxies = checkProxyFile()
+                        if not checkProxies and proxies.lower() != "n":
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                            break
+                        if proxies.lower() == "y":
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        else:
+                            useProxies = False
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
+                
                 with open('Dragon/data/Ethereum/TopTraders/tokens.txt', 'r') as fp:
                     contractAddresses = fp.read().splitlines()
                     if contractAddresses and contractAddresses != []:
@@ -507,7 +550,7 @@ def eth():
                         print(f"[🐲] Error occurred, file may be empty. Go to the file here: Draon/data/Ethereum/tokens.txt")
                         print(f"\n{optionsChoice}\n")
                         continue
-                    data = topTraders.topTraderData(contractAddresses, threads)
+                    data = topTraders.topTraderData(contractAddresses, threads, useProxies)
 
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 4:
@@ -533,7 +576,27 @@ def eth():
                         break
                     break
 
-                go = scan.getAllTxMakers(contractAddress, threads)
+                while True:
+                    proxies = input("[❓] Use Proxies? (Y/N) > ")
+                
+                    try:
+                        useProxies = None
+                        checkProxies = checkProxyFile()
+                        if not checkProxies and proxies.lower() != "n":
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                            break
+                        if proxies.lower() == "y":
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        else:
+                            useProxies = False
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
+
+                go = scan.getAllTxMakers(contractAddress, threads, useProxies)
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 5:
                 while True:
@@ -573,7 +636,27 @@ def eth():
                         print(f"[🐲] Invalid input.")
                         break
                     break
-                timestampTxns = timestamp.getTxByTimestamp(contractAddress, threads, start, end)
+
+                while True:
+                    proxies = input("[❓] Use Proxies? (Y/N) > ")
+                
+                    try:
+                        useProxies = None
+                        checkProxies = checkProxyFile()
+                        if not checkProxies and proxies.lower() != "n":
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                            break
+                        if proxies.lower() == "y":
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        else:
+                            useProxies = False
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
+                timestampTxns = timestamp.getTxByTimestamp(contractAddress, threads, start, end, useProxies)
                 print(f"\n{optionsChoice}\n")
             elif optionsInput == 6:
                 purgeFiles(chain="Ethereum")
@@ -1108,6 +1191,183 @@ def solana():
             print(f"\n{optionsChoice}\n")
             print("[🐲] Invalid input.")
 
+def bsc():
+    walletCheck = BscBulkWalletChecker()
+    topTraders = BscTopTraders()
+
+    filesChoice, files = utils.searchForTxt(chain="Binance Smart Chain")
+    options, optionsChoice = utils.choices(chain="Binance Smart Chain")
+
+    print(f"{optionsChoice}\n")
+
+    while True:
+        try:
+            while True:
+                optionsInput = int(input("[❓] Choice > "))
+                if optionsInput in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+                    print(f"[🐲] Selected {options[optionsInput - 1]}")
+                    break 
+                else:
+                    print("[🐲] Invalid choice.")
+            if optionsInput == 1:
+                if len(files) < 2:
+                    print("[🐲] No files available.")
+                    print(f"\n{optionsChoice}\n")
+                    continue
+                print(f"\n{filesChoice}\n")
+
+                try:
+                    while True:
+                        fileSelectionOption = int(input("[❓] File Choice > "))
+                        if fileSelectionOption > len(files):
+                            print("[🐲] Invalid input.")
+                        elif files[fileSelectionOption - 1] == "Select Own File":
+                            print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
+                            while True:
+                                fileDirectory = input("[🐲] Enter filename/path > ")
+                                try:
+                                    with open(fileDirectory, 'r') as f:
+                                        wallets = f.read().splitlines()
+                                    if wallets and wallets != []:
+                                        print(f"[🐲] Loaded {len(wallets)} wallets") 
+                                        break
+                                    else:
+                                        print(f"[🐲] Error occurred, file may be empty. Go to the ")
+                                        continue
+                                except Exception as e:
+                                    print(f"[🐲] File directory not found.")
+                                    continue
+                            break
+                        else:
+                            print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
+                            fileDirectory = f"Dragon/data/BSC/{files[fileSelectionOption - 1]}"
+
+                            with open(fileDirectory, 'r') as f:
+                                wallets = f.read().splitlines()
+                            if wallets and wallets != []:
+                                print(f"[🐲] Loaded {len(wallets)} wallets")
+                                break 
+                            else:
+                                print(f"[🐲] Error occurred, file may be empty.")
+                                continue 
+                    while True:
+                        threads = input("[❓] Threads > ")
+                        try:
+                            threads = int(threads)
+                            if threads > 100:
+                                print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                                threads = 40
+                        except ValueError:
+                            threads = 40
+                            print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                            break
+                        break
+                    
+                    while True:
+                        proxies = input("[❓] Use Proxies? (Y/N) > ")
+                    
+                        try:
+                            useProxies = None
+                            checkProxies = checkProxyFile()
+                            if not checkProxies and proxies.lower() != "n":
+                                print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                                useProxies = False
+                                break
+                            if proxies.lower() == "y":
+                                useProxies = True
+                                print(f"[🐲] Using proxies.")
+                            else:
+                                useProxies = False
+                        except Exception:
+                            print(f"[🐲] Invalid input")
+                            break
+                        break
+        
+                    while True:
+                        skipWallets = False
+                        skipWalletsInput = input("[❓] Skip wallets with no buys in 30d (Y/N)> ")
+
+                        if skipWalletsInput.upper() not in ["Y", "N"]:
+                            print("[🐲] Invalid input.")
+                            continue 
+                        if skipWalletsInput.upper() == "N":
+                            skipWallets = False
+                        else:
+                            skipWallets = True
+                        walletData = walletCheck.fetchWalletData(wallets, threads=threads, skipWallets=skipWallets, useProxies=useProxies)
+                        print(f"\n{optionsChoice}\n")
+                        break  
+                except IndexError as e:
+                    print(f"[🐲] File choice out of range. {e}")
+                    print(f"\n{optionsChoice}\n")
+                except ValueError:
+                    print("[🐲] Invalid input.")
+                    print(f"\n{optionsChoice}\n")
+                continue
+            elif optionsInput == 2:
+                while True:
+                    threads = input("[❓] Threads > ")
+                    try:
+                        threads = int(threads)
+                        if threads > 100:
+                            print(f"[🐲] Do not use more than 100 threads. Automatically set threads to 40.")
+                            threads = 40
+                    except ValueError:
+                        threads = 40
+                        print(f"[🐲] Invalid input. Defaulting to 40 threads.")
+                    break
+                
+                while True:
+                    proxies = input("[❓] Use Proxies? (Y/N) > ")
+                
+                    try:
+                        useProxies = None
+                        checkProxies = checkProxyFile()
+                        if not checkProxies and proxies.lower() != "n":
+                            print(f"[🐲] Dragon/data/Proxies/proxies.txt is empty, please add proxies to use them.")
+                            useProxies = False
+                            break
+                        if proxies.lower() == "y":
+                            useProxies = True
+                            print(f"[🐲] Using proxies.")
+                        else:
+                            useProxies = False
+                    except Exception:
+                        print(f"[🐲] Invalid input")
+                        break
+                    break
+                
+                with open('Dragon/data/BSC/TopTraders/tokens.txt', 'r') as fp:
+                    contractAddresses = fp.read().splitlines()
+                    if contractAddresses and contractAddresses != []:
+                        print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
+                    else:
+                        print(f"[🐲] Error occurred, file may be empty. Go to the file here: Draon/data/BSC/tokens.txt")
+                        print(f"\n{optionsChoice}\n")
+                        continue
+                    data = topTraders.topTraderData(contractAddresses, threads, useProxies)
+
+                print(f"\n{optionsChoice}\n")
+
+            elif optionsInput == 3:
+                purgeFiles(chain="BSC")
+                print(f"[🐲] Successfully purged files.")   
+                print(f"\n{optionsChoice}\n")
+            elif optionsInput == 4:
+                print(f"[🐲] Thank you for using Dragon.")
+                break
+        except ValueError as e:
+            clear()
+            print(banner)
+            print(f"\n{optionsChoice}\n")
+            print("[🐲] Invalid input.")
+        except ValueError as e:
+            utils.clear()
+            print(banner)
+            print(f"[🐲] Error occured. Please retry or use a VPN/Proxy. {e}")
+            print(f"\n{optionsChoice}\n")
+            print("[🐲] Invalid input.")
+    
 banner = utils.banner()
 print(banner)
 
@@ -1129,6 +1389,8 @@ while True:
         elif chainsInput == 2:
             eth()
         elif chainsInput == 3:
+            bsc()
+        elif chainsInput == 4:
             gmgn()
         else:
             print(f"[🐲] Invalid choice.")

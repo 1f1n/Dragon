@@ -8,7 +8,7 @@ import time
 
 ua = UserAgent(os='linux', browsers=['firefox'])
 
-class EthBulkWalletChecker:
+class BscBulkWalletChecker:
 
     def __init__(self):
         self.sendRequest = tls_client.Session(client_identifier='chrome_103')
@@ -46,7 +46,7 @@ class EthBulkWalletChecker:
             'accept-language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
             'dnt': '1',
             'priority': 'u=1, i',
-            'referer': 'https://gmgn.ai/?chain=eth',
+            'referer': 'https://gmgn.ai/?chain=sol',
             'user-agent': self.user_agent
         }
 
@@ -96,7 +96,7 @@ class EthBulkWalletChecker:
 
     
     def getTokenDistro(self, wallet: str, useProxies):
-        url = f"https://gmgn.ai/defi/quotation/v1/rank/eth/wallets/{wallet}/unique_token_7d?interval=30d"
+        url = f"https://gmgn.ai/defi/quotation/v1/rank/bsc/wallets/{wallet}/unique_token_7d?interval=30d"
         retries = 3
         tokenDistro = []
 
@@ -156,7 +156,7 @@ class EthBulkWalletChecker:
         }
 
     def getWalletData(self, wallet: str, skipWallets: bool, useProxies):
-        url = f"https://gmgn.ai/defi/quotation/v1/smartmoney/eth/walletNew/{wallet}?period=7d"
+        url = f"https://gmgn.ai/defi/quotation/v1/smartmoney/bsc/walletNew/{wallet}?period=7d"
         retries = 5
         
         for attempt in range(retries):
@@ -173,7 +173,7 @@ class EthBulkWalletChecker:
                         if skipWallets:
                             if 'buy_30d' in data and isinstance(data['buy_30d'], (int, float)) and data['buy_30d'] > 0:
                                 self.totalGrabbed += 1
-                                print(f"[🐲] Successfully grabbed data for {wallet} ({self.totalGrabbed})")#  and float(data['eth_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
+                                print(f"[🐲] Successfully grabbed data for {wallet} ({self.totalGrabbed})")#  and float(data['sol_balance']) >= 1.0: (uncomment this to filter out insiders that cashed out already)
                                 return self.processWalletData(wallet, data, self.headers, useProxies)
                             else:
                                 self.skippedWallets += 1
@@ -195,17 +195,17 @@ class EthBulkWalletChecker:
 
     
     def processWalletData(self, wallet, data, headers, useProxies):
-        direct_link = f"https://gmgn.ai/eth/address/{wallet}"
+        direct_link = f"https://gmgn.ai/bsc/address/{wallet}"
         total_profit_percent = f"{data['total_profit_pnl'] * 100:.2f}%" if data['total_profit_pnl'] is not None else "error"
         realized_profit_7d_usd = f"${data['realized_profit_7d']:,.2f}" if data['realized_profit_7d'] is not None else "error"
         realized_profit_30d_usd = f"${data['realized_profit_30d']:,.2f}" if data['realized_profit_30d'] is not None else "error"
         winrate_7d = f"{data['winrate'] * 100:.2f}%" if data['winrate'] is not None else "?"
-        eth_balance = f"{float(data['eth_balance']):.2f}" if data['eth_balance'] is not None else "?"
+        sol_balance = f"{float(data['sol_balance']):.2f}" if data['sol_balance'] is not None else "?"
         buy_7d = f"{data['buy_7d']}" if data['buy_7d'] is not None else "?"
 
         self.randomise()
         winrate_30data = self.sendRequest.get(
-            f"https://gmgn.ai/defi/quotation/v1/smartmoney/eth/walletNew/{wallet}?period=30d", 
+            f"https://gmgn.ai/defi/quotation/v1/smartmoney/bsc/walletNew/{wallet}?period=30d", 
             headers=self.headers,
             allow_redirects=True
         ).json()['data']
@@ -241,7 +241,7 @@ class EthBulkWalletChecker:
             "winrate_7d": winrate_7d,
             "winrate_30d": winrate_30d,
             "tags": tags,
-            "eth_balance": eth_balance,
+            "sol_balance": sol_balance,
             "token_distribution": tokenDistro if tokenDistro else {},
             "directLink": direct_link,
             "buy_7d": buy_7d
@@ -272,7 +272,7 @@ class EthBulkWalletChecker:
         identifier = self.shorten(list(result_dict)[0])
         filename = f"{identifier}_{random.randint(1111, 9999)}.csv"
 
-        path = f"Dragon/data/Ethereum/BulkWallet/wallets_{filename}"
+        path = f"Dragon/data/BSC/BulkWallet/wallets_{filename}"
 
         with open(path, 'w', newline='') as outfile:
             writer = csv.writer(outfile)

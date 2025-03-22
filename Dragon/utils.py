@@ -31,7 +31,7 @@ def checkProxyFile():
         return bool(f.readlines())
 
 def chains():
-    options: list = ["Solana", "Ethereum", "GMGN Tools"]
+    options: list = ["Solana", "Ethereum", "Binance Smart Chain", "GMGN Tools"]
     optionsChoice = "[🐲] Please select a chain:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     
     return options, optionsChoice
@@ -51,16 +51,16 @@ def gmgnTools(site: str):
 def choices(chain: str):
     if chain.lower() == "solana":
         options: list = ["Bundle Checker", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Copy Wallet Finder", "Top Holders Scraper", "Early Buyers Scraper", "Purge All Files", "Quit"]
-        optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     elif chain.lower() == "ethereum":
         options: list = ["Placeholder", "Bulk Wallet Checker", "Top Traders Scraper", "All Transaction Scan", "Get Transaction By Timestamp", "Purge All Files", "Quit"]
-        optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
+    elif chain.lower() == "binance smart chain":
+        options: list = ["Bulk Wallet Checker", "Top Traders Scraper", "Purge All Files", "Quit"]
     elif chain.lower() == "gmgn":
         options: list = ["Pump.Fun", "Moonshot", "Purge All Files", "Quit"]
-        optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     else:
         return f"[🐲] Error, Dragon does not support the chain '{chain}'"
     
+    optionsChoice = "[🐲] Please select a module:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     return options, optionsChoice
 
 def clear():
@@ -75,6 +75,8 @@ def searchForTxt(chain: str):
         chain = "Solana"
     elif chain.lower() == "ethereum":
         chain = "Ethereum"
+    elif chain.lower() == "binance smart chain":
+        chain = "BSC"
     elif chain.lower() == "gmgn":
         chain = "GMGN"
     else:
@@ -108,6 +110,8 @@ def purgeFiles(chain: str):
         chain = "Solana"
     elif chain.lower() == "ethereum":
         chain = "Ethereum"
+    elif chain.lower() == "bsc":
+        chain = "BSC"
     elif chain.lower() == "gmgn":
         chain = "GMGN"
     else:
