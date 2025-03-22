@@ -201,6 +201,12 @@ Updates
 - Fixed Bundle Checker.<br>
 - Various other small fixes.
 </p>
+<p>
+22/03/2025<br>
+- Added Cloudflare bypass to Ethereum modules.<br>
+- Added BSC chain modules.<br>
+- Various other small improvments and fixes.
+</p>
 
 <h1 align="left">
 Donations
