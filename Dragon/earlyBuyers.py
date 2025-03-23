@@ -91,7 +91,7 @@ class EarlyBuyers:
         return proxy
     
     def fetchEarlyBuyers(self, contractAddress: str, useProxies, buyers):
-        url = f"https://gmgn.ai/defi/quotation/v1/trades/sol/{contractAddress}?revert=true"
+        url = f"https://gmgn.ai/vas/api/v1/token_trades/sol/{contractAddress}?revert=true"
         retries = 3
 
         for attempt in range(retries):
@@ -128,16 +128,16 @@ class EarlyBuyers:
 
                 for earlyBuyer in limited_response:
                     address = earlyBuyer['maker']
-                    print(address)
 
                     if address:
                         self.addressFrequency[address] += 1
                         self.allAddresses.add(address)
 
-                        bought_usd = f"${earlyBuyer['amount_usd']:,.2f}" if earlyBuyer['amount_usd'] is not None else "?"
-                        total_profit = f"${earlyBuyer['realized_profit']:,.2f}" if earlyBuyer['realized_profit'] is not None else "?"
-                        unrealized_profit = f"${earlyBuyer['unrealized_profit']:,.2f}" if earlyBuyer['unrealized_profit'] is not None else "?"
-                        trades = f"{earlyBuyer['total_trade']}" if earlyBuyer['total_trade'] is not None else "?"
+                
+                        bought_usd = f"${float(earlyBuyer['amount_usd']):,.2f}" if earlyBuyer['amount_usd'] not in (None, "") else "?"
+                        total_profit = f"${float(earlyBuyer['realized_profit']):,.2f}" if earlyBuyer['realized_profit'] not in (None, "") else "?"
+                        unrealized_profit = f"${float(earlyBuyer['unrealized_profit']):,.2f}" if earlyBuyer['unrealized_profit'] not in (None, "") else "?"
+                        trades = str(earlyBuyer['total_trade']) if earlyBuyer['total_trade'] not in (None, "") else "?"
 
                         buyer_data = {
                             "boughtUsd": bought_usd,
@@ -148,7 +148,12 @@ class EarlyBuyers:
                         self.allData[contract_address].append({address: buyer_data})
 
         repeatedAddresses = [address for address, count in self.addressFrequency.items() if count > 1]
-        identifier = self.shorten(list(self.allAddresses)[0])
+
+        if not self.allAddresses:
+            print(f"[🐲] No early buyers found for {len(contractAddresses)} token(s).")
+            return
+
+        identifier = self.shorten(next(iter(self.allAddresses)))
 
         with open(f'Dragon/data/Solana/EarlyBuyers/allTopAddresses_{identifier}.txt', 'w') as av:
             for address in self.allAddresses:

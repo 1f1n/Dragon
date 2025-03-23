@@ -1121,6 +1121,40 @@ def solana():
                 print(f"\n{optionsChoice}\n")
 
             elif optionsInput == 8:
+                print(f"\n{filesChoice}\n")
+                while True:
+                        fileSelectionOption = int(input("[❓] File Choice > "))
+                        if fileSelectionOption > len(files):
+                            print("[🐲] Invalid input.")
+                        elif files[fileSelectionOption - 1] == "Select Own File":
+                            print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
+                            while True:
+                                fileDirectory = input("[🐲] Enter filename/path > ")
+                                try:
+                                    with open(fileDirectory, 'r') as f:
+                                        wallets = f.read().splitlines()
+                                    if wallets and wallets != []:
+                                        print(f"[🐲] Loaded {len(wallets)} wallets") 
+                                        break
+                                    else:
+                                        print(f"[🐲] Error occurred, file may be empty. Go to the ")
+                                        continue
+                                except Exception as e:
+                                    print(f"[🐲] File directory not found.")
+                                    continue
+                            break
+                        else:
+                            print(f"[🐲] Selected {files[fileSelectionOption - 1]}")
+                            fileDirectory = f"Dragon/data/Solana/{files[fileSelectionOption - 1]}"
+
+                            with open(fileDirectory, 'r') as f:
+                                contractAddresses = f.read().splitlines()
+                            if contractAddresses and contractAddresses != []:
+                                print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
+                                break 
+                            else:
+                                print(f"[🐲] Error occurred, file may be empty.")
+                                continue 
                 while True:
                     buyers = int(input("[❓] Amount of Early Buyers > "))
                     try:
@@ -1164,16 +1198,15 @@ def solana():
                         print(f"[🐲] Invalid input")
                         break
                     break
-                with open('Dragon/data/Solana/EarlyBuyers/tokens.txt', 'r') as fp:
-                    contractAddresses = fp.read().splitlines()
-                    if contractAddresses and contractAddresses != []:
-                        print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
-                    else:
-                        print(f"[🐲] Error occurred, file may be empty. Go to the file here: Draon/data/EarlyBuyers/tokens.txt")
-                        print(f"\n{optionsChoice}\n")
-                        continue
-                        
+                contractAddresses = contractAddresses if 'contractAddresses' in locals() else wallets
+
+                if contractAddresses:
+                    print(f"[🐲] Loaded {len(contractAddresses)} contract addresses")
                     data = earlyBuyers.earlyBuyersdata(contractAddresses, threads, useProxies, buyers)
+                else:
+                    print(f"[🐲] Error occurred, file may be empty. Check your selected file.")
+                    print(f"\n{optionsChoice}\n")
+                    continue
 
                 print(f"\n{optionsChoice}\n")
 
