@@ -3,7 +3,7 @@
     Dragon
 </h1>
 <p align="center">
-	The all-in-one tool to help you find profitable wallets on Solana and Ethereum.
+	The all-in-one tool to help you find profitable wallets on Solana, Ethereum and Binance Smart Chain.
 </p><br>
 <p align="center"><b>Note, the GMGN.ai domain is cloudflare protected,<br> meaning some requests will fail to get access to an unprotected endpoint <br>DM me on Discord<br>@fln</b></p>
 <h1 align="left">Suggestions</h1>
@@ -200,6 +200,12 @@ Updates
 - Removed Cloudscraper (sucks).<br>
 - Fixed Bundle Checker.<br>
 - Various other small fixes.
+</p>
+<p>
+22/03/2025<br>
+- Added Cloudflare bypass to Ethereum modules.<br>
+- Added BSC chain modules.<br>
+- Various other small improvments and fixes.
 </p>
 
 <h1 align="left">

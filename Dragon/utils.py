@@ -1,5 +1,8 @@
 import os
+import io
 import glob
+import zipfile
+import requests
 
 from colorama import Fore, init
 
@@ -31,7 +34,7 @@ def checkProxyFile():
         return bool(f.readlines())
 
 def chains():
-    options: list = ["Solana", "Ethereum", "Binance Smart Chain", "GMGN Tools"]
+    options: list = ["Solana", "Ethereum", "Binance Smart Chain", "GMGN Tools", "Update"]
     optionsChoice = "[🐲] Please select a chain:\n\n" + "\n".join([f"[{Fore.RED}{index + 1}{Fore.WHITE}] {option}" for index, option in enumerate(options)])
     
     return options, optionsChoice
@@ -147,4 +150,22 @@ def purgeFiles(chain: str):
                             pass
                     else:
                         os.remove(file_path)
+def updateDragon():
+    zip_url = f"https://github.com/1f1n/Dragon/archive/refs/heads/main.zip"
+    resp = requests.get(zip_url)
+    resp.raise_for_status()
+
+    with zipfile.ZipFile(io.BytesIO(resp.content)) as z:
+        root = z.namelist()[0].split("/")[0] + "/"
+        for member in z.namelist():
+            if member.endswith("/"):
+                continue
+            rel_path = member[len(root):]
+            target = os.path.join(".", rel_path)
+            os.makedirs(os.path.dirname(target), exist_ok=True)
+            with z.open(member) as src, open(target, "wb") as dst:
+                dst.write(src.read())
+
+    print(f"[🐲] Successfully updated Dragon.")
+    
 init(autoreset=True)

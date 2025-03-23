@@ -1,5 +1,6 @@
-from Dragon import utils, BundleFinder, ScanAllTx, BulkWalletChecker, TopTraders, TimestampTransactions, purgeFiles, CopyTradeWalletFinder, TopHolders, EarlyBuyers, checkProxyFile
+from Dragon import BundleFinder, ScanAllTx, BulkWalletChecker, TopTraders, TimestampTransactions, CopyTradeWalletFinder, TopHolders, EarlyBuyers
 from Dragon import EthBulkWalletChecker, EthTopTraders, EthTimestampTransactions, EthScanAllTx
+from Dragon import utils, purgeFiles, checkProxyFile, updateDragon
 from Dragon import BscBulkWalletChecker, BscTopTraders
 from Dragon import gmgnTools, GMGN
 
@@ -1368,6 +1369,9 @@ def bsc():
             print(f"\n{optionsChoice}\n")
             print("[🐲] Invalid input.")
     
+def update():
+    update = updateDragon()
+
 banner = utils.banner()
 print(banner)
 
@@ -1379,7 +1383,7 @@ while True:
     try:
         while True:
             chainsInput = int(input("[❓] Choice > "))
-            if chainsInput in [1, 2, 3, 4]:
+            if chainsInput in [1, 2, 3, 4, 5]:
                 print(f"[🐲] Selected {chains[chainsInput - 1]}")
                 break
             else:
@@ -1392,6 +1396,8 @@ while True:
             bsc()
         elif chainsInput == 4:
             gmgn()
+        elif chainsInput == 5:
+            update()
         else:
             print(f"[🐲] Invalid choice.")
         break
