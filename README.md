@@ -207,6 +207,10 @@ Updates
 - Added BSC chain modules.<br>
 - Various other small improvments and fixes.
 </p>
+<p>
+23/03/2025<br>
+- Added automatic updater.
+</p>
 
 <h1 align="left">
 Donations
