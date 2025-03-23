@@ -1368,9 +1368,6 @@ def bsc():
             print(f"[🐲] Error occured. Please retry or use a VPN/Proxy. {e}")
             print(f"\n{optionsChoice}\n")
             print("[🐲] Invalid input.")
-    
-def update():
-    update = updateDragon()
 
 banner = utils.banner()
 print(banner)
@@ -1397,7 +1394,11 @@ while True:
         elif chainsInput == 4:
             gmgn()
         elif chainsInput == 5:
-            update()
+            updateDragon()
+            utils.clear()
+            print(banner)
+            print(f"{chainsChoice}\n")
+            continue 
         else:
             print(f"[🐲] Invalid choice.")
         break
