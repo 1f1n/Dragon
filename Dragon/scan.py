@@ -112,7 +112,7 @@ class ScanAllTx:
         return [], None
 
     def getAllTxMakers(self, contractAddress: str, threads: int, useProxies):
-        base_url = f"https://gmgn.ai/defi/quotation/v1/trades/sol/{contractAddress}?limit=100"
+        base_url = f"http://57.128.172.213:1337/vas/api/v1/token_trades/sol/{contractAddress}?limit=100"
         paginator = None
         urls = []
         
@@ -147,7 +147,7 @@ class ScanAllTx:
             for future in concurrent.futures.as_completed(future_to_url):
                 history, _ = future.result()
                 with self.lock: 
-                    for maker in history:
+                    for maker in history['history']:
                         event = maker['event']
                         if event == "buy":
                             print(f"[🐲] Wallet: {maker['maker']} | Hash: {maker['tx_hash']} | Type: {event}")
