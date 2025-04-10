@@ -112,7 +112,7 @@ class ScanAllTx:
         return [], None
 
     def getAllTxMakers(self, contractAddress: str, threads: int, useProxies):
-        base_url = f"http://57.128.172.213:1337/vas/api/v1/token_trades/sol/{contractAddress}?limit=100"
+        base_url = f"https://gmgn.ai/vas/api/v1/token_trades/sol/{contractAddress}?limit=100"
         paginator = None
         urls = []
         
