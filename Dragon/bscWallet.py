@@ -21,24 +21,29 @@ class BscBulkWalletChecker:
         self.results = []
 
     def randomise(self):
-        self.identifier = random.choice([browser for browser in tls_client.settings.ClientIdentifiers.__args__ if browser.startswith(('chrome', 'safari', 'firefox', 'opera'))])
+        self.identifier = random.choice(
+            [browser for browser in tls_client.settings.ClientIdentifiers.__args__
+             if browser.startswith(('chrome', 'safari', 'firefox', 'opera'))]
+        )
+        parts = self.identifier.split('_')
+        identifier, version, *rest = parts
+        identifier = identifier.capitalize()
+        
         self.sendRequest = tls_client.Session(random_tls_extension_order=True, client_identifier=self.identifier)
         self.sendRequest.timeout_seconds = 60
 
-        parts = self.identifier.split('_')
-        identifier, version, *rest = parts
-        other = rest[0] if rest else None
-        
-        os = 'windows'
-        if identifier == 'opera':
-            identifier = 'chrome'
-        elif version == 'ios':
-            os = 'ios'
+        if identifier == 'Opera':
+            identifier = 'Chrome'
+            osType = 'Windows'
+        elif version.lower() == 'ios':
+            osType = 'iOS'
         else:
-            os = 'windows'
+            osType = 'Windows'
 
-        self.user_agent = UserAgent(browsers=[identifier], os=[os], fallback='firefox').random
-    
+        try:
+            self.user_agent = UserAgent(os=[osType]).random
+        except Exception:
+            self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0"
 
         self.headers = {
             'Host': 'gmgn.ai',

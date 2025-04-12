@@ -7,6 +7,9 @@ from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
 
+from threading import Event
+globalRatelimitEvent = Event()
+
 ua = UserAgent(os='linux', browsers=['firefox'])
 
 class TopTraders:
@@ -22,22 +25,29 @@ class TopTraders:
         self.proxyPosition = 0
     
     def randomise(self):
-        self.identifier = random.choice([browser for browser in tls_client.settings.ClientIdentifiers.__args__ if browser.startswith(('chrome', 'safari', 'firefox', 'opera'))])
-        self.sendRequest = tls_client.Session(random_tls_extension_order=True, client_identifier=self.identifier)
-
+        self.identifier = random.choice(
+            [browser for browser in tls_client.settings.ClientIdentifiers.__args__
+             if browser.startswith(('chrome', 'safari', 'firefox', 'opera'))]
+        )
         parts = self.identifier.split('_')
         identifier, version, *rest = parts
-        other = rest[0] if rest else None
+        identifier = identifier.capitalize()
         
-        os = 'windows'
-        if identifier == 'opera':
-            identifier = 'chrome'
-        elif version == 'ios':
-            os = 'ios'
-        else:
-            os = 'windows'
+        self.sendRequest = tls_client.Session(random_tls_extension_order=True, client_identifier=self.identifier)
+        self.sendRequest.timeout_seconds = 60
 
-        self.user_agent = UserAgent(browsers=[identifier], os=[os]).random
+        if identifier == 'Opera':
+            identifier = 'Chrome'
+            osType = 'Windows'
+        elif version.lower() == 'ios':
+            osType = 'iOS'
+        else:
+            osType = 'Windows'
+
+        try:
+            self.user_agent = UserAgent(os=[osType]).random
+        except Exception:
+            self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0"
 
         self.headers = {
             'Host': 'gmgn.ai',
@@ -48,7 +58,6 @@ class TopTraders:
             'referer': 'https://gmgn.ai/?chain=sol',
             'user-agent': self.user_agent
         }
-
 
     def loadProxies(self):
         with open("Dragon/data/Proxies/proxies.txt", 'r') as file:
@@ -100,19 +109,32 @@ class TopTraders:
 
         for attempt in range(retries):
             try:
+                if globalRatelimitEvent.is_set():
+                    print(f"[🐲] Global rate limit active. Waiting before fetching top traders for contract {contractAddress}...")
+                    globalRatelimitEvent.wait()
+                
                 self.randomise()
                 proxy = self.getNextProxy() if useProxies else None
                 self.configureProxy(proxy)
                 response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True)
+                
+                if response.status_code == 429:
+                    print(f"[🐲] Received 429 for contract {contractAddress}. Triggering global cooldown for 7.5 seconds...")
+                    globalRatelimitEvent.set()
+                    time.sleep(7.5)
+                    globalRatelimitEvent.clear()
+                    continue
+
                 data = response.json().get('data', None)
                 if data:
+                    print(f"[🐲] Successfully grabbed top traders for {contractAddress}")
                     return data
             except Exception as e:
-                print(f"[🐲] Error fetching data on attempt, trying backup... {e}")
-                    
+                print(f"[🐲] Error fetching data on attempt {attempt+1} for contract {contractAddress}: {e}")
+                
             time.sleep(1)
         
-        print(f"[🐲] Failed to fetch data after {retries} attempts.")
+        print(f"[🐲] Failed to fetch data for contract {contractAddress} after {retries} attempts.")
         return []
 
     def topTraderData(self, contractAddresses, threads, useProxies):
@@ -158,7 +180,7 @@ class TopTraders:
             for address in self.allAddresses:
                 av.write(f"{address}\n")
 
-        if len(repeatedAddresses) != 0:
+        if repeatedAddresses:
             with open(f'Dragon/data/Solana/TopTraders/repeatedTopTraders_{identifier}.txt', 'w') as ra:
                 for address in repeatedAddresses:
                     ra.write(f"{address}\n")
@@ -169,5 +191,3 @@ class TopTraders:
 
         print(f"[🐲] Saved {self.totalTraders} top traders for {len(contractAddresses)} tokens to allTopAddresses_{identifier}.txt")
         print(f"[🐲] Saved {len(self.allAddresses)} top trader addresses to topTraders_{identifier}.json")
-
-        return
