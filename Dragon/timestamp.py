@@ -129,7 +129,7 @@ class TimestampTransactions:
         return None
 
     def getTxByTimestamp(self, contractAddress, threads, start, end, useProxies):
-        base_url = f"https://gmgn.ai/defi/quotation/v1/trades/sol/{contractAddress}?limit=100"
+        base_url = f"https://gmgn.ai/vas/api/v1/token_trades/sol/{contractAddress}"
         paginator = None
         urls = []
         all_trades = []
