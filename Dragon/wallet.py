@@ -9,7 +9,6 @@ from contextlib import redirect_stderr
 from fake_useragent import UserAgent
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# Global event to manage rate limit cooldowns.
 globalRatelimitEvent = threading.Event()
 
 class BulkWalletChecker:
