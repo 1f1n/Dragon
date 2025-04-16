@@ -7,7 +7,6 @@ import time
 import random
 from threading import Event
 
-# Global event for rate-limit handling.
 globalRatelimitEvent = Event()
 
 ua = UserAgent(os='linux', browsers=['firefox'])
