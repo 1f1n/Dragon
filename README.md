@@ -3,8 +3,9 @@
     Dragon
 </h1>
 <p align="center">
-	The all-in-one tool to help you find profitable wallets on Solana and Ethereum.
+	The all-in-one tool to help you find profitable wallets on Solana, Ethereum and Binance Smart Chain.
 </p><br>
+<p align="center"><b>Note, the GMGN.ai domain is cloudflare protected,<br> meaning some requests will fail to get access to an unprotected endpoint <br>Join the Discord Server and request access<br>https://discord.gg/xxWqZppjht</b></p>
 <h1 align="left">Suggestions</h1>
 <a href="https://x.com/DragonWallets/status/1853618085149778392" target="_blank">Drop Suggestions!</a> (and a follow)
 <h1 align="left">Tutorial</h1>
@@ -80,14 +81,8 @@ Get Transaction By Timestamp
 <h1 align="left">
 Copy Wallet Finder
 </h1>
-<p>Grab the 10 transaction makers ahead of a wallet on a contract address to see if they have copytraders.</p>
-<p>
-1. Enter a contract address. <br>
-2. Enter the wallet address you'd like to check.<br>
-3. Enter the amount of threads you'd like to use.<br>
-4. Select whether you'd like to use proxies or not.<br>
-5. Wait and receive your wallet addresses.
-</p>
+
+[Use This](https://github.com/1f1n/solana-check-contested-wallets)
 
 <h1 align="left">
 Top Holders Scraper
@@ -205,6 +200,23 @@ Updates
 - Removed Cloudscraper (sucks).<br>
 - Fixed Bundle Checker.<br>
 - Various other small fixes.
+</p>
+<p>
+22/03/2025<br>
+- Added Cloudflare bypass to Ethereum modules.<br>
+- Added BSC chain modules.<br>
+- Various other small improvments and fixes.
+</p>
+<p>
+23/03/2025<br>
+- Added automatic updater.
+</p>
+<p>
+12/04/2025<br>
+- Added global ratelimit handling.<br>
+- Fixed Get Transaction By Timestamp<br>
+- Fixed fake user agent prompting a browser error.<br>
+- Optimised code and removed repeated and unnecessary code.
 </p>
 
 <h1 align="left">

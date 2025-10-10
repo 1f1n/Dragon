@@ -17,22 +17,29 @@ class TimestampTransactions:
         self.proxyPosition = 0
 
     def randomise(self):
-        self.identifier = random.choice([browser for browser in tls_client.settings.ClientIdentifiers.__args__ if browser.startswith(('chrome', 'safari', 'firefox', 'opera'))])
-        self.sendRequest = tls_client.Session(random_tls_extension_order=True, client_identifier=self.identifier)
-
+        self.identifier = random.choice(
+            [browser for browser in tls_client.settings.ClientIdentifiers.__args__
+             if browser.startswith(('chrome', 'safari', 'firefox', 'opera'))]
+        )
         parts = self.identifier.split('_')
         identifier, version, *rest = parts
-        other = rest[0] if rest else None
+        identifier = identifier.capitalize()
         
-        os = 'windows'
-        if identifier == 'opera':
-            identifier = 'chrome'
-        elif version == 'ios':
-            os = 'ios'
-        else:
-            os = 'windows'
+        self.sendRequest = tls_client.Session(random_tls_extension_order=True, client_identifier=self.identifier)
+        self.sendRequest.timeout_seconds = 60
 
-        self.user_agent = UserAgent(browsers=[identifier], os=[os]).random
+        if identifier == 'Opera':
+            identifier = 'Chrome'
+            osType = 'Windows'
+        elif version.lower() == 'ios':
+            osType = 'iOS'
+        else:
+            osType = 'Windows'
+
+        try:
+            self.user_agent = UserAgent(os=[osType]).random
+        except Exception:
+            self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0"
 
         self.headers = {
             'Host': 'gmgn.ai',
@@ -122,7 +129,7 @@ class TimestampTransactions:
         return None
 
     def getTxByTimestamp(self, contractAddress, threads, start, end, useProxies):
-        base_url = f"https://gmgn.ai/defi/quotation/v1/trades/sol/{contractAddress}?limit=100"
+        base_url = f"https://gmgn.ai/vas/api/v1/token_trades/sol/{contractAddress}"
         paginator = None
         urls = []
         all_trades = []
