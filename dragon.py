@@ -41,20 +41,31 @@ def getProxiesSetting():
 
 def selectFile(chainName):
     filesChoice, files = utils.searchForTxt(chain=chainName)
-    print(filesChoice)
+    print("\n[🐲] Available files:\n" + filesChoice)
+
+    chainDirectory = {
+        "Solana": "Solana",
+        "Ethereum": "Ethereum",
+        "Binance Smart Chain": "BSC",
+        "BSC": "BSC",
+        "GMGN": "GMGN",
+    }.get(chainName, chainName)
+
     while True:
         try:
             fileSelection = int(input("\n[❓] File Choice > "))
             if fileSelection > len(files):
                 print("[🐲] Invalid input.")
                 continue
+
             if files[fileSelection - 1] == "Select Own File":
                 print(f"[🐲] Selected {files[fileSelection - 1]}")
                 filePath = input("[🐲] Enter filename/path > ").strip()
             else:
-                filePath = f"Dragon/data/{chainName}/{files[fileSelection - 1]}"
+                filePath = f"Dragon/data/{chainDirectory}/{files[fileSelection - 1]}"
             with open(filePath, 'r') as f:
                 items = f.read().splitlines()
+
             if items:
                 print(f"[🐲] Loaded {len(items)} items.")
                 return items
@@ -62,6 +73,7 @@ def selectFile(chainName):
                 print("[🐲] File is empty. Try another file.")
         except Exception as e:
             print(f"[🐲] File error: {e}")
+
 
 def getContractAddress(expectedLengths):
     while True:
@@ -118,8 +130,6 @@ def gmgn():
             clearScreen()
             print(e)
             print(bannerText, optionsChoice, "[🐲] Invalid input.")
-
-
 
 def eth():
     walletCheck = EthBulkWalletChecker()
@@ -299,7 +309,7 @@ def bsc():
                     print("[🐲] No files available.")
                     print(optionsChoice)
                     continue
-                wallets = selectFile("BSC")
+                wallets = selectFile("Binance Smart Chain")
                 threads = getThreads()
                 useProxies = getProxiesSetting()
                 skipWallets = promptSkipWallets()

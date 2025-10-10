@@ -118,7 +118,7 @@ def searchForTxt(chain: str) -> Tuple[str, List[str]]:
     }
     chainKey = chain.lower()
     if chainKey not in chainMap:
-        raise ValueError(f"[🐲] Error, Dragon does not support the chain '{chain}'")
+        raise ValueError(f"\n[🐲] Error, Dragon does not support the chain '{chain}'")
     
     searchDirectory = os.path.normpath(os.path.join(os.getcwd(), "Dragon", "data", chainMap[chainKey]))
     additionalDirectory = os.path.normpath(os.path.join(os.getcwd(), "Dragon", "data", "GMGN"))

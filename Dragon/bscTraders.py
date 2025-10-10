@@ -102,7 +102,7 @@ class BscTopTraders:
         return proxy
 
     def fetchTopTraders(self, contractAddress: str, useProxies):
-        url = f"https://gmgn.ai/defi/quotation/v1/tokens/top_traders/bsc/{contractAddress}?orderby=profit&direction=desc"
+        url = f"https://gmgn.ai/vas/api/v1/token_traders/bsc/{contractAddress}?orderby=realized_profit&direction=desc"
         retries = 3
 
         for attempt in range(retries):
@@ -111,7 +111,7 @@ class BscTopTraders:
                 proxy = self.getNextProxy() if useProxies else None
                 self.configureProxy(proxy)
                 response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True)
-                data = response.json().get('data', None)
+                data = response.json().get('data', None).get('list', None)
                 if data:
                     return data
             except Exception as e:
