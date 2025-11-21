@@ -133,7 +133,7 @@ class TopHolders:
         return ""
 
     def fetchTopHolders(self, contractAddress: str, useProxies):
-        url = f"https://gmgn.ai/defi/quotation/v1/tokens/top_holders/sol/{contractAddress}?orderby=amount_percentage&direction=desc"
+        url = f"https://gmgn.ai/vas/api/v1/token_holders/sol/{contractAddress}?orderby=amount_percentage&direction=desc&limit=100"
         retries = 3
 
         for attempt in range(retries):
@@ -143,7 +143,6 @@ class TopHolders:
                 self.configureProxy(proxy)
                 response = self.sendRequest.get(url, headers=self.headers, allow_redirects=True)
                 
-                # 429 Handling
                 if response.status_code == 429:
                     print(f"[🐲] Received 429 for top holders of {contractAddress}. Triggering global cooldown for 7.5 seconds...")
                     globalRatelimitEvent.set()
@@ -151,7 +150,7 @@ class TopHolders:
                     globalRatelimitEvent.clear()
                     continue
 
-                data = response.json().get('data', None)
+                data = response.json().get('data', None).get('list', None)
                 if data:
                     return data
             except Exception as e:
@@ -161,7 +160,7 @@ class TopHolders:
         return []
 
     def topHolderData(self, contractAddresses, threads, useProxies):
-        excludeAddress = ["5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1", "TSLvdd1pWpHVjahSpsvCXUbgwsL3JAcvokwaKt1eokM", ]
+        excludeAddress = ["5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1", "TSLvdd1pWpHVjahSpsvCXUbgwsL3JAcvokwaKt1eokM"]
 
         with ThreadPoolExecutor(max_workers=threads) as executor:
             futures = {executor.submit(self.fetchTopHolders, address, useProxies): address for address in contractAddresses}

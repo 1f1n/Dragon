@@ -158,7 +158,8 @@ class BulkWalletChecker:
         realizedProfit30dUSD = f"${data['realized_profit_30d']:,.2f}" if data['realized_profit_30d'] is not None else "error"
         winrate7d = f"{data['winrate'] * 100:.2f}%" if data['winrate'] is not None else "?"
         solBalance = f"{float(data['sol_balance']):.2f}" if data['sol_balance'] is not None else "?"
-        buy7d = f"{data['buy_7d']}" if data['buy_7d'] is not None else "?"
+        buy7dValue = data.get("buy_7d", None)
+        buy7d = f"{buy7dValue}" if buy7dValue is not None else "?"
         averageHoldingDuration =  (
             f"{data['avg_holding_peroid']}s" if data['avg_holding_peroid'] < 60 
             else (

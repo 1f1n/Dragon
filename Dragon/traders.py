@@ -104,7 +104,7 @@ class TopTraders:
         return proxy
 
     def fetchTopTraders(self, contractAddress: str, useProxies):
-        url = f"https://gmgn.ai/defi/quotation/v1/tokens/top_traders/sol/{contractAddress}?orderby=profit&direction=desc"
+        url = f"https://gmgn.ai/vas/api/v1/token_traders/sol/{contractAddress}?orderby=realized_profit&direction=desc&limit=100"
         retries = 3
 
         for attempt in range(retries):
@@ -125,7 +125,7 @@ class TopTraders:
                     globalRatelimitEvent.clear()
                     continue
 
-                data = response.json().get('data', None)
+                data = response.json().get('data', None).get("list", None)
                 if data:
                     print(f"[🐲] Successfully grabbed top traders for {contractAddress}")
                     return data
