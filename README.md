@@ -215,7 +215,7 @@ Updates
 - Fixed Top Trader Scraper's outdated endpoint.<br>
 - Fixed Top Holder Scraper's outdated endpoint.<br>
 - Fixed Top Holder Scraper not asking for file selection.<br>
-- Added option for multiple contract address input<
+- Added option for multiple contract address input
 </p>
 
 
