@@ -69,14 +69,7 @@ All Transaction Scan
 <h1 align="left">
 Get Transaction By Timestamp
 </h1>
-<p>Grab every single wallet address that made a buy transaction of a Solana token between 2 timestamps.</p>
-<p>
-1. Enter a contract address. <br>
-2. Enter the amount of threads you'd like to use.<br>
-3. Select whether you'd like to use proxies or not.<br>
-4. Enter first & second timestamps.<br>
-5. Wait and receive your wallet addresses.
-</p>
+<p>Go to any token on GMGN and click on the candle stick, it will give you the transactions then.</p>
 
 <h1 align="left">
 Copy Wallet Finder
@@ -218,9 +211,13 @@ Updates
 - Fixed fake user agent prompting a browser error.<br>
 - Optimised code and removed repeated and unnecessary code.
 </p>
-10/10/2025<br>
-- Fixes and endpoint changes for BSC.
+21/11/2025<br>
+- Fixed Top Trader Scraper's outdated endpoint.<br>
+- Fixed Top Holder Scraper's outdated endpoint.<br>
+- Fixed Top Holder Scraper not asking for file selection.<br>
+- Added option for multiple contract address input<
 </p>
+
 
 <h1 align="left">
 Donations
