@@ -218,6 +218,9 @@ Updates
 - Fixed fake user agent prompting a browser error.<br>
 - Optimised code and removed repeated and unnecessary code.
 </p>
+10/10/2025<br>
+- Fixes and endpoint changes for BSC.
+</p>
 
 <h1 align="left">
 Donations
