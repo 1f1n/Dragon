@@ -11,6 +11,29 @@ purgeFilesUtil = utils.purgeFiles
 clearScreen = utils.clear
 bannerText = utils.banner()
 
+"""
+Dragon is a comprehensive blockchain analysis tool that provides a modular, interactive command-line interface for 
+exploring blockchain data across multiple cryptocurrencies (Solana, Ethereum, Binance Smart Chain, and GMGN). The script offers a 
+centralized entry point for various blockchain-specific analytical tools, featuring robust user interaction 
+mechanisms with key functions like:
+
+1. User Input Handling:
+- Thread configuration (getThreads())
+- Proxy settings management (getProxiesSetting())
+- File selection (selectFile())
+- Contract address validation (getContractAddress())
+- Wallet filtering options (promptSkipWallets())
+
+2. Blockchain-Specific Modules:
+- GMGN: Supports token data collection across different categories (new, completing, soaring, bonded tokens)
+- Ethereum: Provides wallet checking, top trader analysis, timestamp transactions, and transaction scanning
+- Solana: Offers comprehensive tools including timestamp transactions, bundle finding, transaction scanning, wallet checking, copy trade detection, top holders, and early buyer identification
+- Binance Smart Chain: Supports wallet checking and top trader analysis
+
+The script serves as a centralized hub for blockchain research and analysis, allowing users to interactively select chains and perform various analytical 
+tasks with customizable settings like thread count and proxy usage. Its design emphasizes user-friendliness through intuitive menus, input validation, and error handling.
+"""
+
 def getThreads(defaultThreads=40, maxAllowed=100):
     while True:
         threadsInput = input("[❓] Threads > ")

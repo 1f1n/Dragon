@@ -11,6 +11,26 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 globalRatelimitEvent = threading.Event()
 
+"""
+The BulkWalletChecker is a sophisticated Solana wallet data retrieval and analysis tool designed for the GMGN.ai platform. 
+This class provides a comprehensive solution for bulk wallet data extraction, featuring advanced capabilities 
+such as multi-threaded processing, proxy rotation, and intelligent request management. 
+
+Key features include:
+- Concurrent wallet data retrieval using ThreadPoolExecutor
+- Dynamic proxy configuration and rotation
+- Intelligent caching mechanism to prevent redundant requests
+- Flexible data processing with configurable options
+- Error-tolerant design with fallback mechanisms
+- Automatic user agent and TLS client randomization
+
+The class supports advanced wallet data analysis, including metrics like total profit percentage, realized profits (7d/30d), 
+win rate, SOL balance, trading activity, and average holding duration. It generates comprehensive results with built-in formatting 
+and can handle large sets of wallet addresses efficiently.\n\nThe implementation emphasizes performance and 
+reliability through features like request timeout management, proxy support, and intelligent error handling, making it a robust 
+tool for Solana wallet data collection and analysis.
+"""
+
 class BulkWalletChecker:
 
     def __init__(self):
